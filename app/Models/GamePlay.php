@@ -33,5 +33,9 @@ class GamePlay extends Model
         return $this->hasMany(MatchEvent::class);
     }
 
+    public function matchStat(){
+        return $this->hasOne(MatchStat::class);
+    }
+
 
 }

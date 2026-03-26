@@ -36,4 +36,9 @@ class Team extends Model
         return $this->hasMany(Player::class);
     }
 
+    public function matchStats()
+    {
+        return $this->hasMany(MatchStat::class);
+    }
+
 }
