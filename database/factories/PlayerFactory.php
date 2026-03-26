@@ -17,7 +17,9 @@ class PlayerFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->name(),
+            'team_id' => \App\Models\Team::factory(),
+            'position' => fake()->randomElement(['Forward', 'Midfielder', 'Defender', 'Goalkeeper']),
         ];
     }
 }

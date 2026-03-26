@@ -17,7 +17,11 @@ class GamePlayFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'home_team_id' => \App\Models\Team::factory(),
+            'away_team_id' => \App\Models\Team::factory(),
+            'home_score' => fake()->numberBetween(0, 5),
+            'away_score' => fake()->numberBetween(0, 5),
+            'date' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

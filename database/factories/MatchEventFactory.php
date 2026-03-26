@@ -17,7 +17,10 @@ class MatchEventFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'game_id' => \App\Models\GamePlay::factory(),
+            'event_type' => fake()->randomElement(['Goal', 'Foul', 'Yellow Card', 'Red Card']),
+            'player_id' => \App\Models\Player::factory(),
+            'minute' => fake()->numberBetween(1, 90),
         ];
     }
 }

@@ -17,7 +17,12 @@ class StandingFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'team_id' => \App\Models\Team::factory(),
+            'points' => fake()->numberBetween(0, 100),
+            'played' => fake()->numberBetween(0, 38),
+            'won' => fake()->numberBetween(0, 38),
+            'drawn' => fake()->numberBetween(0, 38),
+            'lost' => fake()->numberBetween(0, 38),
         ];
     }
 }
