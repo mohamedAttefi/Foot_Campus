@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Player;
 use App\Http\Requests\StorePlayerRequest;
 use App\Http\Requests\UpdatePlayerRequest;
+use Illuminate\Http\Request;
+use App\Models\Team;
 
 class PlayerController extends Controller
 {
@@ -13,38 +15,60 @@ class PlayerController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(['players' => Player::with('team')->get()]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StorePlayerRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $player = Player::create($validated);
+
+        return response()->json(['message' => 'Player created successfully!', 'player' => $player], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Player $player)
+    public function show($id)
     {
-        //
+        $player = Player::with('team')->findOrFail($id);
+        return response()->json(['player' => $player]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePlayerRequest $request, Player $player)
+    public function update(UpdatePlayerRequest $request, $id)
     {
-        //
+        $player = Player::findOrFail($id);
+        $validated = $request->validated();
+
+        $player->update($validated);
+
+        return response()->json(['message' => 'Player updated successfully!', 'player' => $player]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Player $player)
+    public function destroy($id)
     {
-        //
+        $player = Player::findOrFail($id);
+        $player->delete();
+
+        return response()->json(['message' => 'Player deleted successfully!']);
+    }
+
+    public function assignToTeam($playerId, $teamId)
+    {
+        $player = Player::findOrFail($playerId);
+        $team = Team::findOrFail($teamId);
+
+        $player->team_id = $team->id;
+        $player->save();
+
+        return response()->json([
+            'message' => 'Player assigned to team successfully!',
+            'player' => $player,
+            'team' => $team,
+        ]);
     }
 }
