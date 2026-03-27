@@ -10,11 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('lineups', function (Blueprint $table) {
+        Schema::create('players', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('game_play_id')->constrained()->onDelete('cascade');
-            $table->foreignId('player_id')->constrained()->onDelete('cascade');
-            $table->boolean('is_starter')->default(false);
+            $table->string('name');
+            $table->boolean('eligible')->default(true);
+            $table->boolean('is_eligible')->default(true);
+            $table->decimal('average_score', 5, 2)->nullable();
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('lineups');
+        Schema::dropIfExists('players');
     }
 };

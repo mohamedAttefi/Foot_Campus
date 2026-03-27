@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->integer('draws')->default(0);
             $table->integer('losses')->default(0);
             $table->foreignId('team_id')->constrained()->onDelete('cascade');
+            $table->foreignId('season_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

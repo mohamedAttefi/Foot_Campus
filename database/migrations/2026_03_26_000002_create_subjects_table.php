@@ -10,11 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('lineups', function (Blueprint $table) {
+        Schema::create('subjects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('game_play_id')->constrained()->onDelete('cascade');
-            $table->foreignId('player_id')->constrained()->onDelete('cascade');
-            $table->boolean('is_starter')->default(false);
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -24,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('lineups');
+        Schema::dropIfExists('subjects');
     }
 };

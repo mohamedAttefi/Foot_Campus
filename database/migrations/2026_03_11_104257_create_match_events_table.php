@@ -13,9 +13,10 @@ return new class extends Migration {
         Schema::create('match_events', function (Blueprint $table) {
             $table->id();
             $table->integer('minute');
-            $table->string('type');
             $table->foreignId('game_play_id')->constrained()->onDelete('cascade');
             $table->foreignId('player_id')->constrained()->onDelete('cascade');
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
+            $table->enum('type', ['goal', 'yellow_card', 'red_card', 'sub']);
             $table->timestamps();
         });
 

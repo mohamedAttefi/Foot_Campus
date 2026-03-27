@@ -33,4 +33,34 @@ class Player extends Model
     {
         return $this->hasMany(MatchEvent::class);
     }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class);
+    }
+
+    public function calculateAverage()
+    {
+        return $this->grades()->avg('score');
+    }
+
+    public function checkEligibility($eligibilityRule)
+    {
+        $average = $this->calculateAverage();
+        $failedSubjects = $this->grades()->where('score', '<', $eligibilityRule['min_score'])->count();
+
+        return $average >= $eligibilityRule['min_average'] && $failedSubjects <= $eligibilityRule['max_failures'];
+    }
+
+    public function updateStatus($eligibilityRule)
+    {
+        $this->is_eligible = $this->checkEligibility($eligibilityRule);
+        $this->average_score = $this->calculateAverage();
+        $this->save();
+    }
+
+    public function getAcademicHistory()
+    {
+        return $this->grades()->orderBy('term_name')->get();
+    }
 }
