@@ -8,43 +8,43 @@ use App\Http\Requests\UpdateTeamRequest;
 
 class TeamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        return response()->json(['teams' => Team::with('players')->get()]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreTeamRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $team = Team::create($validated);
+
+        return response()->json(['message' => 'Team created successfully!', 'team' => $team], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Team $team)
+    public function show($id)
     {
-        //
+        $team = Team::with('players')->findOrFail($id);
+        return response()->json(['team' => $team]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateTeamRequest $request, Team $team)
+    public function update(UpdateTeamRequest $request, $id)
     {
-        //
+        $team = Team::findOrFail($id);
+
+        $validated = $request->validated();
+
+        $team->update($validated);
+
+        return response()->json(['message' => 'Team updated successfully!', 'team' => $team]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Team $team)
+    public function destroy($id)
     {
-        //
+        $team = Team::findOrFail($id);
+        $team->delete();
+
+        return response()->json(['message' => 'Team deleted successfully!']);
     }
 }
