@@ -7,6 +7,8 @@ use App\Http\Requests\StorePlayerRequest;
 use App\Http\Requests\UpdatePlayerRequest;
 use Illuminate\Http\Request;
 use App\Models\Team;
+use Illuminate\Support\Facades\Auth;
+
 
 class PlayerController extends Controller
 {
