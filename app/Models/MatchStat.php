@@ -10,7 +10,7 @@ class MatchStat extends Model
     /** @use HasFactory<\Database\Factories\MatchStatFactory> */
     use HasFactory;
 
-    protected $fillable = ['game_play_id', 'team_id', 'possession', 'corners', 'shots', 'onTarget'];
+    protected $fillable = ['game_play_id', 'home_possession', 'away_possession', 'home_shots', 'away_shots'];
 
     public function match()
     {
