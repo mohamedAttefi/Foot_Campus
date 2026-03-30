@@ -10,7 +10,7 @@ class Lineup extends Model
     /** @use HasFactory<\Database\Factories\LineupFactory> */
     use HasFactory;
 
-    protected $fillable = ['match_id', 'team_id'];
+    protected $fillable = ['game_play_id', 'team_id'];
 
     public function match()
     {
