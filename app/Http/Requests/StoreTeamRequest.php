@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
+
 
 class StoreTeamRequest extends FormRequest
 {
@@ -25,5 +28,14 @@ class StoreTeamRequest extends FormRequest
             'name' => 'required|string|max:255',
             'class_group' => 'required|string|max:255',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed. Please check your input.',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }
