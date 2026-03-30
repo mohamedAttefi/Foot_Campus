@@ -12,13 +12,16 @@ return new class extends Migration {
     {
         Schema::create('game_plays', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('date');
-            $table->string('status');
-            $table->integer('home_score')->default(0);
-            $table->integer('away_score')->default(0);
-            $table->foreignId('user_id')->constrained();
             $table->foreignId('home_team_id')->constrained('teams');
             $table->foreignId('away_team_id')->constrained('teams');
+            $table->foreignId('season_id')->constrained();
+            $table->date('date');
+            $table->time('time');
+            $table->string('location');
+            $table->enum('status', ['scheduled', 'live', 'finished'])->default('scheduled');
+            $table->integer('home_score')->default(0);
+            $table->integer('away_score')->default(0);
+            $table->boolean('validated_by_admin')->default(false);
             $table->timestamps();
         });
     }

@@ -12,12 +12,15 @@ return new class extends Migration {
     {
         Schema::create('standings', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('team_id')->constrained();
+            $table->foreignId('season_id')->constrained();
             $table->integer('points')->default(0);
             $table->integer('wins')->default(0);
             $table->integer('draws')->default(0);
             $table->integer('losses')->default(0);
-            $table->foreignId('team_id')->constrained()->onDelete('cascade');
-            $table->foreignId('season_id')->constrained()->onDelete('cascade');
+            $table->integer('goals_for')->default(0);
+            $table->integer('goals_against')->default(0);
+            $table->integer('goal_difference')->default(0);
             $table->timestamps();
         });
     }

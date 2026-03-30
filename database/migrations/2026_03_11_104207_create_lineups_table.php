@@ -13,8 +13,7 @@ return new class extends Migration {
         Schema::create('lineups', function (Blueprint $table) {
             $table->id();
             $table->foreignId('game_play_id')->constrained()->onDelete('cascade');
-            $table->foreignId('player_id')->constrained()->onDelete('cascade');
-            $table->boolean('is_starter')->default(false);
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -10,10 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('teams', function (Blueprint $table) {
+        Schema::create('academic_rules', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('class_group');
+            $table->decimal('min_average_threshold', 4, 2);
+            $table->integer('max_failed_subjects');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('teams');
+        Schema::dropIfExists('academic_rules');
     }
 };
