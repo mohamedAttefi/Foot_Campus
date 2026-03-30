@@ -18,6 +18,10 @@ class SubjectController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
+        if (empty($validated)) {
+            return response()->json(['message' => 'invalid inputs']);
+        }
+
         $subject = Subject::create($validated);
 
         return response()->json(['message' => 'Subject created successfully!', 'subject' => $subject]);
