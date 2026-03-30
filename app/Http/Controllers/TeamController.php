@@ -47,4 +47,12 @@ class TeamController extends Controller
 
         return response()->json(['message' => 'Team deleted successfully!']);
     }
+
+    public function getEligiblePlayers($teamId)
+    {
+        $team = Team::findOrFail($teamId);
+        $eligiblePlayers = $team->players()->where('is_eligible', true)->get();
+
+        return response()->json(['eligible_players' => $eligiblePlayers]);
+    }
 }
