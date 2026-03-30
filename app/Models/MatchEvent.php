@@ -10,7 +10,7 @@ class MatchEvent extends Model
     /** @use HasFactory<\Database\Factories\MatchEventFactory> */
     use HasFactory;
 
-    protected $fillable = ['minute', 'type', 'match_id', 'player_id'];
+    protected $fillable = ['minute', 'type', 'game_play_id', 'player_id', 'team_id'];
 
     public function match()
     {
@@ -20,5 +20,10 @@ class MatchEvent extends Model
     public function player()
     {
         return $this->belongsTo(Player::class);
+    }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
     }
 }
