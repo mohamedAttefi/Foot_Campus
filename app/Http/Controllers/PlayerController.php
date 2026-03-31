@@ -40,6 +40,10 @@ class PlayerController extends Controller
      */
     public function update(UpdatePlayerRequest $request, $id)
     {
+        if (Auth::user()->role !== 'coach' || Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'This action is unauthorized'], 401);
+        }
+
         $player = Player::findOrFail($id);
         $validated = $request->validated();
 
@@ -53,6 +57,9 @@ class PlayerController extends Controller
      */
     public function destroy($id)
     {
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'This action is unauthorized'], 401);
+        }
         $player = Player::findOrFail($id);
         $player->delete();
 
