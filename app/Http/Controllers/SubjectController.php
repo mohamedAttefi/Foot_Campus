@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subject;
+use App\Http\Requests\StoreSubjectRequest;
 use Illuminate\Http\Request;
 
 class SubjectController extends Controller
@@ -12,15 +13,9 @@ class SubjectController extends Controller
         return response()->json(['subjects' => Subject::all()]);
     }
 
-    public function store(Request $request)
+    public function store(StoreSubjectRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        if (empty($validated)) {
-            return response()->json(['message' => 'invalid inputs']);
-        }
+        $validated = $request->validated();
 
         $subject = Subject::create($validated);
 
