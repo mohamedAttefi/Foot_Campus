@@ -13,6 +13,10 @@ class GamePlayController extends Controller
      */
     public function index()
     {
+        if (!in_array(Auth::user()->role, ['admin', 'coach', 'teacher'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         //
     }
 
@@ -21,6 +25,10 @@ class GamePlayController extends Controller
      */
     public function store(StoreGamePlayRequest $request)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         //
     }
 
@@ -29,6 +37,10 @@ class GamePlayController extends Controller
      */
     public function show(GamePlay $gamePlay)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'coach', 'teacher'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         //
     }
 
@@ -37,6 +49,10 @@ class GamePlayController extends Controller
      */
     public function update(UpdateGamePlayRequest $request, GamePlay $gamePlay)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         //
     }
 
@@ -45,6 +61,10 @@ class GamePlayController extends Controller
      */
     public function destroy(GamePlay $gamePlay)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         //
     }
 }
