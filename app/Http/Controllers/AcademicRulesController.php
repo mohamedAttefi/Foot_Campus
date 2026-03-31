@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\AcademicRules;
 use App\Http\Requests\StoreAcademicRulesRequest;
 use App\Http\Requests\UpdateAcademicRulesRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 class AcademicRulesController extends Controller
 {
@@ -13,7 +15,8 @@ class AcademicRulesController extends Controller
      */
     public function index()
     {
-        //
+        $rules = AcademicRules::all();
+        return response()->json($rules);
     }
 
     /**
@@ -21,7 +24,9 @@ class AcademicRulesController extends Controller
      */
     public function store(StoreAcademicRulesRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $rule = AcademicRules::create($validated);
+        return response()->json($rule, 201);
     }
 
     /**
@@ -29,7 +34,7 @@ class AcademicRulesController extends Controller
      */
     public function show(AcademicRules $academicRules)
     {
-        //
+        return response()->json($academicRules);
     }
 
     /**
@@ -37,7 +42,8 @@ class AcademicRulesController extends Controller
      */
     public function update(UpdateAcademicRulesRequest $request, AcademicRules $academicRules)
     {
-        //
+        $academicRules->update($request->validated());
+        return response()->json($academicRules);
     }
 
     /**
@@ -45,6 +51,7 @@ class AcademicRulesController extends Controller
      */
     public function destroy(AcademicRules $academicRules)
     {
-        //
+        $academicRules->delete();
+        return response()->json(null, 204);
     }
 }
