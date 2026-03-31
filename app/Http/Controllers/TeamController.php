@@ -5,17 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 class TeamController extends Controller
 {
 
     public function index()
     {
+        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         return response()->json(['teams' => Team::with('players')->get()]);
     }
 
     public function store(StoreTeamRequest $request)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
         $validated = $request->validated();
 
         $team = Team::create($validated);
@@ -25,12 +34,20 @@ class TeamController extends Controller
 
     public function show($id)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         $team = Team::with('players')->findOrFail($id);
         return response()->json(['team' => $team]);
     }
 
     public function update(UpdateTeamRequest $request, $id)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         $team = Team::findOrFail($id);
 
         $validated = $request->validated();
@@ -42,6 +59,10 @@ class TeamController extends Controller
 
     public function destroy($id)
     {
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         $team = Team::findOrFail($id);
         $team->delete();
 
@@ -50,8 +71,15 @@ class TeamController extends Controller
 
     public function getEligiblePlayers($teamId)
     {
-        $team = Team::findOrFail($teamId);
-        $eligiblePlayers = $team->players()->where('is_eligible', true)->get();
+        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
+        $team = Team::with('players')->findOrFail($teamId);
+
+        $eligiblePlayers = $team->players->filter(function ($player) {
+            return $player->checkEligibility();
+        });
 
         return response()->json(['eligible_players' => $eligiblePlayers]);
     }
