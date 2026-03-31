@@ -7,6 +7,7 @@ use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\LineupController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\AcademicRulesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -38,5 +39,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::apiResource('subject', SubjectController::class)->only('index', 'store', 'destroy');
 
 
+    Route::apiResource('academic-rules', AcademicRulesController::class);
 
+
+    
 });

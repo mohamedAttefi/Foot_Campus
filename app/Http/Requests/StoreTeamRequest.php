@@ -25,8 +25,9 @@ class StoreTeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:teams,name',
             'class_group' => 'required|string|max:255',
+            'coach_id' => 'required|exists:users,id',
         ];
     }
 

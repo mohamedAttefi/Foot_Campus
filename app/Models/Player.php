@@ -10,8 +10,7 @@ class Player extends Model
     /** @use HasFactory<\Database\Factories\PlayerFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'eligible', 'team_id'];
-
+protected $fillable = ['user_id', 'jersey_number', 'is_eligible', 'team_id'];
 
     public function lineups()
     {
@@ -44,18 +43,19 @@ class Player extends Model
         return $this->grades()->avg('score');
     }
 
-    public function checkEligibility($eligibilityRule)
+    public function checkEligibility()
     {
-        $average = $this->calculateAverage();
-        $failedSubjects = $this->grades()->where('score', '<', $eligibilityRule['min_score'])->count();
+        $eligibilityRule = AcademicRules::firstOrFail();
 
-        return $average >= $eligibilityRule['min_average'] && $failedSubjects <= $eligibilityRule['max_failures'];
+        $average = $this->calculateAverage();
+        $failedSubjects = $this->grades()->where('score', '<', $eligibilityRule->min_average_threshold)->count();
+
+        return $average >= $eligibilityRule->min_average_threshold && $failedSubjects <= $eligibilityRule->max_failed_subjects;
     }
 
-    public function updateStatus($eligibilityRule)
+    public function updateStatus()
     {
-        $this->is_eligible = $this->checkEligibility($eligibilityRule);
-        $this->average_score = $this->calculateAverage();
+        $this->is_eligible = $this->checkEligibility();
         $this->save();
     }
 

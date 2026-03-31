@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class StoreAcademicRulesRequest extends FormRequest
 {
@@ -12,7 +14,7 @@ class StoreAcademicRulesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +25,17 @@ class StoreAcademicRulesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'min_average_threshold' => 'required|numeric|min:0|max:100',
+            'max_failed_subjects' => 'required|integer|min:0',
         ];
     }
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed. Please check your input.',
+            'errors' => $validator->errors(),
+        ], 422));
+    }
+
 }
