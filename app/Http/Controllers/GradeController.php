@@ -12,12 +12,20 @@ class GradeController extends Controller
 {
     public function index()
     {
+        if (!in_array(Auth::user()->role, ['admin', 'teacher', 'coach'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         $grades = Grade::with(['player', 'subject'])->get();
         return response()->json(['grades' => $grades]);
     }
 
     public function store(StoreGradeRequest $request)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'teacher'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         $validated = $request->validated();
 
         $grade = Grade::create($validated);
@@ -31,6 +39,10 @@ class GradeController extends Controller
 
     public function destroy($id)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'teacher'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         $grade = Grade::findOrFail($id);
         $grade->delete();
 
