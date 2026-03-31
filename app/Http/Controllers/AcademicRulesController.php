@@ -15,6 +15,10 @@ class AcademicRulesController extends Controller
      */
     public function index()
     {
+        if (!in_array(Auth::user()->role, ['admin', 'teacher'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         $rules = AcademicRules::all();
         return response()->json($rules);
     }
@@ -24,6 +28,10 @@ class AcademicRulesController extends Controller
      */
     public function store(StoreAcademicRulesRequest $request)
     {
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         $validated = $request->validated();
         $rule = AcademicRules::create($validated);
         return response()->json($rule, 201);
@@ -34,6 +42,10 @@ class AcademicRulesController extends Controller
      */
     public function show(AcademicRules $academicRules)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'teacher'])) {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         return response()->json($academicRules);
     }
 
@@ -42,6 +54,10 @@ class AcademicRulesController extends Controller
      */
     public function update(UpdateAcademicRulesRequest $request, AcademicRules $academicRules)
     {
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         $academicRules->update($request->validated());
         return response()->json($academicRules);
     }
@@ -51,6 +67,10 @@ class AcademicRulesController extends Controller
      */
     public function destroy(AcademicRules $academicRules)
     {
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'This action is unauthorized'], 403);
+        }
+
         $academicRules->delete();
         return response()->json(null, 204);
     }
