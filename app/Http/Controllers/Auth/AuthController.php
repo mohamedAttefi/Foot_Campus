@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Player;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -48,20 +49,21 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $request->validated();
+        $validated = $request->validated();
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
+        $user = User::create($validated);
+        if ($user && $user->role == 'player') {
+            Player::create([
+                'user_id' => $user->id,
+                'jersey_number' => $validated['jersey_number']
+            ]);
+        }
         $token = $user->createToken('auth_token')->plainTextToken;
-
         return response()->json([
             'message' => 'Registration successful!',
             'access_token' => $token,
             'token_type' => 'Bearer',
+            'user' => $user
         ]);
     }
 }
