@@ -7,6 +7,8 @@ use App\Models\Player;
 use App\Http\Requests\StoreGradeRequest;
 use Illuminate\Http\Request;
 use App\Models\AcademicRules;
+use Illuminate\Support\Facades\Auth;
+
 
 class GradeController extends Controller
 {

@@ -7,6 +7,8 @@ use App\Models\LineupPlayer;
 use App\Http\Requests\StoreLineupRequest;
 use App\Http\Requests\UpdateLineupRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class LineupController extends Controller
 {

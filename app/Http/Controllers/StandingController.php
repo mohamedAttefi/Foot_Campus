@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Standing;
 use App\Http\Requests\StoreStandingRequest;
 use App\Http\Requests\UpdateStandingRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 class StandingController extends Controller
 {

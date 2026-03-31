@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\GamePlay;
 use App\Http\Requests\StoreGamePlayRequest;
 use App\Http\Requests\UpdateGamePlayRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 class GamePlayController extends Controller
 {

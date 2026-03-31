@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\MatchEvent;
 use App\Http\Requests\StoreMatchEventRequest;
 use App\Http\Requests\UpdateMatchEventRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 class MatchEventController extends Controller
 {

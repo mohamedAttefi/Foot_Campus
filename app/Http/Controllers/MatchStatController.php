@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\MatchStat;
 use App\Http\Requests\StoreMatchStatRequest;
 use App\Http\Requests\UpdateMatchStatRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 class MatchStatController extends Controller
 {

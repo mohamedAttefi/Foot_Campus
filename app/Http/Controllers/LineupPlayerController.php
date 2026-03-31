@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\LineupPlayer;
 use App\Http\Requests\StoreLineupPlayerRequest;
 use App\Http\Requests\UpdateLineupPlayerRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 class LineupPlayerController extends Controller
 {
