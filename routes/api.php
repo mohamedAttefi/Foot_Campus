@@ -8,6 +8,8 @@ use App\Http\Controllers\LineupController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\AcademicRulesController;
+use App\Http\Controllers\GamePlayController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,6 +42,12 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
     Route::apiResource('academic-rules', AcademicRulesController::class);
+
+
+    Route::apiResource('matches', GamePlayController::class);
+
+
+    Route::apiResource('users', UserController::class);
 
 
     

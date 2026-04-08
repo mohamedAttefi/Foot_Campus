@@ -9,8 +9,7 @@ class GamePlay extends Model
 {
     /** @use HasFactory<\Database\Factories\GamePlayFactory> */
     use HasFactory;
-    protected $table = 'matches';
-
+    
     protected $fillable = ['date', 'status', 'home_score', 'away_score'];
 
     public function homeTeam()
