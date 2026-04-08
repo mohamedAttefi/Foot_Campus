@@ -76,7 +76,6 @@ class TeamController extends Controller
         }
 
         $team = Team::with('players')->findOrFail($teamId);
-
         $eligiblePlayers = $team->players->filter(function ($player) {
             return $player->checkEligibility();
         });
