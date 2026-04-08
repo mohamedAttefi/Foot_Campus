@@ -11,15 +11,17 @@ use Illuminate\Support\Facades\Auth;
 class GamePlayController extends Controller
 {
     /**
+     * Unauthorized message constant.
+     */
+    private const UNAUTHORIZED_MESSAGE = 'This is unauthorized';
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        if (!in_array(Auth::user()->role, ['admin', 'coach', 'teacher'])) {
-            return response()->json(['message' => 'This action is unauthorized'], 403);
-        }
-
-        //
+        $matches = GamePlay::all();
+        return response()->json($matches);
     }
 
     /**
@@ -27,11 +29,9 @@ class GamePlayController extends Controller
      */
     public function store(StoreGamePlayRequest $request)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
-            return response()->json(['message' => 'This action is unauthorized'], 403);
-        }
-
-        //
+        $validated = $request->validated();
+        $match = GamePlay::create($validated);
+        return response()->json($match, 201);
     }
 
     /**
@@ -40,10 +40,10 @@ class GamePlayController extends Controller
     public function show(GamePlay $gamePlay)
     {
         if (!in_array(Auth::user()->role, ['admin', 'coach', 'teacher'])) {
-            return response()->json(['message' => 'This action is unauthorized'], 403);
+            return response()->json([self::UNAUTHORIZED_MESSAGE], 403);
         }
 
-        //
+        return response()->json($gamePlay);
     }
 
     /**
@@ -52,10 +52,12 @@ class GamePlayController extends Controller
     public function update(UpdateGamePlayRequest $request, GamePlay $gamePlay)
     {
         if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
-            return response()->json(['message' => 'This action is unauthorized'], 403);
+            return response()->json([self::UNAUTHORIZED_MESSAGE], 403);
         }
 
-        //
+        $validated = $request->validated();
+        $gamePlay->update($validated);
+        return response()->json($gamePlay);
     }
 
     /**
@@ -64,9 +66,10 @@ class GamePlayController extends Controller
     public function destroy(GamePlay $gamePlay)
     {
         if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
-            return response()->json(['message' => 'This action is unauthorized'], 403);
+            return response()->json([self::UNAUTHORIZED_MESSAGE], 403);
         }
 
-        //
+        $gamePlay->delete();
+        return response()->json(null, 204);
     }
 }
