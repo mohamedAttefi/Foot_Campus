@@ -15,7 +15,8 @@ class StandingController extends Controller
      */
     public function index()
     {
-        //
+        $standings = Standing::all();
+        return response()->json($standings);
     }
 
     /**
@@ -23,7 +24,9 @@ class StandingController extends Controller
      */
     public function store(StoreStandingRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $standing = Standing::create($validated);
+        return response()->json($standing, 201);
     }
 
     /**
@@ -31,7 +34,7 @@ class StandingController extends Controller
      */
     public function show(Standing $standing)
     {
-        //
+        return response()->json($standing);
     }
 
     /**
@@ -39,7 +42,9 @@ class StandingController extends Controller
      */
     public function update(UpdateStandingRequest $request, Standing $standing)
     {
-        //
+        $validated = $request->validated();
+        $standing->update($validated);
+        return response()->json($standing);
     }
 
     /**
@@ -47,6 +52,7 @@ class StandingController extends Controller
      */
     public function destroy(Standing $standing)
     {
-        //
+        $standing->delete();
+        return response()->json(null, 204);
     }
 }
