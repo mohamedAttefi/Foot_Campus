@@ -15,7 +15,8 @@ class MatchEventController extends Controller
      */
     public function index()
     {
-        //
+        $events = MatchEvent::with(['match', 'player', 'team'])->get();
+        return response()->json($events);
     }
 
     /**
@@ -23,7 +24,9 @@ class MatchEventController extends Controller
      */
     public function store(StoreMatchEventRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $event = MatchEvent::create($validated);
+        return response()->json($event, 201);
     }
 
     /**
@@ -31,7 +34,7 @@ class MatchEventController extends Controller
      */
     public function show(MatchEvent $matchEvent)
     {
-        //
+        return response()->json($matchEvent);
     }
 
     /**
@@ -39,7 +42,9 @@ class MatchEventController extends Controller
      */
     public function update(UpdateMatchEventRequest $request, MatchEvent $matchEvent)
     {
-        //
+        $validated = $request->validated();
+        $matchEvent->update($validated);
+        return response()->json($matchEvent);
     }
 
     /**
@@ -47,6 +52,7 @@ class MatchEventController extends Controller
      */
     public function destroy(MatchEvent $matchEvent)
     {
-        //
+        $matchEvent->delete();
+        return response()->json(null, 204);
     }
 }
