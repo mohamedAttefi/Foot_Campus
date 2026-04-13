@@ -7,8 +7,10 @@ use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\LineupController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\MatchEventController;
 use App\Http\Controllers\AcademicRulesController;
 use App\Http\Controllers\GamePlayController;
+use App\Http\Controllers\StandingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +51,14 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::apiResource('users', UserController::class);
 
+
+    Route::apiResource('match-events', MatchEventController::class);
+
+    Route::apiResource('standings', StandingController::class);
+
+    Route::apiResource('match-stats', MatchStatController::class);
+
+    Route::apiResource('lineup-players', LineupPlayerController::class);
 
     
 });
