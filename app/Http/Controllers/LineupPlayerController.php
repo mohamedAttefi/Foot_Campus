@@ -15,7 +15,8 @@ class LineupPlayerController extends Controller
      */
     public function index()
     {
-        //
+        $lineupPlayers = LineupPlayer::all();
+        return response()->json($lineupPlayers);
     }
 
     /**
@@ -23,7 +24,9 @@ class LineupPlayerController extends Controller
      */
     public function store(StoreLineupPlayerRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $lineupPlayer = LineupPlayer::create($validated);
+        return response()->json($lineupPlayer, 201);
     }
 
     /**
@@ -31,7 +34,7 @@ class LineupPlayerController extends Controller
      */
     public function show(LineupPlayer $lineupPlayer)
     {
-        //
+        return response()->json($lineupPlayer);
     }
 
     /**
@@ -39,7 +42,9 @@ class LineupPlayerController extends Controller
      */
     public function update(UpdateLineupPlayerRequest $request, LineupPlayer $lineupPlayer)
     {
-        //
+        $validated = $request->validated();
+        $lineupPlayer->update($validated);
+        return response()->json($lineupPlayer);
     }
 
     /**
@@ -47,6 +52,7 @@ class LineupPlayerController extends Controller
      */
     public function destroy(LineupPlayer $lineupPlayer)
     {
-        //
+        $lineupPlayer->delete();
+        return response()->json(null, 204);
     }
 }
