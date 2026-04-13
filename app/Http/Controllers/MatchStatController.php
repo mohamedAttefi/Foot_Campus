@@ -15,7 +15,8 @@ class MatchStatController extends Controller
      */
     public function index()
     {
-        //
+        $stats = MatchStat::all();
+        return response()->json($stats);
     }
 
     /**
@@ -23,7 +24,9 @@ class MatchStatController extends Controller
      */
     public function store(StoreMatchStatRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $stat = MatchStat::create($validated);
+        return response()->json($stat, 201);
     }
 
     /**
@@ -31,7 +34,7 @@ class MatchStatController extends Controller
      */
     public function show(MatchStat $matchStat)
     {
-        //
+        return response()->json($matchStat);
     }
 
     /**
@@ -39,7 +42,9 @@ class MatchStatController extends Controller
      */
     public function update(UpdateMatchStatRequest $request, MatchStat $matchStat)
     {
-        //
+        $validated = $request->validated();
+        $matchStat->update($validated);
+        return response()->json($matchStat);
     }
 
     /**
@@ -47,6 +52,7 @@ class MatchStatController extends Controller
      */
     public function destroy(MatchStat $matchStat)
     {
-        //
+        $matchStat->delete();
+        return response()->json(null, 204);
     }
 }
