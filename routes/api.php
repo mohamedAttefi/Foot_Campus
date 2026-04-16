@@ -11,7 +11,9 @@ use App\Http\Controllers\MatchEventController;
 use App\Http\Controllers\AcademicRulesController;
 use App\Http\Controllers\GamePlayController;
 use App\Http\Controllers\StandingController;
+use App\Http\Controllers\MatchStatController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LineupPlayerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,35 +24,24 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::middleware('auth:sanctum')->group(function(){
 
-
+Route::middleware('auth')->group(function () {
     Route::apiResource('grade', GradeController::class)->only('index', 'store', 'destroy');
-
-
     Route::apiResource('player', PlayerController::class);
     Route::post('/player/{playerId}/assign-player-to-team/{teamId}', [PlayerController::class, 'assignToTeam']);
-
-
-    Route::apiResource('lineup', lineupController::class)->only('store', 'update', 'show');
+    Route::apiResource('lineup', LineupController::class)->only('store', 'update', 'show');
     Route::post('lineup/{id}', [LineupController::class, 'validateLineup']);
-
 
     Route::apiResource('team', TeamController::class);
     Route::get('/team/{id}/eligible-players', [TeamController::class, 'getEligiblePlayers']);
 
-
     Route::apiResource('subject', SubjectController::class)->only('index', 'store', 'destroy');
-
 
     Route::apiResource('academic-rules', AcademicRulesController::class);
 
-
     Route::apiResource('matches', GamePlayController::class);
 
-
     Route::apiResource('users', UserController::class);
-
 
     Route::apiResource('match-events', MatchEventController::class);
 
@@ -59,6 +50,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::apiResource('match-stats', MatchStatController::class);
 
     Route::apiResource('lineup-players', LineupPlayerController::class);
-
-    
 });
+
+
