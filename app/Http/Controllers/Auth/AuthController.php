@@ -27,8 +27,23 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
             $token = $user->createToken('auth_token')->plainTextToken;
-
-            return response()->json(['message' => 'Logged successfully', 'user' => $user, 'token' => $token]);
+            if ($user->role === 'player') {
+                return response()->json([
+                    'message' => 'Registration successful!',
+                    'redirect_to' => route('player.home'),
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                    'user' => $user,
+                ]);
+            } elseif ($user->role === 'admin') {
+                return response()->json([
+                    'message' => 'Registration successful!',
+                    'redirect_to' => route('admin.dashboard'),
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                    'user' => $user,
+                ]);
+            }
         }
 
         return response()->json(['message' => 'Invalid credentials'], 422);
@@ -51,19 +66,44 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
 
+        $validated['password'] = Hash::make($validated['password']);
+
         $user = User::create($validated);
-        if ($user && $user->role == 'player') {
+        if ($user && $validated['role'] == 'player') {
             Player::create([
                 'user_id' => $user->id,
                 'jersey_number' => $validated['jersey_number']
             ]);
+
+
         }
+
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        // Redirect based on role
+        if ($validated['role'] === 'player') {
+            return response()->json([
+                'message' => 'Registration successful!',
+                'redirect_to' => route('player.home'),
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ]);
+        } elseif ($validated['role'] === 'admin') {
+            return response()->json([
+                'message' => 'Registration successful!',
+                'redirect_to' => route('admin.dashboard'),
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ]);
+        }
+
         return response()->json([
             'message' => 'Registration successful!',
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => $user,
         ]);
     }
 }
