@@ -28,7 +28,7 @@ class RegisterRequest extends FormRequest
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|string',
-            'jersey_number' => 'nullable|string'
+            'jersey_number' => 'required_if:role,player|string'
         ];
     }
         protected function failedValidation(Validator $validator)
