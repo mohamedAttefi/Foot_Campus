@@ -152,7 +152,7 @@
                     return;
                 }
 
-                localStorage.setItem('token', data.token);
+                localStorage.setItem('token', data.access_token);
                 Swal.fire({ icon: 'success', title: 'Authenticated', timer: 1500, showConfirmButton: false })
                     .then(() => window.location.href = data.redirect_to);
 
