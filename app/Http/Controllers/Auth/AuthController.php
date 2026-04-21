@@ -26,7 +26,7 @@ class AuthController extends Controller
 
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken('token')->plainTextToken;
             if ($user->role === 'player') {
                 return response()->json([
                     'message' => 'Registration successful!',
@@ -78,7 +78,7 @@ class AuthController extends Controller
 
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('token')->plainTextToken;
 
         // Redirect based on role
         if ($validated['role'] === 'player') {
