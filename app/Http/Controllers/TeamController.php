@@ -13,9 +13,6 @@ class TeamController extends Controller
 
     public function index()
     {
-        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
-            return response()->json(['message' => 'This action is unauthorized'], 403);
-        }
 
         return response()->json(['teams' => Team::with('players')->get()]);
     }
@@ -34,9 +31,6 @@ class TeamController extends Controller
 
     public function show($id)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'coach'])) {
-            return response()->json(['message' => 'This action is unauthorized'], 403);
-        }
 
         $team = Team::with('players')->findOrFail($id);
         return response()->json(['team' => $team]);
