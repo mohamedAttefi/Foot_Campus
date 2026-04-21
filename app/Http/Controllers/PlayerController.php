@@ -20,6 +20,11 @@ class PlayerController extends Controller
         return response()->json(['players' => Player::with('team')->get()]);
     }
 
+    public function getPlayerByUserId($userId)
+    {
+        return response()->json(['player' => Player::where('user_id', $userId)->with('team')]);
+    }
+
     public function store(StorePlayerRequest $request)
     {
         $validated = $request->validated();
