@@ -18,3 +18,27 @@ Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('
 Route::get('/player/home', function () {
     return view('player.home');
 })->name('player.home');
+
+Route::get('/player/standings', function () {
+    return view('player.standings');
+})->name('player.standings');
+
+Route::get('/player/team-details', function () {
+    return view('player.team-details');
+})->name('player.team-details');
+
+Route::get('/player/match-schedule', function () {
+    return view('player.match-schedule');
+})->name('player.match-schedule');
+
+Route::get('/player/match-details', function () {
+    return view('player.match-details');
+})->name('player.match-details');
+
+Route::get('/player/profile', function () {
+    return view('player.profile');
+})->name('player.profile');
+
+Route::get('/player/academic-results', function () {
+    return view('player.academic-results');
+})->name('player.academic-results');

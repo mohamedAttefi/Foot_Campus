@@ -28,6 +28,7 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('grade', GradeController::class)->only('index', 'store', 'destroy');
     Route::apiResource('player', PlayerController::class);
+    Route::get('players/{userId}', [PlayerController::class, 'getPlayerByUserId']);
     Route::post('/player/{playerId}/assign-player-to-team/{teamId}', [PlayerController::class, 'assignToTeam']);
     Route::apiResource('lineup', LineupController::class)->only('store', 'update', 'show');
     Route::post('lineup/{id}', [LineupController::class, 'validateLineup']);
