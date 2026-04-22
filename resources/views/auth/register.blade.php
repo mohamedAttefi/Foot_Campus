@@ -126,7 +126,7 @@
                     <button
                         class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl shadow-lg"
                         type="submit">Create Account</button>
-                    <p class="text-center text-xs font-medium">Already a member? <a href="login.html"
+                    <p class="text-center text-xs font-medium">Already a member? <a href="login"
                             class="text-secondary font-bold hover:underline">Sign In</a></p>
                 </form>
             </div>
@@ -150,8 +150,11 @@
                 first_name: fName.value, last_name: lName.value,
                 name: fName.value + ' ' + lName.value, email: email.value,
                 password: password.value, role: role.value,
-                jersey_number: jersey.value, grade: grade.value
             };
+            if(userData.role == "Player"){
+                userData.jersey_number = jersey.value;
+                userData.grade = grade.value;
+            }
 
             try {
                 const response = await fetch('http://127.0.0.1:8000/api/register', {
@@ -172,7 +175,10 @@
                     console.log(data)
                     localStorage.setItem('token', data.access_token)
                     Swal.fire({ icon: 'success', title: 'Registered!', showConfirmButton: false, timer: 2000 })
-                        .then(() => window.location.href = 'player/home');
+                        .then(() => {
+                            if(data.user.role == 'player') window.location.href = 'player/home'
+                            if(data.user.role == 'coach') window.location.href = 'manager/dashboard'
+                        });
                 }
             } catch (err) { Swal.fire({ icon: 'error', title: 'Error', text: 'Server connection failed.' }); }
         });
