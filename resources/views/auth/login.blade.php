@@ -29,7 +29,10 @@
                         "outline": "#707973",
                         "secondary": "#4059aa"
                     },
-                    "fontFamily": { "headline": ["Manrope"], "body": ["Inter"] }
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"]
+                    }
                 }
             }
         }
@@ -126,12 +129,19 @@
             e.preventDefault();
             document.querySelectorAll('[id$="-error"]').forEach(el => el.classList.add('hidden'));
 
-            const userData = { email: email.value, password: password.value };
+            const userData = {
+                email: email.value,
+                password: password.value
+            };
+            console.log(userData)
 
             try {
                 const response = await fetch('http://127.0.0.1:8000/api/login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(userData)
                 });
 
@@ -139,25 +149,44 @@
 
                 if (!response.ok) {
                     if (response.status === 422) {
-                        Swal.fire({ icon: 'error', title: 'Login Failed', text: 'Invalid credentials.', confirmButtonColor: '#0f5238' });
-                        Object.keys(data.errors).forEach(key => {
-                            const errEl = document.getElementById(`${key}-error`);
-                            if (errEl) { errEl.textContent = data.errors[key][0]; errEl.classList.remove('hidden'); }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Login Failed',
+                            text: 'Invalid credentials.',
+                            confirmButtonColor: '#0f5238'
                         });
+                        console.log(data)
                     } else {
                         localStorage.setItem('token', response.access_token)
 
-                        Swal.fire({ icon: 'warning', title: 'Notice', text: data.message });
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Notice',
+                            text: data.message
+                        });
                     }
                     return;
                 }
 
                 localStorage.setItem('token', data.access_token);
-                Swal.fire({ icon: 'success', title: 'Authenticated', timer: 1500, showConfirmButton: false })
-                    .then(() => window.location.href = data.redirect_to);
+                Swal.fire({
+                        icon: 'success',
+                        title: 'Authenticated',
+                        timer: 1500,
+                        showConfirmButton: false
+                    })
+                    // .then(() => {
+                    //     if (data.user.role == 'player') window.location.href = 'player/home'
+                    //     if (data.user.role == 'coach') window.location.href = 'manager/dashboard'
+                    // });
 
             } catch (err) {
-                Swal.fire({ icon: 'error', title: 'Connection Error', text: 'Server unreachable.' });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Connection Error',
+                    text: 'Server unreachable.'
+                });
+                console.log(err)
             }
         });
     </script>
