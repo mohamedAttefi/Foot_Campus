@@ -13,78 +13,31 @@
             theme: {
                 extend: {
                     colors: {
-                        "on-secondary-fixed-variant": "#264191",
-                        "on-primary": "#ffffff",
-                        "on-tertiary-fixed": "#2a1700",
-                        "tertiary-container": "#865400",
-                        "secondary-fixed": "#dce1ff",
-                        "surface-container-lowest": "#ffffff",
-                        "surface": "#f7f9fb",
-                        "on-secondary-container": "#1d3989",
-                        "inverse-on-surface": "#eff1f3",
-                        "surface-tint": "#2c694e",
-                        "on-surface-variant": "#404943",
-                        "tertiary-fixed": "#ffddb8",
-                        "inverse-surface": "#2d3133",
-                        "primary-container": "#2d6a4f",
-                        "on-secondary-fixed": "#00164e",
-                        "on-background": "#191c1e",
-                        "secondary-container": "#8fa7fe",
-                        "on-surface": "#191c1e",
-                        "surface-bright": "#f7f9fb",
-                        "error": "#ba1a1a",
-                        "surface-variant": "#e0e3e5",
-                        "tertiary-fixed-dim": "#ffb95f",
-                        "background": "#f7f9fb",
-                        "on-primary-container": "#a8e7c5",
-                        "outline": "#707973",
-                        "outline-variant": "#bfc9c1",
-                        "primary-fixed": "#b1f0ce",
                         "primary": "#0f5238",
-                        "primary-fixed-dim": "#95d4b3",
-                        "on-tertiary": "#ffffff",
+                        "primary-container": "#2d6a4f",
                         "secondary": "#4059aa",
-                        "on-tertiary-container": "#ffd29e",
-                        "on-secondary": "#ffffff",
-                        "inverse-primary": "#95d4b3",
-                        "on-primary-fixed": "#002114",
-                        "on-error": "#ffffff",
-                        "error-container": "#ffdad6",
-                        "on-error-container": "#93000a",
-                        "secondary-fixed-dim": "#b6c4ff",
-                        "surface-dim": "#d8dadc",
-                        "tertiary": "#663f00",
-                        "surface-container-highest": "#e0e3e5",
-                        "on-primary-fixed-variant": "#0e5138",
-                        "surface-container": "#eceef0",
-                        "surface-container-low": "#f2f4f6",
-                        "surface-container-high": "#e6e8ea",
-                        "on-tertiary-fixed-variant": "#653e00"
-                    },
-                    borderRadius: {
-                        DEFAULT: "0.25rem",
-                        lg: "0.5rem",
-                        xl: "0.75rem",
-                        full: "9999px"
+                        "secondary-container": "#8fa7fe",
+                        "surface": "#f7f9fb",
+                        "on-surface": "#191c1e",
+                        "on-surface-variant": "#404943",
+                        "outline-variant": "#bfc9c1",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#865400",
                     },
                     fontFamily: {
                         headline: ["Manrope"],
-                        body: ["Inter"],
-                        label: ["Inter"]
+                        body: ["Inter"]
                     }
                 },
             },
         }
     </script>
     <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .pitch-grid {
-            background-image:
-                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 1%),
-                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 1%),
+                linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
             background-size: 100% 100%, 20px 20px, 20px 20px;
         }
     </style>
@@ -92,14 +45,14 @@
 
 <body class="bg-surface font-body text-on-surface">
     <!-- SideNavBar -->
-    <aside class="fixed left-0 top-0 h-full w-64 rounded-r-3xl bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md flex flex-col p-6 overflow-y-auto shadow-xl shadow-emerald-900/5 z-50">
+    <aside class="fixed left-0 top-0 h-full w-64 rounded-r-3xl bg-slate-50/80 backdrop-blur-md flex flex-col p-6 overflow-y-auto shadow-xl z-50">
         <div class="mb-10">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary">
                     <span class="material-symbols-outlined">sports_soccer</span>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-tighter text-emerald-900 dark:text-emerald-100 uppercase italic leading-none">The Scholastic Pitch</h1>
+                    <h1 class="text-xl font-bold tracking-tighter text-emerald-900 uppercase italic leading-none">The Scholastic Pitch</h1>
                     <p class="text-[10px] font-headline tracking-widest text-primary opacity-70 uppercase">Elite Academy League</p>
                 </div>
             </div>
@@ -145,16 +98,17 @@
             </a>
         </div>
     </aside>
+    
     <!-- Main Content Area -->
     <main class="ml-64 min-h-screen">
         <!-- TopNavBar -->
-        <header class="sticky top-0 w-full z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl flex justify-between items-center h-16 px-8">
+        <header class="sticky top-0 w-full z-40 bg-white/80 backdrop-blur-xl flex justify-between items-center h-16 px-8">
             <div class="flex items-center gap-8">
                 <div class="relative group">
                     <span class="absolute inset-y-0 left-3 flex items-center text-slate-400">
                         <span class="material-symbols-outlined text-lg">search</span>
                     </span>
-                    <input class="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm w-64 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all" placeholder="Search matches, players..." type="text" />
+                    <input id="search-input" class="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm w-64 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all" placeholder="Search matches, players..." type="text" />
                 </div>
                 <nav class="flex items-center gap-6">
                     <a class="font-['Manrope'] font-medium text-sm text-slate-600 hover:text-emerald-500 transition-colors" href="#">Standings</a>
@@ -176,6 +130,7 @@
                 </div>
             </div>
         </header>
+        
         <!-- Content Canvas -->
         <div class="p-8 max-w-7xl mx-auto space-y-8">
             <!-- Hero Header Section -->
@@ -221,25 +176,26 @@
                     <div class="flex-1 space-y-4">
                         <div class="flex justify-between items-end">
                             <span class="text-sm font-semibold text-on-surface-variant">Fatigue Level</span>
-                            <span id="fatigue-value" class="text-xs font-bold text-primary">12% (Low)</span>
+                            <span id="fatigue-value" class="text-xs font-bold text-primary">--</span>
                         </div>
                         <div class="h-2 bg-surface-container rounded-full overflow-hidden">
-                            <div id="fatigue-bar" class="h-full bg-primary w-[12%]"></div>
+                            <div id="fatigue-bar" class="h-full bg-primary w-0"></div>
                         </div>
                         <div class="flex justify-between items-end">
                             <span class="text-sm font-semibold text-on-surface-variant">Focus Index</span>
-                            <span id="focus-value" class="text-xs font-bold text-secondary">94% (High)</span>
+                            <span id="focus-value" class="text-xs font-bold text-secondary">--</span>
                         </div>
                         <div class="h-2 bg-surface-container rounded-full overflow-hidden">
-                            <div id="focus-bar" class="h-full bg-secondary w-[94%]"></div>
+                            <div id="focus-bar" class="h-full bg-secondary w-0"></div>
                         </div>
                     </div>
                     <div id="coach-note" class="mt-8 p-4 bg-tertiary-fixed/30 rounded-2xl flex items-center gap-3">
                         <span class="material-symbols-outlined text-tertiary">psychology</span>
-                        <p class="text-xs text-on-tertiary-fixed-variant leading-relaxed">Stay ready. Keep training hard for your next opportunity.</p>
+                        <p class="text-xs text-on-tertiary-fixed-variant leading-relaxed">Loading coach notes...</p>
                     </div>
                 </div>
             </section>
+            
             <!-- Tactical Formation & Position (Shown only when match exists) -->
             <section id="tactical-section" class="grid grid-cols-1 lg:grid-cols-5 gap-8 hidden">
                 <div class="lg:col-span-3 bg-primary rounded-[2.5rem] p-6 relative overflow-hidden shadow-2xl shadow-primary/20">
@@ -308,6 +264,7 @@
                     </div>
                 </div>
             </section>
+            
             <!-- Prep Checklist -->
             <section class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="bg-gradient-to-br from-secondary to-on-secondary-fixed-variant rounded-[2rem] p-8 text-on-secondary flex flex-col justify-center items-center text-center">
@@ -379,9 +336,6 @@
                     showNoMatchState();
                 }
                 
-                // Load checklist items
-                loadChecklist();
-                
                 // Load readiness stats
                 await loadReadinessStats();
                 
@@ -404,18 +358,18 @@
                     <div class="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl p-3 flex items-center justify-center">
                         <span class="text-white font-headline font-bold text-xl">${homeShort}</span>
                     </div>
-                    <span class="font-headline font-bold text-sm tracking-tight">${homeTeam}</span>
+                    <span class="font-headline font-bold text-sm tracking-tight">${escapeHtml(homeTeam)}</span>
                 </div>
                 <div class="text-4xl font-headline font-extrabold italic opacity-30">VS</div>
                 <div class="flex flex-col items-center gap-2 text-right">
                     <div class="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl p-3 flex items-center justify-center">
                         <span class="text-white font-headline font-bold text-xl">${awayShort}</span>
                     </div>
-                    <span class="font-headline font-bold text-sm tracking-tight">${awayTeam}</span>
+                    <span class="font-headline font-bold text-sm tracking-tight">${escapeHtml(awayTeam)}</span>
                 </div>
             `;
             
-            const matchDate = new Date(match.match_date || match.scheduled_at);
+            const matchDate = new Date(match.match_date || match.scheduled_at || match.date);
             const formattedDate = matchDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
             const formattedTime = matchDate.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
             document.getElementById('match-datetime').innerText = `${formattedDate} • ${formattedTime} • ${match.venue || 'Home Stadium'}`;
@@ -525,6 +479,11 @@
                     document.getElementById('fatigue-bar').style.width = `${fatigue}%`;
                     document.getElementById('focus-value').innerHTML = `${focus}% (High)`;
                     document.getElementById('focus-bar').style.width = `${focus}%`;
+                } else {
+                    document.getElementById('fatigue-value').innerHTML = '15% (Low)';
+                    document.getElementById('fatigue-bar').style.width = '15%';
+                    document.getElementById('focus-value').innerHTML = '85% (High)';
+                    document.getElementById('focus-bar').style.width = '85%';
                 }
             } catch(e) {
                 console.warn("Could not load readiness stats", e);
@@ -550,25 +509,6 @@
                 return `<span class="w-4 h-4 ${color} rounded-full flex items-center justify-center text-[8px] text-white font-bold">${f}</span>`;
             }).join('');
             document.getElementById('opponent-form').innerHTML = formHtml;
-        }
-        
-        function loadChecklist() {
-            const checklistContainer = document.getElementById('checklist-container');
-            const checklistItems = [
-                { text: "Hydration protocol started (2L+)", checked: false },
-                { text: "Tactical video review completed", checked: true },
-                { text: "Recovery boots session (20 min)", checked: false },
-                { text: "Equipment check (Studs/Pads/Jersey)", checked: true },
-                { text: "Pre-match meal (3 hours before)", checked: false },
-                { text: "Dynamic warm-up routine", checked: false }
-            ];
-            
-            checklistContainer.innerHTML = checklistItems.map(item => `
-                <label class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 cursor-pointer group">
-                    <input class="w-5 h-5 rounded-md text-primary focus:ring-primary/20 border-outline-variant" type="checkbox" ${item.checked ? 'checked' : ''} />
-                    <span class="text-sm font-medium group-hover:text-primary transition-colors">${item.text}</span>
-                </label>
-            `).join('');
         }
         
         function startCountdown(matchDateTime) {
@@ -598,6 +538,17 @@
             countdownInterval = setInterval(updateCountdown, 1000);
         }
         
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        // Initialize
         window.addEventListener('DOMContentLoaded', () => {
             if (!localStorage.getItem('token')) {
                 console.warn("No auth token found - please login");
