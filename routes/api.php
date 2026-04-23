@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('matches', GamePlayController::class);
 
     Route::apiResource('users', UserController::class);
-    Route::get('users/me', [UserController::class, 'show']);
+    Route::get('current-user', [UserController::class, 'me']);
 
 
     Route::apiResource('match-events', MatchEventController::class);
@@ -50,6 +50,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('match-stats', MatchStatController::class);
 
     Route::apiResource('lineup-players', LineupPlayerController::class);
+
+    Route::middleware(['auth:sanctum', 'can:manage-users'])->group(function () {
+        Route::get('/users', [AuthController::class, 'manageUsers']);
+    });
+
+    Route::get('/players/{playerId}/eligibility', [AcademicRulesController::class, 'checkEligibility']);
 });
 
 
