@@ -43,6 +43,10 @@ Route::get('/player/academic-results', function () {
     return view('player.academic-results');
 })->name('player.academic-results');
 
+Route::get('/player/eligibility-status', function () {
+    return view('player.eligibility-status');
+})->name('player.eligibility-status');
+
 // Manager Routes
 Route::get('/manager/dashboard', function () {
     return view('manager.home');
@@ -63,6 +67,60 @@ Route::get('/manager/player-stats', function () {
 Route::get('/manager/schedule', function () {
     return view('manager.schedule');
 })->name('manager.schedule');
+
+Route::get('/manager/create-lineup', function () {
+    return view('manager.create-lineup');
+})->name('manager.create-lineup');
+
+Route::get('/manager/edit-lineup', function () {
+    return view('manager.edit-lineup');
+})->name('manager.edit-lineup');
+
+Route::get('/manager/team', function () {
+    return view('manager.team');
+})->name('manager.team');
+
+Route::get('/manager/players-list', function () {
+    return view('manager.players-list');
+})->name('manager.players-list');
+
+Route::get('/manager/matches-list', function () {
+    return view('manager.matches-list');
+})->name('manager.matches-list');
+
+Route::get('/manager/standings', function () {
+    return view('manager.standings');
+})->name('manager.standings');
+
+// Admin Routes
+Route::get('/admin/dashboard', function () {
+    return view('admin.home');
+})->name('admin.dashboard');
+
+Route::get('/admin/users', function () {
+    return view('admin.users');
+})->name('admin.users');
+
+Route::get('/admin/teams', function () {
+    return view('admin.teams');
+})->name('admin.teams');
+
+Route::get('/admin/matches', function () {
+    return view('admin.matches');
+})->name('admin.matches');
+
+Route::get('/admin/academic', function () {
+    return view('admin.academic');
+})->name('admin.academic');
+
+// Teacher Routes
+Route::get('/teacher/dashboard', function () {
+    return view('teacher.home');
+})->name('teacher.dashboard');
+
+Route::get('/teacher/academic-results', function () {
+    return view('teacher.academic-results');
+})->name('teacher.academic-results');
 
 Route::get('/note-found', function(){
     return view('note-found');
