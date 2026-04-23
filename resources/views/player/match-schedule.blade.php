@@ -327,7 +327,7 @@
         async function loadMatchData() {
             try {
                 // Load user profile
-                const user = await fetchAPI('/users/me');
+                const user = await fetchAPI('/current-user');
                 currentUser = user;
                 document.getElementById('nav-user-name').innerText = user.name?.split(' ')[0] || 'Player';
                 document.getElementById('nav-user-role').innerText = user.position || user.role || 'Athlete';
