@@ -17,12 +17,13 @@ class PlayerController extends Controller
      */
     public function index()
     {
-        return response()->json(['players' => Player::with('team')->get()]);
+        return response()->json(Player::with('team')->get());
     }
 
     public function getPlayerByUserId($userId)
     {
-        return response()->json(['player' => Player::where('user_id', $userId)->with('team')]);
+        $player = Player::where('user_id', $userId)->with('team')->first();
+        return response()->json($player);
     }
 
     public function store(StorePlayerRequest $request)
@@ -37,7 +38,7 @@ class PlayerController extends Controller
     public function show($id)
     {
         $player = Player::with('team')->findOrFail($id);
-        return response()->json(['player' => $player]);
+        return response()->json($player);
     }
 
     /**
