@@ -384,5 +384,130 @@
         </button>
     </div>
 </body>
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        
+        function getHeaders() {
+            const token = localStorage.getItem('token');
+            return {
+                'Authorization': token ? `Bearer ${token}` : '',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            };
+        }
+
+        async function fetchAPI(endpoint, options = {}) {
+            const response = await fetch(`${API_BASE}${endpoint}`, {
+                headers: getHeaders(),
+                ...options
+            });
+            if (!response.ok) throw new Error(`API Error ${response.status}`);
+            return response.json();
+        }
+
+        let currentMatch = null;
+
+        async function loadMatchDetails() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const matchId = urlParams.get('id');
+                
+                if (!matchId) {
+                    showError('No match ID provided');
+                    return;
+                }
+
+                currentMatch = await fetchAPI(`/matches/${matchId}`);
+                
+                const [homeTeam, awayTeam] = await Promise.all([
+                    fetchAPI(`/team/${currentMatch.home_team_id}`),
+                    fetchAPI(`/team/${currentMatch.away_team_id}`)
+                ]);
+                
+                renderMatchDetails(currentMatch, homeTeam, awayTeam);
+                
+            } catch (error) {
+                console.error('Failed to load match details:', error);
+                showError('Failed to load match details. Please refresh the page.');
+            }
+        }
+
+        function renderMatchDetails(match, homeTeam, awayTeam) {
+            const matchHeader = document.getElementById('match-header');
+            if (matchHeader) {
+                matchHeader.innerHTML = `
+                    <div class="text-center">
+                        <h1 class="text-3xl font-bold mb-2">${homeTeam.name} vs ${awayTeam.name}</h1>
+                        <p class="text-on-surface-variant">Matchday ${match.matchday || '1'} - ${new Date(match.date || match.match_date).toLocaleDateString()}</p>
+                        <p class="text-sm text-on-surface-variant mt-1">${match.venue || 'Academy Stadium'}</p>
+                    </div>
+                `;
+            }
+            
+            const scoreDisplay = document.getElementById('score-display');
+            if (scoreDisplay) {
+                const homeScore = match.home_score || 0;
+                const awayScore = match.away_score || 0;
+                scoreDisplay.innerHTML = `
+                    <div class="text-center">
+                        <div class="text-6xl font-bold">${homeScore} - ${awayScore}</div>
+                        <p class="text-on-surface-variant">${match.status === 'finished' ? 'Full Time' : 'In Progress'}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showSuccess(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'fixed top-4 right-4 bg-green-50 border border-green-200 rounded-lg p-4 z-50';
+            alertDiv.innerHTML = `
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-green-800">Success</h3>
+                        <div class="mt-2 text-sm text-green-700">
+                            <p>${message}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+
+        function showError(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'fixed top-4 right-4 bg-red-50 border border-red-200 rounded-lg p-4 z-50';
+            alertDiv.innerHTML = `
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">Error</h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            <p>${message}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('token')) {
+                window.location.href = '/login';
+                return;
+            }
+            loadMatchDetails();
+        });
+    </script>
 
 </html>
