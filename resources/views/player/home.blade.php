@@ -275,7 +275,7 @@
                 return null;
             }
             try {
-                const user = await fetchAPI('/users/me');
+                const user = await fetchAPI('/current-user');
                 currentUser = user;
                 const firstName = user.name ? user.name.split(' ')[0] : 'Player';
                 document.getElementById('welcome-message').innerHTML = `Welcome back, ${firstName}.`;
