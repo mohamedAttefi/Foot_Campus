@@ -452,6 +452,317 @@
             </div>
         </div>
     </main>
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        
+        function getHeaders() {
+            const token = localStorage.getItem('token');
+            return {
+                'Authorization': token ? `Bearer ${token}` : '',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            };
+        }
+
+        async function fetchAPI(endpoint, options = {}) {
+            const response = await fetch(`${API_BASE}${endpoint}`, {
+                headers: getHeaders(),
+                ...options
+            });
+            if (!response.ok) throw new Error(`API Error ${response.status}`);
+            return response.json();
+        }
+
+        let currentLineup = null;
+        let availablePlayers = [];
+        let formation = '4-4-2';
+        let currentUser = null;
+
+        const formations = {
+            '4-4-2': {
+                positions: [
+                    { id: 'GK', x: 50, y: 90 },
+                    { id: 'LB', x: 20, y: 70 },
+                    { id: 'CB1', x: 35, y: 70 },
+                    { id: 'CB2', x: 65, y: 70 },
+                    { id: 'RB', x: 80, y: 70 },
+                    { id: 'LM', x: 15, y: 50 },
+                    { id: 'CM1', x: 35, y: 50 },
+                    { id: 'CM2', x: 65, y: 50 },
+                    { id: 'RM', x: 85, y: 50 },
+                    { id: 'ST1', x: 40, y: 30 },
+                    { id: 'ST2', x: 60, y: 30 }
+                ]
+            }
+        };
+
+        async function loadEditLineupData() {
+            try {
+                // Get lineup ID from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const lineupId = urlParams.get('id');
+                
+                if (!lineupId) {
+                    showError('No lineup ID provided');
+                    return;
+                }
+
+                currentUser = await fetchAPI('/current-user');
+                
+                // Load current lineup
+                currentLineup = await fetchAPI(`/lineup/${lineupId}`);
+                
+                // Load available players
+                const players = await fetchAPI('/player');
+                availablePlayers = Array.isArray(players) ? players : (players.data || []);
+                
+                // Set formation from current lineup
+                formation = currentLineup.formation || '4-4-2';
+                
+                renderLineupEditor();
+                setupEventListeners();
+                
+            } catch (error) {
+                console.error('Failed to load lineup data:', error);
+                showError('Failed to load lineup data. Please refresh the page.');
+            }
+        }
+
+        function renderLineupEditor() {
+            if (!currentLineup) return;
+            
+            // Update match info
+            const matchInfo = document.getElementById('match-info');
+            if (matchInfo) {
+                matchInfo.innerHTML = `
+                    <h3 class="font-bold text-lg">${currentLineup.match?.home_team?.name || 'Home'} vs ${currentLineup.match?.away_team?.name || 'Away'}</h3>
+                    <p class="text-sm text-on-surface-variant">Formation: ${formation}</p>
+                `;
+            }
+            
+            // Render pitch with current lineup
+            renderPitch();
+            
+            // Render available players
+            renderAvailablePlayers();
+            
+            // Update summary
+            updateLineupSummary();
+        }
+
+        function renderPitch() {
+            const pitch = document.getElementById('pitch');
+            if (!pitch || !currentLineup) return;
+            
+            const currentFormation = formations[formation];
+            
+            pitch.innerHTML = currentFormation.positions.map(pos => {
+                const lineupPlayer = currentLineup.players?.find(p => p.position === pos.id);
+                const player = lineupPlayer ? availablePlayers.find(p => p.id === lineupPlayer.player_id) : null;
+                
+                return `
+                    <div class="pitch-position" 
+                         style="left: ${pos.x}%; top: ${pos.y}%;"
+                         data-position="${pos.id}">
+                        ${player ? `
+                            <div class="player-on-pitch">
+                                <div class="player-number">${player.jersey_number || '--'}</div>
+                                <div class="player-name">${player.user?.name?.split(' ')[0] || 'P'}</div>
+                            </div>
+                        ` : `
+                            <div class="empty-position">
+                                <span class="material-symbols-outlined">add_circle</span>
+                                <span>${pos.id}</span>
+                            </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderAvailablePlayers() {
+            const container = document.getElementById('available-players');
+            if (!container) return;
+            
+            // Get players currently in lineup
+            const lineupPlayerIds = currentLineup.players?.map(p => p.player_id) || [];
+            
+            container.innerHTML = availablePlayers.map(player => {
+                const isInLineup = lineupPlayerIds.includes(player.id);
+                return `
+                    <div class="player-card ${isInLineup ? 'selected' : ''}" 
+                         data-player-id="${player.id}" 
+                         onclick="togglePlayerInLineup(${player.id})">
+                        <div class="player-info">
+                            <div class="player-number">${player.jersey_number || '--'}</div>
+                            <div class="player-details">
+                                <div class="player-name">${player.user?.name || `Player ${player.id}`}</div>
+                                <div class="player-position">${player.position || 'Midfielder'}</div>
+                            </div>
+                        </div>
+                        <div class="player-stats">
+                            <span class="stat">${player.goals || 0} G</span>
+                            <span class="stat">${player.assists || 0} A</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function togglePlayerInLineup(playerId) {
+            const player = availablePlayers.find(p => p.id === playerId);
+            const lineupPlayerIndex = currentLineup.players?.findIndex(p => p.player_id === playerId);
+            
+            if (lineupPlayerIndex === -1) {
+                // Add player to lineup (add to first empty position)
+                const emptyPosition = formations[formation].positions.find(pos => 
+                    !currentLineup.players?.find(p => p.position === pos.id)
+                );
+                
+                if (!emptyPosition) {
+                    showError('Lineup is full. Remove a player first.');
+                    return;
+                }
+                
+                if (!currentLineup.players) currentLineup.players = [];
+                currentLineup.players.push({
+                    player_id: playerId,
+                    position: emptyPosition.id
+                });
+            } else {
+                // Remove player from lineup
+                currentLineup.players.splice(lineupPlayerIndex, 1);
+            }
+            
+            renderLineupEditor();
+        }
+
+        function updateLineupSummary() {
+            const summary = document.getElementById('lineup-summary');
+            if (summary && currentLineup) {
+                const filledPositions = currentLineup.players?.length || 0;
+                summary.innerHTML = `
+                    <div class="summary-item">
+                        <span>Players in Lineup:</span>
+                        <span class="font-bold">${filledPositions}/11</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Formation:</span>
+                        <span class="font-bold">${formation}</span>
+                    </div>
+                `;
+            }
+        }
+
+        async function updateLineup() {
+            if (!currentLineup || !currentLineup.id) {
+                showError('No lineup to update');
+                return;
+            }
+            
+            if (!currentLineup.players || currentLineup.players.length !== 11) {
+                showError('Lineup must have exactly 11 players');
+                return;
+            }
+            
+            try {
+                const updateData = {
+                    formation: formation,
+                    players: currentLineup.players.map(p => ({
+                        player_id: p.player_id,
+                        position: p.position
+                    }))
+                };
+                
+                await fetchAPI(`/lineup/${currentLineup.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(updateData)
+                });
+                
+                showSuccess('Lineup updated successfully!');
+                
+            } catch (error) {
+                console.error('Failed to update lineup:', error);
+                showError('Failed to update lineup. Please try again.');
+            }
+        }
+
+        function setupEventListeners() {
+            const updateBtn = document.getElementById('update-lineup');
+            if (updateBtn) {
+                updateBtn.addEventListener('click', updateLineup);
+            }
+            
+            const searchInput = document.getElementById('player-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const cards = document.querySelectorAll('.player-card');
+                    
+                    cards.forEach(card => {
+                        const playerName = card.querySelector('.player-name').textContent.toLowerCase();
+                        if (playerName.includes(searchTerm)) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        }
+
+        function showSuccess(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'fixed top-4 right-4 bg-green-50 border border-green-200 rounded-lg p-4 z-50';
+            alertDiv.innerHTML = `
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-green-800">Success</h3>
+                        <div class="mt-2 text-sm text-green-700">
+                            <p>${message}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+
+        function showError(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'fixed top-4 right-4 bg-red-50 border border-red-200 rounded-lg p-4 z-50';
+            alertDiv.innerHTML = `
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">Error</h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            <p>${message}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('token')) {
+                window.location.href = '/login';
+                return;
+            }
+            loadEditLineupData();
+        });
+    </script>
 </body>
 
 </html>
