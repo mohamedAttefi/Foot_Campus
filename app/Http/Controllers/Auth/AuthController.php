@@ -106,4 +106,14 @@ class AuthController extends Controller
             'user' => $user,
         ]);
     }
+
+    public function manageUsers(Request $request)
+    {
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $users = User::all();
+        return response()->json($users);
+    }
 }
