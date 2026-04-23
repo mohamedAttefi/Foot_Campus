@@ -444,7 +444,7 @@
 
         async function loadAcademicData() {
             try {
-                const user = await fetchAPI('/users/me');
+                const user = await fetchAPI('/current-user');
                 currentUser = user;
                 document.getElementById('nav-user-name').innerText = user.name?.split(' ')[0] || 'Student';
                 document.getElementById('nav-user-info').innerText = `Year ${user.academic_year || 'N/A'} • ID: ${user.id || '--'}`;
