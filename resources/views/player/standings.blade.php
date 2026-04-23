@@ -237,7 +237,7 @@
 
         async function loadAllData() {
             try {
-                const user = await fetchAPI('/users/me');
+                const user = await fetchAPI('/current-user');
                 currentUser = user;
                 document.getElementById('nav-user-name').innerText = user.name?.split(' ')[0] || 'Player';
                 document.getElementById('nav-user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'Player')}&background=0f5238&color=fff&size=40`;
