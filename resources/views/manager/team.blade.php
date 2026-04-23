@@ -125,37 +125,8 @@
                 <p class="text-[10px] opacity-70 tracking-widest uppercase">Elite Academy League</p>
             </div>
         </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all duration-300 text-slate-500 dark:text-slate-400"
-                href="#">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span>Dashboard</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all duration-300 text-slate-500 dark:text-slate-400"
-                href="#">
-                <span class="material-symbols-outlined">leaderboard</span>
-                <span>League Table</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-emerald-700 dark:text-emerald-300 font-bold border-r-4 border-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all duration-300"
-                href="#">
-                <span class="material-symbols-outlined">groups</span>
-                <span>Teams</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all duration-300 text-slate-500 dark:text-slate-400"
-                href="#">
-                <span class="material-symbols-outlined">sports_soccer</span>
-                <span>Matches</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all duration-300 text-slate-500 dark:text-slate-400"
-                href="#">
-                <span class="material-symbols-outlined">query_stats</span>
-                <span>Player Stats</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all duration-300 text-slate-500 dark:text-slate-400"
-                href="#">
-                <span class="material-symbols-outlined">school</span>
-                <span>Academic Hub</span>
-            </a>
+        <nav id="sidebar-nav" class="flex-1 space-y-2">
+            <!-- Sidebar items will be dynamically generated based on user role -->
         </nav>
         <div class="mt-auto space-y-2 pt-6">
             <button
@@ -203,8 +174,8 @@
                     <span class="material-symbols-outlined">notifications</span>
                 </button>
                 <div class="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
-                    <span class="font-semibold text-on-surface">Profile</span>
-                    <img alt="User Profile Avatar" class="w-8 h-8 rounded-full border-2 border-primary/20 object-cover"
+                    <span id="nav-user-name" class="font-semibold text-on-surface">Profile</span>
+                    <img id="nav-user-avatar" alt="User Profile Avatar" class="w-8 h-8 rounded-full border-2 border-primary/20 object-cover"
                         data-alt="professional portrait of a youth football coach in a team jacket, outdoor stadium lighting"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmA1Elqj7QeaUMykLS-9asCApKBmAFGP1QDxkg7XQVk78ju4FkaM4aF1jczKVyumj250awXxvZ3vVKdEXLk51DB9KTmp45nQ_vB9FqExve08g5sh6D_U5Pq8brHVGRJjZSXFSSoWMnNSOi0CXvn2E-GOz4fdGesuioZEmxMuwL1k5UjFOFk2tu3J1uId-kC9WY_sLM9wOW0by8upDp5QKhchYJRHQ1PQt-3N37eWzwaJkBt2-te5STPNBjWCO0GG9lPbUXn1LXBs0" />
                 </div>
@@ -539,9 +510,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="p-6 bg-surface-container-low/50 border-t border-outline-variant/10 flex justify-center">
-                        <button class="text-sm font-bold text-primary hover:underline">View Full Roster
-                            Analysis</button>
+                    <div id="pagination-container" class="p-6 bg-surface-container-low/50 border-t border-outline-variant/10 flex justify-between items-center">
+                        <!-- Pagination controls will be inserted here -->
                     </div>
                 </div>
                 <!-- Session Feedback & Notes (Bottom Section) -->
@@ -566,7 +536,7 @@
                         <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mt-4">3 active
                             alerts</p>
                     </div>
-                    <div class="bg-primary rounded-[1.5rem] p-6 flex flex-col justify-between text-on-primary">
+                    <div id="next-fixture-section" class="bg-primary rounded-[1.5rem] p-6 flex flex-col justify-between text-on-primary">
                         <div>
                             <span class="material-symbols-outlined text-primary-fixed-dim mb-3">event_available</span>
                             <h4 class="font-headline font-bold">Next Fixture</h4>
@@ -594,6 +564,417 @@
             </div>
         </div>
     </main>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        let currentUser = null;
+        let currentTeam = null;
+        let teamPlayers = [];
+        let matches = [];
+        let currentPage = 1;
+        let playersPerPage = 10;
+        let totalPlayers = 0;
+
+        function getHeaders() {
+            const token = localStorage.getItem('token');
+            return { 'Authorization': token ? `Bearer ${token}` : '', 'Content-Type': 'application/json', 'Accept': 'application/json' };
+        }
+
+        async function fetchAPI(endpoint, options = {}) {
+            const response = await fetch(`${API_BASE}${endpoint}`, { headers: getHeaders(), ...options });
+            if (!response.ok) throw new Error(`API Error ${response.status}`);
+            return response.json();
+        }
+
+        async function loadTeamData() {
+            try {
+                // Load current user and team
+                currentUser = await fetchAPI('/current-user');
+                console.log('User data:', currentUser);
+
+                if (currentUser.team) {
+                    currentTeam = currentUser.team;
+                    console.log('Team loaded:', currentTeam);
+                } else {
+                    console.log('No team found for coach');
+                    currentTeam = null;
+                }
+
+                // Update header with team info
+                document.querySelector('h2').innerText = currentTeam?.name || 'Team Management';
+                document.getElementById('nav-user-name').innerText = currentUser.name?.split(' ')[0] || 'Coach';
+                document.getElementById('nav-user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'Coach')}&background=0f5238&color=fff&size=32`;
+
+                // Load team players
+                const playersRes = await fetchAPI('/player');
+                const allPlayers = Array.isArray(playersRes) ? playersRes : (playersRes.data || []);
+                teamPlayers = allPlayers.filter(p => p.team_id === currentTeam?.id);
+
+                // Enhance players with user data
+                for (let player of teamPlayers) {
+                    try {
+                        const userData = await fetchAPI(`/users/${player.user_id}`);
+                        player.user = userData;
+                    } catch(e) {
+                        console.log('Failed to load user data for player:', player.user_id, e);
+                    }
+                }
+
+                // Load matches for stats
+                const matchesRes = await fetchAPI('/matches');
+                matches = Array.isArray(matchesRes) ? matchesRes : (matchesRes.data || []);
+
+                // Update UI
+                renderSidebar();
+                updateActionButtons();
+                updateTeamStats();
+                renderPlayerRoster();
+                updateNextMatch();
+                updateAttendanceData();
+
+            } catch(err) {
+                console.error("Failed to load team data:", err);
+                showError('Failed to load team data. Please refresh the page.');
+            }
+        }
+
+        function updateTeamStats() {
+            // Calculate win rate from matches
+            const teamMatches = matches.filter(m => 
+                (m.home_team_id === currentTeam?.id || m.away_team_id === currentTeam?.id) && 
+                m.status === 'completed'
+            );
+            
+            const wins = teamMatches.filter(m => 
+                (m.home_team_id === currentTeam?.id && m.home_score > m.away_score) ||
+                (m.away_team_id === currentTeam?.id && m.away_score > m.home_score)
+            ).length;
+            
+            const winRate = teamMatches.length > 0 ? Math.round((wins / teamMatches.length) * 100) : 0;
+            
+            // Calculate academic average
+            const academicGrades = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F'];
+            const gradePoints = { 'A+': 4.0, 'A': 4.0, 'A-': 3.7, 'B+': 3.3, 'B': 3.0, 'B-': 2.7, 'C+': 2.3, 'C': 2.0, 'C-': 1.7, 'D+': 1.3, 'D': 1.0, 'D-': 0.7, 'F': 0.0 };
+            
+            // This would need to be calculated from actual grade data
+            const academicAvg = 'A-'; // Placeholder
+            
+            // Update stats display
+            document.querySelector('.text-2xl.font-black.text-primary').innerText = `${winRate}%`;
+            document.querySelector('.text-2xl.font-black.text-secondary').innerText = academicAvg;
+        }
+
+        function renderPlayerRoster() {
+            const tbody = document.querySelector('tbody');
+            totalPlayers = teamPlayers.length;
+            
+            if (totalPlayers === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-outline">
+                            No players found in your team
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('pagination-container').innerHTML = '';
+                return;
+            }
+
+            // Calculate pagination
+            const startIndex = (currentPage - 1) * playersPerPage;
+            const endIndex = startIndex + playersPerPage;
+            const paginatedPlayers = teamPlayers.slice(startIndex, endIndex);
+
+            tbody.innerHTML = paginatedPlayers.map(player => {
+                const position = player.position || 'MID';
+                const form = (Math.random() * 3 + 7).toFixed(1); // Placeholder form calculation
+                const attendance = Math.round(Math.random() * 30 + 70); // Placeholder attendance
+                const academicGrade = ['A+', 'A', 'A-', 'B+', 'B', 'B-'][Math.floor(Math.random() * 6)]; // Placeholder grade
+                
+                let formColor = 'bg-primary';
+                if (form < 7.5) formColor = 'bg-secondary';
+                if (form < 7.0) formColor = 'bg-error';
+                
+                let academicColor = 'bg-tertiary-container text-on-tertiary-container';
+                if (academicGrade.startsWith('B')) academicColor = 'bg-surface-container text-on-surface-variant';
+                if (academicGrade.startsWith('C') || academicGrade.startsWith('D')) academicColor = 'bg-error-container text-on-error-container';
+
+                return `
+                    <tr class="hover:bg-surface-container-low/30 transition-colors group">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="relative">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white font-bold">
+                                        ${player.user?.name?.charAt(0) || 'P'}
+                                    </div>
+                                    <span class="absolute -bottom-1 -right-1 bg-primary text-on-primary text-[8px] font-bold px-1 rounded-sm">
+                                        ${player.jersey_number || '?'}
+                                    </span>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-on-surface">${player.user?.name || `Player ${player.id}`}</p>
+                                    <p class="text-xs text-on-surface-variant">Squad Member</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-sm font-medium text-on-surface-variant">${position}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-16 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+                                    <div class="${formColor} h-full rounded-full" style="width: ${(form / 10) * 100}%"></div>
+                                </div>
+                                <span class="text-xs font-bold text-primary">${form}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-sm text-on-surface">${attendance}%</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="${academicColor} text-[10px] font-bold px-3 py-1 rounded-full">${academicGrade}</span>
+                        </td>
+                        <td class="px-4 py-4">
+                            <button class="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-slate-400 hover:text-primary" onclick="viewPlayerDetails(${player.id})">
+                                <span class="material-symbols-outlined text-lg">more_vert</span>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // Render pagination controls
+            renderPagination();
+        }
+
+        function updateNextMatch() {
+            const now = new Date();
+            const nextMatch = matches.find(m => {
+                const matchDate = new Date(m.match_date || m.date);
+                return matchDate > now && (m.home_team_id === currentTeam?.id || m.away_team_id === currentTeam?.id);
+            });
+
+            const nextMatchSection = document.getElementById('next-fixture-section');
+            
+            if (nextMatch) {
+                const isHome = nextMatch.home_team_id === currentTeam?.id;
+                const opponent = isHome ? nextMatch.away_team?.name || 'Opponent' : nextMatch.home_team?.name || 'Opponent';
+                const date = new Date(nextMatch.match_date || nextMatch.date);
+                
+                nextMatchSection.innerHTML = `
+                    <div class="flex flex-col justify-between text-on-primary">
+                        <div>
+                            <span class="material-symbols-outlined text-primary-fixed-dim mb-3">event_available</span>
+                            <h4 class="font-headline font-bold">Next Fixture</h4>
+                            <p class="text-sm opacity-80 mt-2">Vs. ${opponent} (${isHome ? 'H' : 'A'})<br />Kickoff: ${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                        </div>
+                        <div class="mt-4 flex -space-x-2">
+                            ${teamPlayers.slice(0, 3).map(player => `
+                                <div class="w-6 h-6 rounded-full bg-primary-container text-[8px] flex items-center justify-center font-bold border-2 border-primary ring-2 ring-primary">
+                                    ${player.user?.name?.charAt(0) || 'P'}
+                                </div>
+                            `).join('')}
+                            <div class="w-6 h-6 rounded-full bg-primary-container text-[8px] flex items-center justify-center font-bold border-2 border-primary ring-2 ring-primary">
+                                +${teamPlayers.length - 3}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                nextMatchSection.innerHTML = `
+                    <div class="flex flex-col justify-between text-on-primary">
+                        <div>
+                            <span class="material-symbols-outlined text-primary-fixed-dim mb-3">event_available</span>
+                            <h4 class="font-headline font-bold">No Upcoming Matches</h4>
+                            <p class="text-sm opacity-80 mt-2">Check schedule for future fixtures</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function updateAttendanceData() {
+            // Update attendance logs with placeholder data
+            const attendanceData = [
+                { day: 'Mon Training', rate: 94 },
+                { day: 'Tue Match Prep', rate: 100 },
+                { day: 'Wed Academic', rate: 88 }
+            ];
+
+            const attendanceContainer = document.querySelector('.space-y-3');
+            attendanceContainer.innerHTML = attendanceData.map(session => `
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-on-surface-variant">${session.day}</span>
+                    <div class="flex gap-1">
+                        ${Array(5).fill(0).map((_, i) => 
+                            `<span class="w-2 h-2 rounded-full ${i < Math.floor(session.rate / 20) ? 'bg-primary' : 'bg-error'}"></span>`
+                        ).join('')}
+                    </div>
+                    <span class="text-sm font-bold">${session.rate}%</span>
+                </div>
+            `).join('');
+        }
+
+        function viewPlayerDetails(playerId) {
+            console.log('View player details:', playerId);
+            // Could open a modal or navigate to player details page
+            alert(`Player details for ID: ${playerId}. This would open a detailed player view.`);
+        }
+
+        function renderPagination() {
+            const container = document.getElementById('pagination-container');
+            const totalPages = Math.ceil(totalPlayers / playersPerPage);
+            
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let paginationHTML = '<div class="flex items-center gap-2">';
+            
+            // Previous button
+            if (currentPage > 1) {
+                paginationHTML += `
+                    <button onclick="previousPage()" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">chevron_left</span>
+                        Previous
+                    </button>
+                `;
+            } else {
+                paginationHTML += `
+                    <button disabled class="px-3 py-1 text-sm font-medium text-on-surface-variant/50 bg-surface-container-low rounded-lg flex items-center gap-1 cursor-not-allowed">
+                        <span class="material-symbols-outlined text-sm">chevron_left</span>
+                        Previous
+                    </button>
+                `;
+            }
+
+            // Page numbers
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            if (startPage > 1) {
+                paginationHTML += `
+                    <button onclick="goToPage(1)" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">1</button>
+                `;
+                if (startPage > 2) {
+                    paginationHTML += `<span class="px-2 text-sm text-on-surface-variant">...</span>`;
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === currentPage) {
+                    paginationHTML += `
+                        <button class="px-3 py-1 text-sm font-medium text-on-primary bg-primary rounded-lg">${i}</button>
+                    `;
+                } else {
+                    paginationHTML += `
+                        <button onclick="goToPage(${i})" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">${i}</button>
+                    `;
+                }
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += `<span class="px-2 text-sm text-on-surface-variant">...</span>`;
+                }
+                paginationHTML += `
+                    <button onclick="goToPage(${totalPages})" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">${totalPages}</button>
+                `;
+            }
+
+            // Next button
+            if (currentPage < totalPages) {
+                paginationHTML += `
+                    <button onclick="nextPage()" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors flex items-center gap-1">
+                        Next
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </button>
+                `;
+            } else {
+                paginationHTML += `
+                    <button disabled class="px-3 py-1 text-sm font-medium text-on-surface-variant/50 bg-surface-container-low rounded-lg flex items-center gap-1 cursor-not-allowed">
+                        Next
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </button>
+                `;
+            }
+
+            paginationHTML += '</div>';
+            
+            // Add page info
+            paginationHTML += `
+                <div class="text-sm text-on-surface-variant">
+                    Showing ${((currentPage - 1) * playersPerPage) + 1} to ${Math.min(currentPage * playersPerPage, totalPlayers)} of ${totalPlayers} players
+                </div>
+            `;
+
+            container.innerHTML = paginationHTML;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderPlayerRoster();
+            renderPagination();
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(totalPlayers / playersPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPlayerRoster();
+                renderPagination();
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPlayerRoster();
+                renderPagination();
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'fixed top-20 right-8 bg-error-container text-on-error-container p-4 rounded-xl shadow-lg z-50';
+            errorDiv.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">error</span>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+
+        // Action button functions for different roles
+        function createMatch() {
+            const userRole = currentUser?.role;
+            if (userRole === 'admin') {
+                alert('Admin: Opening system administration panel...');
+            } else if (userRole === 'coach') {
+                alert('Coach: Opening match creation form...');
+            }
+        }
+
+        function createAssignment() {
+            alert('Teacher: Opening assignment creation form...');
+        }
+
+        function viewSchedule() {
+            alert('Player: Viewing training and match schedule...');
+        }
+
+        function registerInterest() {
+            alert('Visitor: Opening registration form...');
+        }
+    </script>
 </body>
 
 </html>
