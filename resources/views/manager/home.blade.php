@@ -299,7 +299,7 @@
 
         async function loadDashboardData() {
             try {
-                const user = await fetchAPI('/users/me');
+                const user = await fetchAPI('/current-user');
                 if (user.role !== "coach") {
                     console.log(window.location.href)
                     window.location.href = "/note-found"
