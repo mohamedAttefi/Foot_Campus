@@ -333,7 +333,7 @@
         
         async function loadPlayerProfile() {
             try {
-                const user = await fetchAPI('/users/me');
+                const user = await fetchAPI('/current-user');
                 let player = user;
                 try {
                     const playerData = await fetchAPI(`/players/${user.id}`);
