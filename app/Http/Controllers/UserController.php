@@ -44,9 +44,27 @@ class UserController extends Controller
     /**
      * Display the specified user.
      */
-    public function show()
+    public function me()
     {
-        return response()->json(Auth::user());
+        $user = Auth::user();
+        
+        if ($user->role === 'coach') {
+            try {
+                $user->load('team');
+                return response()->json($user);
+            } catch (\Exception $e) {
+                // If team loading fails, return user without team
+                return response()->json($user);
+            }
+        }
+        
+        return response()->json($user);
+    }
+
+    public function show($id)
+    {
+        $user = User::find($id);
+        return response()->json($user);
     }
 
     /**
