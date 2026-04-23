@@ -74,4 +74,29 @@ class AcademicRulesController extends Controller
         $academicRules->delete();
         return response()->json(null, 204);
     }
+
+    /**
+     * Check player eligibility based on academic rules.
+     */
+    public function checkEligibility($playerId)
+    {
+        $playerRecords = AcademicRecords::where('player_id', $playerId)->get();
+        $activeRule = AcademicRules::where('is_active', true)->first();
+
+        if (!$activeRule) {
+            return response()->json(['message' => 'No active academic rule found'], 404);
+        }
+
+        $average = $playerRecords->avg('average');
+        $failedSubjects = $playerRecords->where('average', '<', 10)->count();
+
+        $isEligible = $average >= $activeRule->min_average_threshold && $failedSubjects <= $activeRule->max_failed_subjects;
+
+        return response()->json([
+            'player_id' => $playerId,
+            'is_eligible' => $isEligible,
+            'average' => $average,
+            'failed_subjects' => $failedSubjects,
+        ]);
+    }
 }
