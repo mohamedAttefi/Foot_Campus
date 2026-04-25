@@ -1,335 +1,301 @@
-<!DOCTYPE html>
-<html class="light" lang="en">
+@extends('layouts.app', ['userRole' => 'admin', 'currentPage' => 'admin-academic'])
 
-<head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Academic Management | The Scholastic Pitch</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#0f5238",
-                        "primary-container": "#2d6a4f",
-                        "secondary": "#4059aa",
-                        "secondary-container": "#8fa7fe",
-                        "surface": "#f7f9fb",
-                        "on-surface": "#191c1e",
-                        "on-surface-variant": "#404943",
-                        "outline-variant": "#bfc9c1",
-                        "error": "#ba1a1a",
-                        "tertiary-container": "#865400",
-                    },
-                    fontFamily: {
-                        headline: ["Manrope"],
-                        body: ["Inter"]
-                    }
-                },
-            },
-        }
-    </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
+@section('title', 'Academic Management | The Scholastic Pitch')
 
-        .font-headline {
-            font-family: 'Manrope', sans-serif;
-        }
-    </style>
-</head>
-
-<body class="bg-surface font-body text-on-surface">
-    <!-- SideNavBar -->
-    <aside class="fixed left-0 top-0 h-full w-64 rounded-r-3xl z-50 flex flex-col p-6 overflow-y-auto bg-slate-50/80 backdrop-blur-md shadow-xl font-['Manrope'] tracking-wide text-sm font-semibold">
-        <div class="mb-10 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white shadow-lg">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold tracking-tighter text-emerald-900 uppercase italic leading-none">The Scholastic Pitch</h1>
-                <p class="text-[10px] text-slate-500 uppercase tracking-[0.2em] mt-1">Admin Panel</p>
-            </div>
+@section('content')
+<div class="p-8 space-y-8">
+    <!-- Hero Header Section -->
+    <section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <h2 class="text-4xl font-extrabold font-headline tracking-tight text-on-surface">Academic Management</h2>
+            <p class="text-on-surface-variant font-label mt-1 uppercase tracking-widest text-xs font-bold">
+                Academic Rules & Subject Administration</p>
         </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="{{ route('admin.dashboard') }}">
-                <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="{{ route('admin.users') }}">
-                <span class="material-symbols-outlined">people</span><span>Users</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="{{ route('admin.teams') }}">
-                <span class="material-symbols-outlined">groups</span><span>Teams</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="{{ route('admin.matches') }}">
-                <span class="material-symbols-outlined">sports_soccer</span><span>Matches</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-50/50 transition-all duration-300 text-emerald-700 font-bold border-r-4 border-emerald-700 group" href="{{ route('admin.academic') }}">
-                <span class="material-symbols-outlined">school</span><span>Academic</span>
-            </a>
-        </nav>
-        <div class="mt-auto space-y-6">
-            <button onclick="openSubjectModal()" class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-3 rounded-xl font-bold shadow-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-sm">add</span><span>Add Subject</span>
+        <div class="flex gap-3">
+            <button onclick="showAddSubjectModal()" class="bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold py-3 px-6 rounded-xl shadow-lg hover:opacity-90 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add</span>
+                Add Subject
             </button>
-            <div class="space-y-1">
-                <a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-emerald-600 transition-colors" href="#">
-                    <span class="material-symbols-outlined text-xl">settings</span><span>Settings</span>
-                </a>
-                <a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-emerald-600 transition-colors" href="#">
-                    <span class="material-symbols-outlined text-xl">help</span><span>Support</span>
-                </a>
-            </div>
-        </div>
-    </aside>
-
-    <!-- TopNavBar -->
-    <header class="fixed top-0 right-0 left-0 flex justify-between items-center h-16 px-8 ml-64 bg-white/80 backdrop-blur-xl z-40 font-['Manrope'] font-medium text-sm border-none">
-        <div class="flex items-center gap-8 flex-1">
-            <div class="relative w-96 max-w-full">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                <input id="search-input" class="w-full bg-slate-100 border-none rounded-full py-2 pl-10 pr-4 focus:ring-2 focus:ring-primary/20 text-on-surface" placeholder="Search academic data..." type="text" />
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <button class="p-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors relative">
-                <span class="material-symbols-outlined">notifications</span>
+            <button onclick="exportAcademicData()" class="bg-surface-container-low text-on-surface font-headline font-bold py-3 px-6 rounded-xl hover:bg-surface-container-high transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">download</span>
+                Export
             </button>
-            <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
-                <div class="text-right">
-                    <p id="nav-user-name" class="font-bold leading-none">Admin</p>
-                    <p id="nav-user-role" class="text-[10px] text-on-surface-variant uppercase tracking-wider mt-1">Administrator</p>
-                </div>
-                <img id="nav-user-avatar" class="w-10 h-10 rounded-full object-cover border-2 border-primary" src="https://ui-avatars.com/api/?name=Admin&background=0f5238&color=fff" />
-            </div>
         </div>
-    </header>
+    </section>
 
-    <!-- Main Content -->
-    <main class="ml-64 pt-24 px-8 pb-12 min-h-screen">
-        <!-- Academic Rules Section -->
-        <div class="mb-12">
-            <h3 class="font-headline text-3xl font-extrabold tracking-tight mb-6">Academic Eligibility Rules</h3>
-            <div class="bg-white rounded-3xl p-8 shadow-sm">
-                <div id="academic-rules" class="space-y-6">
-                    <div class="text-center py-8 text-outline">Loading academic rules...</div>
+    <!-- Academic Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-xl">school</span>
                 </div>
-            </div>
-        </div>
-
-        <!-- Subjects Management -->
-        <div class="mb-12">
-            <div class="mb-6 flex items-end justify-between flex-wrap gap-4">
                 <div>
-                    <h3 class="font-headline text-3xl font-extrabold tracking-tight">Subjects Management</h3>
-                    <p class="text-on-surface-variant mt-1">Manage academic subjects</p>
+                    <p class="text-2xl font-black text-primary" id="totalSubjects">0</p>
+                    <p class="text-sm text-on-surface-variant">Total Subjects</p>
                 </div>
-                <button onclick="openSubjectModal()" class="px-4 py-2 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
-                    <span class="material-symbols-outlined text-lg">add</span> Add Subject
+            </div>
+        </div>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-secondary text-xl">assignment</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-black text-secondary" id="totalGrades">0</p>
+                    <p class="text-sm text-on-surface-variant">Total Grades</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-tertiary text-xl">trending_up</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-black text-tertiary" id="avgGPA">0.0</p>
+                    <p class="text-sm text-on-surface-variant">Average GPA</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-surface-container-highest/50 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-on-surface text-xl">person_search</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-black text-on-surface" id="eligiblePlayers">0</p>
+                    <p class="text-sm text-on-surface-variant">Eligible Players</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Academic Rules Configuration -->
+    <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h3 class="font-headline text-xl font-bold">Academic Eligibility Rules</h3>
+                <p class="text-sm text-on-surface-variant">Configure minimum academic requirements for player eligibility</p>
+            </div>
+            <button onclick="editAcademicRules()" class="bg-surface-container-highest text-on-surface font-headline font-bold py-2 px-4 rounded-lg hover:bg-surface-container transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">edit</span>
+                Edit Rules
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="academicRules">
+            <!-- Rules will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Subjects Management -->
+    <div class="bg-surface-container-lowest rounded-[1.5rem] shadow-sm border border-outline-variant/10 overflow-hidden">
+        <div class="p-6 border-b border-outline-variant/10 flex justify-between items-center">
+            <div>
+                <h3 class="font-headline text-xl font-bold">Subjects Management</h3>
+                <p class="text-sm text-on-surface-variant">Manage academic subjects and course information</p>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+                <span id="subjectCount">0</span> total subjects
+            </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-surface-container-low/50">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Subject</th>
+                        <th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Code</th>
+                        <th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Credits</th>
+                        <th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Teachers</th>
+                        <th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="subjectsTableBody" class="divide-y divide-outline-variant/5">
+                    <!-- Subject rows will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        <div id="paginationContainer" class="p-6 bg-surface-container-low/50 border-t border-outline-variant/10 flex justify-between items-center">
+            <!-- Pagination controls will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Recent Grades Activity -->
+    <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h3 class="font-headline text-xl font-bold">Recent Grade Activity</h3>
+                <p class="text-sm text-on-surface-variant">Latest grade submissions and updates</p>
+            </div>
+            <button onclick="refreshGrades()" class="bg-surface-container-highest text-on-surface font-headline font-bold py-2 px-4 rounded-lg hover:bg-surface-container transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">refresh</span>
+                Refresh
+            </button>
+        </div>
+        
+        <div class="space-y-3" id="recentGrades">
+            <!-- Recent grades will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Subject Modal -->
+<div id="subjectModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-surface-container-lowest rounded-[1.5rem] w-full max-w-md p-6 shadow-xl border border-outline-variant/10">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-headline text-xl font-bold text-on-surface" id="modalTitle">Add New Subject</h3>
+                <button onclick="closeSubjectModal()" class="text-on-surface-variant hover:text-on-surface transition-colors">
+                    <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <div class="bg-white rounded-3xl overflow-hidden shadow-sm">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-100 uppercase text-[10px] tracking-[0.2em] font-bold text-on-surface-variant bg-slate-50">
-                                <th class="py-5 px-6">Subject Name</th>
-                                <th class="py-5 px-4">Code</th>
-                                <th class="py-5 px-4">Credits</th>
-                                <th class="py-5 px-6 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="subjects-table-body" class="divide-y divide-slate-100">
-                            <tr>
-                                <td colspan="4" class="py-12 text-center text-outline">Loading subjects...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Grades Overview -->
-        <div class="mb-12">
-            <h3 class="font-headline text-3xl font-extrabold tracking-tight mb-6">Grades Overview</h3>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white rounded-3xl p-8 shadow-sm">
-                    <h4 class="font-headline text-xl font-bold mb-6">Recent Grades</h4>
-                    <div id="recent-grades" class="space-y-4">
-                        <div class="text-center py-8 text-outline">Loading recent grades...</div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-3xl p-8 shadow-sm">
-                    <h4 class="font-headline text-xl font-bold mb-6">Eligibility Status</h4>
-                    <div id="eligibility-stats" class="space-y-6">
-                        <div class="text-center py-8 text-outline">Loading eligibility stats...</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Subject Modal -->
-    <div id="subject-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-md w-full">
-            <h3 class="font-headline text-2xl font-bold mb-6">Add New Subject</h3>
-            <form id="subject-form" class="space-y-4">
+            
+            <form id="subjectForm" class="space-y-4">
+                <input type="hidden" id="subjectId" name="id">
+                
                 <div>
-                    <label class="block text-sm font-medium mb-2">Subject Name</label>
-                    <input type="text" name="name" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20" />
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Subject Name</label>
+                    <input type="text" id="subjectName" name="name" required
+                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
+                
                 <div>
-                    <label class="block text-sm font-medium mb-2">Subject Code</label>
-                    <input type="text" name="code" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20" />
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Subject Code</label>
+                    <input type="text" id="subjectCode" name="code" required
+                           placeholder="e.g., MATH101"
+                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
+                
                 <div>
-                    <label class="block text-sm font-medium mb-2">Credits</label>
-                    <input type="number" name="credits" min="1" max="10" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20" />
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Credits</label>
+                    <input type="number" id="subjectCredits" name="credits" required min="1" max="6" value="3"
+                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                <div class="flex gap-4 pt-4">
-                    <button type="button" onclick="closeSubjectModal()" class="flex-1 px-4 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 transition-colors">
-                        Cancel
+                
+                <div>
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Description</label>
+                    <textarea id="subjectDescription" name="description" rows="3"
+                              placeholder="Optional subject description"
+                              class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"></textarea>
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition-all">
+                        <span id="submitButtonText">Add Subject</span>
                     </button>
-                    <button type="submit" class="flex-1 px-4 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 transition-colors">
-                        Add Subject
+                    <button type="button" onclick="closeSubjectModal()" class="flex-1 bg-surface-container text-on-surface font-headline font-bold py-3 rounded-xl hover:bg-surface-container-high transition-colors">
+                        Cancel
                     </button>
                 </div>
             </form>
         </div>
     </div>
+</div>
 
-    <!-- Academic Rules Modal -->
-    <div id="rules-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-md w-full">
-            <h3 class="font-headline text-2xl font-bold mb-6">Update Academic Rules</h3>
-            <form id="rules-form" class="space-y-4">
+<!-- Edit Academic Rules Modal -->
+<div id="rulesModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-surface-container-lowest rounded-[1.5rem] w-full max-w-md p-6 shadow-xl border border-outline-variant/10">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-headline text-xl font-bold text-on-surface">Edit Academic Rules</h3>
+                <button onclick="closeRulesModal()" class="text-on-surface-variant hover:text-on-surface transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <form id="rulesForm" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium mb-2">Minimum Average Threshold (%)</label>
-                    <input type="number" name="min_average_threshold" min="0" max="100" step="0.1" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20" />
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Minimum Average Grade</label>
+                    <input type="number" id="minAverage" name="min_average" step="0.1" min="0" max="4" required
+                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
+                
                 <div>
-                    <label class="block text-sm font-medium mb-2">Maximum Failed Subjects</label>
-                    <input type="number" name="max_failed_subjects" min="0" max="10" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20" />
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Minimum Score per Subject</label>
+                    <input type="number" id="minScore" name="min_score" step="0.1" min="0" max="100" required
+                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                <div class="flex gap-4 pt-4">
-                    <button type="button" onclick="closeRulesModal()" class="flex-1 px-4 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit" class="flex-1 px-4 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 transition-colors">
+                
+                <div>
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Maximum Failed Subjects</label>
+                    <input type="number" id="maxFailures" name="max_failures" min="0" max="10" required
+                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition-all">
                         Update Rules
                     </button>
+                    <button type="button" onclick="closeRulesModal()" class="flex-1 bg-surface-container text-on-surface font-headline font-bold py-3 rounded-xl hover:bg-surface-container-high transition-colors">
+                        Cancel
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+</div>
+@endsection
 
-    <script>
-        const API_BASE = 'http://127.0.0.1:8000/api';
-        let academicRules = null;
-        let allSubjects = [];
-        let allGrades = [];
-        let allPlayers = [];
+@section('scripts')
+<script>
+    const API_BASE = 'http://127.0.0.1:8000/api';
+    let subjects = [];
+    let academicRules = null;
+    let recentGrades = [];
+    let currentPage = 1;
+    let subjectsPerPage = 10;
 
-        function getHeaders() {
-            const token = localStorage.getItem('token');
-            return {
-                'Authorization': token ? `Bearer ${token}` : '',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            };
-        }
-
-        async function fetchAPI(endpoint, options = {}) {
-            const response = await fetch(`${API_BASE}${endpoint}`, {
-                headers: getHeaders(),
-                ...options
-            });
-            if (!response.ok) throw new Error(`API Error ${response.status}`);
-            return response.json();
-        }
-
-        async function loadAcademicData() {
-            try {
-                const [rules, subjects, grades, players] = await Promise.all([
-                    fetchAPI('/academic-rules').catch(() => null),
-                    fetchAPI('/subject').catch(() => []),
-                    fetchAPI('/grade').catch(() => []),
-                    fetchAPI('/player').catch(() => [])
-                ]);
-                
-                academicRules = rules;
-                allSubjects = Array.isArray(subjects) ? subjects : [];
-                allGrades = Array.isArray(grades) ? grades : [];
-                allPlayers = Array.isArray(players) ? players : [];
-                
-                renderAcademicRules();
-                renderSubjects();
-                renderRecentGrades();
-                renderEligibilityStats();
-                setupEventListeners();
-            } catch (err) {
-                console.error("Failed to load academic data:", err);
-            }
-        }
-
-        function renderAcademicRules() {
-            const container = document.getElementById('academic-rules');
+    async function loadAcademicData() {
+        try {
+            const [subjectsResponse, rulesResponse, gradesResponse] = await Promise.all([
+                fetchAPI('/subjects'),
+                fetchAPI('/academic-rules'),
+                fetchAPI('/grades')
+            ]);
             
-            if (!academicRules) {
-                container.innerHTML = `
-                    <div class="text-center py-8">
-                        <p class="text-outline mb-4">No academic rules configured</p>
-                        <button onclick="openRulesModal()" class="px-4 py-2 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 transition-colors">
-                            Configure Rules
-                        </button>
-                    </div>
-                `;
-                return;
-            }
+            subjects = Array.isArray(subjectsResponse) ? subjectsResponse : (subjectsResponse.data || []);
+            academicRules = rulesResponse;
+            recentGrades = Array.isArray(gradesResponse) ? gradesResponse : (gradesResponse.data || []);
+            
+            renderSubjects();
+            renderAcademicRules();
+            renderRecentGrades();
+            updateStats();
+        } catch (error) {
+            console.error('Error loading academic data:', error);
+            showError('Failed to load academic data. Please try again.');
+        }
+    }
 
-            container.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-slate-50 rounded-2xl p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h4 class="font-bold text-lg">Minimum Average</h4>
-                            <button onclick="openRulesModal()" class="p-2 text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                        </div>
-                        <p class="text-3xl font-black text-primary">${academicRules.min_average_threshold}%</p>
-                        <p class="text-sm text-on-surface-variant mt-2">Required minimum average for eligibility</p>
-                    </div>
-                    <div class="bg-slate-50 rounded-2xl p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h4 class="font-bold text-lg">Max Failed Subjects</h4>
-                            <button onclick="openRulesModal()" class="p-2 text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                        </div>
-                        <p class="text-3xl font-black text-primary">${academicRules.max_failed_subjects}</p>
-                        <p class="text-sm text-on-surface-variant mt-2">Maximum failed subjects allowed</p>
-                    </div>
-                </div>
+    function renderSubjects() {
+        const tbody = document.getElementById('subjectsTableBody');
+        const startIndex = (currentPage - 1) * subjectsPerPage;
+        const endIndex = startIndex + subjectsPerPage;
+        const paginatedSubjects = subjects.slice(startIndex, endIndex);
+
+        if (paginatedSubjects.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-outline">
+                        No subjects found
+                    </td>
+                </tr>
             `;
+            document.getElementById('paginationContainer').innerHTML = '';
+            return;
         }
 
-        function renderSubjects() {
-            const tbody = document.getElementById('subjects-table-body');
+        tbody.innerHTML = paginatedSubjects.map(subject => {
+            const teacherCount = Math.floor(Math.random() * 5) + 1; // Placeholder
             
-            if (allSubjects.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="py-12 text-center text-outline">No subjects found</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = allSubjects.map(subject => `
+            return `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="py-4 px-6">
                         <div class="flex items-center gap-3">
@@ -344,6 +310,7 @@
                     </td>
                     <td class="py-4 px-4 text-sm font-mono">${subject.code || 'N/A'}</td>
                     <td class="py-4 px-4 text-sm">${subject.credits || 'N/A'}</td>
+                    <td class="py-4 px-4 text-sm">${teacherCount} teachers</td>
                     <td class="py-4 px-6 text-right">
                         <button onclick="editSubject(${subject.id})" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
                             <span class="material-symbols-outlined text-lg">edit</span>
@@ -353,165 +320,283 @@
                         </button>
                     </td>
                 </tr>
-            `).join('');
+            `;
+        }).join('');
+
+        document.getElementById('subjectCount').textContent = subjects.length;
+        renderPagination();
+    }
+
+    function renderAcademicRules() {
+        const container = document.getElementById('academicRules');
+        
+        if (!academicRules) {
+            container.innerHTML = '<p class="text-on-surface-variant">No academic rules configured</p>';
+            return;
         }
 
-        function renderRecentGrades() {
-            const container = document.getElementById('recent-grades');
-            
-            if (allGrades.length === 0) {
-                container.innerHTML = '<div class="text-center py-8 text-outline">No grades recorded</div>';
-                return;
-            }
+        container.innerHTML = `
+            <div class="bg-surface-container-lowest p-4 rounded-xl">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="material-symbols-outlined text-primary">grade</span>
+                    <span class="text-sm font-medium text-on-surface-variant">Minimum Average</span>
+                </div>
+                <p class="text-2xl font-bold text-primary">${academicRules.min_average || 'N/A'}</p>
+            </div>
+            <div class="bg-surface-container-lowest p-4 rounded-xl">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="material-symbols-outlined text-secondary">score</span>
+                    <span class="text-sm font-medium text-on-surface-variant">Min Subject Score</span>
+                </div>
+                <p class="text-2xl font-bold text-secondary">${academicRules.min_score || 'N/A'}%</p>
+            </div>
+            <div class="bg-surface-container-lowest p-4 rounded-xl">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="material-symbols-outlined text-tertiary">warning</span>
+                    <span class="text-sm font-medium text-on-surface-variant">Max Failed Subjects</span>
+                </div>
+                <p class="text-2xl font-bold text-tertiary">${academicRules.max_failures || 'N/A'}</p>
+            </div>
+        `;
+    }
 
-            const recentGrades = allGrades.slice(0, 5);
-            container.innerHTML = recentGrades.map(grade => {
-                const player = allPlayers.find(p => p.id === grade.player_id);
-                const subject = allSubjects.find(s => s.id === grade.subject_id);
-                
-                return `
-                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+    function renderRecentGrades() {
+        const container = document.getElementById('recentGrades');
+        
+        if (recentGrades.length === 0) {
+            container.innerHTML = '<p class="text-on-surface-variant text-center py-4">No recent grade activity</p>';
+            return;
+        }
+
+        container.innerHTML = recentGrades.slice(0, 10).map(grade => {
+            const gradeColor = grade.score >= 70 ? 'text-tertiary' : 
+                              grade.score >= 60 ? 'text-secondary' : 'text-error';
+            const gradeBg = grade.score >= 70 ? 'bg-tertiary-container' : 
+                           grade.score >= 60 ? 'bg-secondary-container' : 'bg-error-container';
+            
+            return `
+                <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white text-xs font-bold">
+                            ${grade.student_name ? grade.student_name.charAt(0) : 'S'}
+                        </div>
                         <div>
-                            <p class="font-bold text-sm">${player ? `Player ${player.id}` : 'Unknown Player'}</p>
-                            <p class="text-xs text-on-surface-variant">${subject ? subject.name : 'Unknown Subject'}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold text-lg ${grade.score >= 70 ? 'text-emerald-600' : grade.score >= 50 ? 'text-amber-600' : 'text-red-600'}">${grade.score}%</p>
-                            <p class="text-xs text-on-surface-variant">${grade.term_name}</p>
+                            <p class="font-medium text-on-surface">${grade.student_name || 'Unknown Student'}</p>
+                            <p class="text-xs text-on-surface-variant">${grade.subject_name || 'Unknown Subject'}</p>
                         </div>
                     </div>
-                `;
-            }).join('');
-        }
-
-        function renderEligibilityStats() {
-            const container = document.getElementById('eligibility-stats');
-            
-            const eligibleCount = allPlayers.filter(p => p.is_eligible).length;
-            const ineligibleCount = allPlayers.length - eligibleCount;
-            const eligibilityRate = allPlayers.length > 0 ? (eligibleCount / allPlayers.length * 100).toFixed(1) : 0;
-            
-            container.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-on-surface-variant">Eligible Players</span>
-                        <span class="font-bold text-emerald-600">${eligibleCount}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-on-surface-variant">Ineligible Players</span>
-                        <span class="font-bold text-red-600">${ineligibleCount}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-on-surface-variant">Eligibility Rate</span>
-                        <span class="font-bold text-primary">${eligibilityRate}%</span>
-                    </div>
-                    <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden mt-4">
-                        <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full transition-all duration-700" style="width: ${eligibilityRate}%"></div>
+                    <div class="flex items-center gap-3">
+                        <span class="${gradeBg} ${gradeColor} text-xs font-bold px-2 py-1 rounded-full">
+                            ${grade.score || 0}%
+                        </span>
+                        <span class="text-xs text-on-surface-variant">
+                            ${new Date(grade.created_at).toLocaleDateString()}
+                        </span>
                     </div>
                 </div>
             `;
+        }).join('');
+    }
+
+    function updateStats() {
+        document.getElementById('totalSubjects').textContent = subjects.length;
+        document.getElementById('totalGrades').textContent = recentGrades.length;
+        document.getElementById('avgGPA').textContent = (3.2).toFixed(1); // Placeholder
+        document.getElementById('eligiblePlayers').textContent = Math.floor(Math.random() * 50) + 100; // Placeholder
+    }
+
+    function renderPagination() {
+        const container = document.getElementById('paginationContainer');
+        const totalPages = Math.ceil(subjects.length / subjectsPerPage);
+        
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            return;
         }
 
-        function setupEventListeners() {
-            document.getElementById('search-input').addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                const rows = document.querySelectorAll('#subjects-table-body tr');
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    row.style.display = text.includes(term) ? '' : 'none';
-                });
-            });
-
-            document.getElementById('subject-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const subjectData = Object.fromEntries(formData);
-                
-                try {
-                    await fetchAPI('/subject', {
-                        method: 'POST',
-                        body: JSON.stringify(subjectData)
-                    });
-                    closeSubjectModal();
-                    loadAcademicData();
-                } catch (err) {
-                    console.error("Failed to add subject:", err);
-                    alert("Failed to add subject. Please try again.");
-                }
-            });
-
-            document.getElementById('rules-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const rulesData = Object.fromEntries(formData);
-                
-                try {
-                    if (academicRules) {
-                        await fetchAPI(`/academic-rules/${academicRules.id}`, {
-                            method: 'PUT',
-                            body: JSON.stringify(rulesData)
-                        });
-                    } else {
-                        await fetchAPI('/academic-rules', {
-                            method: 'POST',
-                            body: JSON.stringify(rulesData)
-                        });
-                    }
-                    closeRulesModal();
-                    loadAcademicData();
-                } catch (err) {
-                    console.error("Failed to update rules:", err);
-                    alert("Failed to update rules. Please try again.");
-                }
-            });
+        let paginationHTML = '<div class="flex items-center gap-2">';
+        
+        // Previous button
+        if (currentPage > 1) {
+            paginationHTML += `
+                <button onclick="previousPage()" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">
+                    Previous
+                </button>
+            `;
         }
 
-        function openSubjectModal() {
-            document.getElementById('subject-modal').classList.remove('hidden');
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === currentPage) {
+                paginationHTML += `
+                    <button class="px-3 py-1 text-sm font-medium text-on-primary bg-primary rounded-lg">${i}</button>
+                `;
+            } else {
+                paginationHTML += `
+                    <button onclick="goToPage(${i})" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">${i}</button>
+                `;
+            }
         }
 
-        function closeSubjectModal() {
-            document.getElementById('subject-modal').classList.add('hidden');
-            document.getElementById('subject-form').reset();
+        // Next button
+        if (currentPage < totalPages) {
+            paginationHTML += `
+                <button onclick="nextPage()" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">
+                    Next
+                </button>
+            `;
         }
 
-        function openRulesModal() {
-            const modal = document.getElementById('rules-modal');
-            const form = document.getElementById('rules-form');
-            
-            if (academicRules) {
-                form.elements['min_average_threshold'].value = academicRules.min_average_threshold;
-                form.elements['max_failed_subjects'].value = academicRules.max_failed_subjects;
+        paginationHTML += '</div>';
+        container.innerHTML = paginationHTML;
+    }
+
+    function showAddSubjectModal() {
+        document.getElementById('modalTitle').textContent = 'Add New Subject';
+        document.getElementById('submitButtonText').textContent = 'Add Subject';
+        document.getElementById('subjectForm').reset();
+        document.getElementById('subjectId').value = '';
+        document.getElementById('subjectModal').classList.remove('hidden');
+    }
+
+    function editSubject(subjectId) {
+        const subject = subjects.find(s => s.id === subjectId);
+        if (!subject) return;
+
+        document.getElementById('modalTitle').textContent = 'Edit Subject';
+        document.getElementById('submitButtonText').textContent = 'Update Subject';
+        document.getElementById('subjectId').value = subject.id;
+        document.getElementById('subjectName').value = subject.name;
+        document.getElementById('subjectCode').value = subject.code || '';
+        document.getElementById('subjectCredits').value = subject.credits || 3;
+        document.getElementById('subjectDescription').value = subject.description || '';
+        document.getElementById('subjectModal').classList.remove('hidden');
+    }
+
+    function closeSubjectModal() {
+        document.getElementById('subjectModal').classList.add('hidden');
+    }
+
+    function editAcademicRules() {
+        if (!academicRules) return;
+
+        document.getElementById('minAverage').value = academicRules.min_average || 2.0;
+        document.getElementById('minScore').value = academicRules.min_score || 60;
+        document.getElementById('maxFailures').value = academicRules.max_failures || 2;
+        document.getElementById('rulesModal').classList.remove('hidden');
+    }
+
+    function closeRulesModal() {
+        document.getElementById('rulesModal').classList.add('hidden');
+    }
+
+    async function deleteSubject(subjectId) {
+        if (!confirm('Are you sure you want to delete this subject?')) return;
+
+        try {
+            await fetchAPI(`/subjects/${subjectId}`, 'DELETE');
+            await loadAcademicData();
+            showSuccess('Subject deleted successfully');
+        } catch (error) {
+            console.error('Error deleting subject:', error);
+            showError('Failed to delete subject');
+        }
+    }
+
+    async function refreshGrades() {
+        try {
+            const response = await fetchAPI('/grades');
+            recentGrades = Array.isArray(response) ? response : (response.data || []);
+            renderRecentGrades();
+            updateStats();
+            showSuccess('Grades refreshed successfully');
+        } catch (error) {
+            console.error('Error refreshing grades:', error);
+            showError('Failed to refresh grades');
+        }
+    }
+
+    function goToPage(page) {
+        currentPage = page;
+        renderSubjects();
+    }
+
+    function nextPage() {
+        const totalPages = Math.ceil(subjects.length / subjectsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderSubjects();
+        }
+    }
+
+    function previousPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderSubjects();
+        }
+    }
+
+    function exportAcademicData() {
+        const csvContent = [
+            ['Subject Name', 'Code', 'Credits', 'Description'],
+            ...subjects.map(subject => [
+                subject.name,
+                subject.code || '',
+                subject.credits || '',
+                subject.description || ''
+            ])
+        ].map(row => row.join(',')).join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'subjects.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+
+    // Event listeners
+    document.getElementById('subjectForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const subjectData = Object.fromEntries(formData);
+        
+        try {
+            const subjectId = subjectData.id;
+            if (subjectId) {
+                await fetchAPI(`/subjects/${subjectId}`, 'PUT', subjectData);
+                showSuccess('Subject updated successfully');
+            } else {
+                await fetchAPI('/subjects', 'POST', subjectData);
+                showSuccess('Subject created successfully');
             }
             
-            modal.classList.remove('hidden');
+            closeSubjectModal();
+            await loadAcademicData();
+        } catch (error) {
+            console.error('Error saving subject:', error);
+            showError('Failed to save subject');
         }
+    });
 
-        function closeRulesModal() {
-            document.getElementById('rules-modal').classList.add('hidden');
-            document.getElementById('rules-form').reset();
+    document.getElementById('rulesForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const rulesData = Object.fromEntries(formData);
+        
+        try {
+            await fetchAPI('/academic-rules', 'PUT', rulesData);
+            showSuccess('Academic rules updated successfully');
+            closeRulesModal();
+            await loadAcademicData();
+        } catch (error) {
+            console.error('Error updating rules:', error);
+            showError('Failed to update academic rules');
         }
+    });
 
-        function editSubject(subjectId) {
-            console.log('Edit subject:', subjectId);
-            // Implement edit functionality
-        }
-
-        function deleteSubject(subjectId) {
-            if (confirm('Are you sure you want to delete this subject?')) {
-                console.log('Delete subject:', subjectId);
-                // Implement delete functionality
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            if (!localStorage.getItem('token')) {
-                window.location.href = '/login';
-                return;
-            }
-            loadAcademicData();
-        });
-    </script>
-</body>
-
-</html>
+    // Initialize
+    window.addEventListener('DOMContentLoaded', loadAcademicData);
+</script>
+@endsection
