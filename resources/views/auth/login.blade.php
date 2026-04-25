@@ -175,10 +175,12 @@
                         timer: 1500,
                         showConfirmButton: false
                     })
-                    // .then(() => {
-                    //     if (data.user.role == 'player') window.location.href = 'player/home'
-                    //     if (data.user.role == 'coach') window.location.href = 'manager/dashboard'
-                    // });
+                    .then(() => {
+                        
+                        if (data.user.role == 'player') window.location.href = 'player/home'
+                        if (data.user.role == 'coach') window.location.href = 'manager/dashboard'
+                        if (data.user.role == 'admin') window.location.href = 'admin/dashboard'
+                    });
 
             } catch (err) {
                 Swal.fire({

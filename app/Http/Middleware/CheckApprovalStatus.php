@@ -19,7 +19,6 @@ class CheckApprovalStatus
     {
         $user = Auth::user();
         
-        // If user is not authenticated, redirect to login
         if (!$user) {
             return redirect()->route('login');
         }
@@ -31,10 +30,6 @@ class CheckApprovalStatus
                 'login',
                 'register',
                 'approbation-waiting',
-                'logout',
-                'profile.edit', // Allow profile editing for approval
-                'profile.update', // Allow profile update for approval
-                'current-user' // Allow API endpoint for user data
             ];
             
             $currentRoute = $request->route()->getName();

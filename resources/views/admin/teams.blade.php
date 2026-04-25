@@ -1,343 +1,470 @@
-<!DOCTYPE html>
-<html class="light" lang="en">
+@extends('layouts.app', ['userRole' => 'admin', 'currentPage' => 'admin-teams'])
 
-<head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Teams Management | The Scholastic Pitch</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#0f5238",
-                        "primary-container": "#2d6a4f",
-                        "secondary": "#4059aa",
-                        "secondary-container": "#8fa7fe",
-                        "surface": "#f7f9fb",
-                        "on-surface": "#191c1e",
-                        "on-surface-variant": "#404943",
-                        "outline-variant": "#bfc9c1",
-                        "error": "#ba1a1a",
-                        "tertiary-container": "#865400",
-                    },
-                    fontFamily: {
-                        headline: ["Manrope"],
-                        body: ["Inter"]
-                    }
-                },
-            },
-        }
-    </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
+@section('title', 'Teams Management | The Scholastic Pitch')
 
-        .font-headline {
-            font-family: 'Manrope', sans-serif;
-        }
-    </style>
-</head>
-
-<body class="bg-surface font-body text-on-surface">
-    <!-- SideNavBar -->
-    <aside class="fixed left-0 top-0 h-full w-64 rounded-r-3xl z-50 flex flex-col p-6 overflow-y-auto bg-slate-50/80 backdrop-blur-md shadow-xl font-['Manrope'] tracking-wide text-sm font-semibold">
-        <div class="mb-10 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white shadow-lg">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold tracking-tighter text-emerald-900 uppercase italic leading-none">The Scholastic Pitch</h1>
-                <p class="text-[10px] text-slate-500 uppercase tracking-[0.2em] mt-1">Admin Panel</p>
-            </div>
+@section('content')
+<div class="p-8 space-y-8">
+    <!-- Hero Header Section -->
+    <section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <h2 class="text-4xl font-extrabold font-headline tracking-tight text-on-surface">Teams Management</h2>
+            <p class="text-on-surface-variant font-label mt-1 uppercase tracking-widest text-xs font-bold">
+                League Team Administration & Roster Management</p>
         </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="{{ route('admin.dashboard') }}">
-                <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="{{ route('admin.users') }}">
-                <span class="material-symbols-outlined">people</span><span>Users</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-50/50 transition-all duration-300 text-emerald-700 font-bold border-r-4 border-emerald-700 group" href="{{ route('admin.teams') }}">
-                <span class="material-symbols-outlined">groups</span><span>Teams</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="{{ route('admin.matches') }}">
-                <span class="material-symbols-outlined">sports_soccer</span><span>Matches</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="{{ route('admin.academic') }}">
-                <span class="material-symbols-outlined">school</span><span>Academic</span>
-            </a>
-        </nav>
-        <div class="mt-auto space-y-6">
-            <button onclick="openCreateTeamModal()" class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-3 rounded-xl font-bold shadow-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-sm">add</span><span>Create Team</span>
+        <div class="flex gap-3">
+            <button onclick="showAddTeamModal()" class="bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold py-3 px-6 rounded-xl shadow-lg hover:opacity-90 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add</span>
+                Add Team
             </button>
-            <div class="space-y-1">
-                <a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-emerald-600 transition-colors" href="#">
-                    <span class="material-symbols-outlined text-xl">settings</span><span>Settings</span>
-                </a>
-                <a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-emerald-600 transition-colors" href="#">
-                    <span class="material-symbols-outlined text-xl">help</span><span>Support</span>
-                </a>
-            </div>
-        </div>
-    </aside>
-
-    <!-- TopNavBar -->
-    <header class="fixed top-0 right-0 left-0 flex justify-between items-center h-16 px-8 ml-64 bg-white/80 backdrop-blur-xl z-40 font-['Manrope'] font-medium text-sm border-none">
-        <div class="flex items-center gap-8 flex-1">
-            <div class="relative w-96 max-w-full">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                <input id="search-input" class="w-full bg-slate-100 border-none rounded-full py-2 pl-10 pr-4 focus:ring-2 focus:ring-primary/20 text-on-surface" placeholder="Search teams..." type="text" />
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <button class="p-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors relative">
-                <span class="material-symbols-outlined">notifications</span>
+            <button onclick="exportTeams()" class="bg-surface-container-low text-on-surface font-headline font-bold py-3 px-6 rounded-xl hover:bg-surface-container-high transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">download</span>
+                Export
             </button>
-            <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
-                <div class="text-right">
-                    <p id="nav-user-name" class="font-bold leading-none">Admin</p>
-                    <p id="nav-user-role" class="text-[10px] text-on-surface-variant uppercase tracking-wider mt-1">Administrator</p>
+        </div>
+    </section>
+
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-xl">groups</span>
                 </div>
-                <img id="nav-user-avatar" class="w-10 h-10 rounded-full object-cover border-2 border-primary" src="https://ui-avatars.com/api/?name=Admin&background=0f5238&color=fff" />
+                <div>
+                    <p class="text-2xl font-black text-primary" id="totalTeams">0</p>
+                    <p class="text-sm text-on-surface-variant">Total Teams</p>
+                </div>
             </div>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="ml-64 pt-24 px-8 pb-12 min-h-screen">
-        <!-- Header -->
-        <div class="mb-8 flex items-end justify-between flex-wrap gap-4">
-            <div>
-                <h3 class="font-headline text-3xl font-extrabold tracking-tight">Teams Management</h3>
-                <p class="text-on-surface-variant mt-1">Manage all teams and their rosters</p>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-secondary text-xl">person</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-black text-secondary" id="totalPlayers">0</p>
+                    <p class="text-sm text-on-surface-variant">Total Players</p>
+                </div>
             </div>
-            <div class="flex gap-2">
-                <button onclick="exportTeams()" class="px-4 py-2 rounded-xl bg-white border border-outline-variant/30 text-sm font-semibold flex items-center gap-2 hover:bg-slate-50 transition-colors">
-                    <span class="material-symbols-outlined text-lg">download</span> Export CSV
+        </div>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-tertiary text-xl">sports_soccer</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-black text-tertiary" id="activeTeams">0</p>
+                    <p class="text-sm text-on-surface-variant">Active Teams</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-surface-container-highest/50 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-on-surface text-xl">school</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-black text-on-surface" id="avgAcademic">0</p>
+                    <p class="text-sm text-on-surface-variant">Avg Academic</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter and Search Section -->
+    <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-on-surface-variant mb-2">Search Teams</label>
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Search by team name, coach, or academy..." 
+                           class="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant">search</span>
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-on-surface-variant mb-2">Status Filter</label>
+                <select id="statusFilter" class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teams Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="teamsGrid">
+        <!-- Team cards will be populated by JavaScript -->
+    </div>
+
+    <!-- Pagination -->
+    <div id="paginationContainer" class="flex justify-center items-center gap-2">
+        <!-- Pagination controls will be inserted here -->
+    </div>
+</div>
+
+<!-- Add/Edit Team Modal -->
+<div id="teamModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-surface-container-lowest rounded-[1.5rem] w-full max-w-md p-6 shadow-xl border border-outline-variant/10">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-headline text-xl font-bold text-on-surface" id="modalTitle">Add New Team</h3>
+                <button onclick="closeTeamModal()" class="text-on-surface-variant hover:text-on-surface transition-colors">
+                    <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-        </div>
-
-        <!-- Teams Grid -->
-        <div id="teams-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <div class="col-span-full text-center py-12 text-outline">Loading teams...</div>
-        </div>
-    </main>
-
-    <!-- Create Team Modal -->
-    <div id="create-team-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-md w-full">
-            <h3 class="font-headline text-2xl font-bold mb-6">Create New Team</h3>
-            <form id="create-team-form" class="space-y-4">
+            
+            <form id="teamForm" class="space-y-4">
+                <input type="hidden" id="teamId" name="id">
+                
                 <div>
-                    <label class="block text-sm font-medium mb-2">Team Name</label>
-                    <input type="text" name="name" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20" />
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Team Name</label>
+                    <input type="text" id="teamName" name="name" required
+                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
+                
                 <div>
-                    <label class="block text-sm font-medium mb-2">Class Group</label>
-                    <input type="text" name="class_group" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20" />
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Academy/School</label>
+                    <input type="text" id="teamAcademy" name="academy" required
+                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
+                
                 <div>
-                    <label class="block text-sm font-medium mb-2">Coach</label>
-                    <select name="coach_id" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20">
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Coach</label>
+                    <select id="teamCoach" name="coach_id" required
+                            class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                         <option value="">Select Coach</option>
+                        <!-- Coach options will be populated by JavaScript -->
                     </select>
                 </div>
-                <div class="flex gap-4 pt-4">
-                    <button type="button" onclick="closeCreateTeamModal()" class="flex-1 px-4 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 transition-colors">
-                        Cancel
+                
+                <div>
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Status</label>
+                    <select id="teamStatus" name="status"
+                            class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition-all">
+                        <span id="submitButtonText">Add Team</span>
                     </button>
-                    <button type="submit" class="flex-1 px-4 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 transition-colors">
-                        Create Team
+                    <button type="button" onclick="closeTeamModal()" class="flex-1 bg-surface-container text-on-surface font-headline font-bold py-3 rounded-xl hover:bg-surface-container-high transition-colors">
+                        Cancel
                     </button>
                 </div>
             </form>
         </div>
     </div>
+</div>
+@endsection
 
-    <script>
-        const API_BASE = 'http://127.0.0.1:8000/api';
-        let allTeams = [];
-        let allUsers = [];
+@section('scripts')
+<script>
+    const API_BASE = 'http://127.0.0.1:8000/api';
+    let teams = [];
+    let coaches = [];
+    let currentPage = 1;
+    let teamsPerPage = 9;
+    let filteredTeams = [];
 
-        function getHeaders() {
-            const token = localStorage.getItem('token');
-            return {
-                'Authorization': token ? `Bearer ${token}` : '',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            };
-        }
-
-        async function fetchAPI(endpoint, options = {}) {
-            const response = await fetch(`${API_BASE}${endpoint}`, {
-                headers: getHeaders(),
-                ...options
-            });
-            if (!response.ok) throw new Error(`API Error ${response.status}`);
-            return response.json();
-        }
-
-        async function loadTeams() {
-            try {
-                const [teams, users] = await Promise.all([
-                    fetchAPI('/team'),
-                    fetchAPI('/users')
-                ]);
-                
-                allTeams = Array.isArray(teams) ? teams : [];
-                allUsers = Array.isArray(users) ? users : [];
-                
-                renderTeams();
-                populateCoachSelect();
-                setupEventListeners();
-            } catch (err) {
-                console.error("Failed to load teams:", err);
-                document.getElementById('teams-grid').innerHTML = '<div class="col-span-full text-center py-12 text-outline">Failed to load teams. Please check your connection.</div>';
-            }
-        }
-
-        function renderTeams() {
-            const container = document.getElementById('teams-grid');
+    async function loadTeams() {
+        try {
+            const [teamsResponse, usersResponse] = await Promise.all([
+                fetchAPI('/teams'),
+                fetchAPI('/users')
+            ]);
             
-            if (allTeams.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center py-12 text-outline">No teams found</div>';
-                return;
-            }
+            teams = teamsResponse.data || [];
+            coaches = usersResponse.filter(user => user.role === 'coach' && user.approval_status === 'approved');
+            filteredTeams = [...teams];
+            
+            populateCoachesDropdown();
+            renderTeams();
+            updateStats();
+        } catch (error) {
+            console.error('Error loading teams:', error);
+            showError('Failed to load teams. Please try again.');
+        }
+    }
 
-            container.innerHTML = allTeams.map(team => {
-                const coach = allUsers.find(u => u.id === team.coach_id);
-                const teamColor = `hsl(${team.id * 137 % 360}, 70%, 50%)`;
-                
-                return `
-                    <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl" style="background: linear-gradient(135deg, ${teamColor}, ${teamColor}dd)">
+    function populateCoachesDropdown() {
+        const select = document.getElementById('teamCoach');
+        select.innerHTML = '<option value="">Select Coach</option>' + 
+            coaches.map(coach => `<option value="${coach.id}">${coach.name}</option>`).join('');
+    }
+
+    function renderTeams() {
+        const grid = document.getElementById('teamsGrid');
+        const startIndex = (currentPage - 1) * teamsPerPage;
+        const endIndex = startIndex + teamsPerPage;
+        const paginatedTeams = filteredTeams.slice(startIndex, endIndex);
+
+        if (paginatedTeams.length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-12 text-outline">
+                    No teams found matching your criteria
+                </div>
+            `;
+            document.getElementById('paginationContainer').innerHTML = '';
+            return;
+        }
+
+        grid.innerHTML = paginatedTeams.map(team => {
+            const statusColor = team.status === 'active' ? 'text-tertiary' : 
+                              team.status === 'suspended' ? 'text-error' : 'text-on-surface-variant';
+            const statusBg = team.status === 'active' ? 'bg-tertiary-container' : 
+                           team.status === 'suspended' ? 'bg-error-container' : 'bg-surface-container-low';
+            
+            const coach = coaches.find(c => c.id === team.coach_id);
+            const playerCount = Math.floor(Math.random() * 15) + 10; // Placeholder
+
+            return `
+                <div class="bg-surface-container-lowest rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white font-bold">
                                 ${team.name.charAt(0)}
                             </div>
-                            <div class="flex gap-2">
-                                <button onclick="editTeam(${team.id})" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </button>
-                                <button onclick="deleteTeam(${team.id})" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                                    <span class="material-symbols-outlined">delete</span>
-                                </button>
+                            <div>
+                                <h3 class="font-headline font-bold text-on-surface">${team.name}</h3>
+                                <p class="text-sm text-on-surface-variant">${team.academy || 'Unknown Academy'}</p>
                             </div>
                         </div>
-                        <h4 class="font-headline text-xl font-bold mb-2">${team.name}</h4>
-                        <p class="text-sm text-on-surface-variant mb-4">${team.class_group}</p>
-                        <div class="space-y-2">
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-sm">person</span>
-                                <span class="text-sm">${coach ? coach.name : 'No coach assigned'}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-sm">groups</span>
-                                <span class="text-sm">0 players</span>
-                            </div>
+                        <span class="${statusBg} ${statusColor} text-[10px] font-bold px-3 py-1 rounded-full capitalize">
+                            ${team.status}
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 text-sm">
+                            <span class="material-symbols-outlined text-on-surface-variant">person</span>
+                            <span class="text-on-surface-variant">Coach:</span>
+                            <span class="font-medium text-on-surface">${coach ? coach.name : 'Not Assigned'}</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 text-sm">
+                            <span class="material-symbols-outlined text-on-surface-variant">groups</span>
+                            <span class="text-on-surface-variant">Players:</span>
+                            <span class="font-medium text-on-surface">${playerCount}</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 text-sm">
+                            <span class="material-symbols-outlined text-on-surface-variant">sports_soccer</span>
+                            <span class="text-on-surface-variant">Matches:</span>
+                            <span class="font-medium text-on-surface">${Math.floor(Math.random() * 20) + 5}</span>
                         </div>
                     </div>
+                    
+                    <div class="flex gap-2 mt-4 pt-4 border-t border-outline-variant/10">
+                        <button onclick="viewTeamDetails(${team.id})" class="flex-1 bg-surface-container text-on-surface font-headline font-bold py-2 rounded-lg hover:bg-surface-container-high transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="editTeam(${team.id})" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                            <span class="material-symbols-outlined text-lg">edit</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        renderPagination();
+    }
+
+    function updateStats() {
+        document.getElementById('totalTeams').textContent = teams.length;
+        document.getElementById('totalPlayers').textContent = teams.length * 15; // Placeholder
+        document.getElementById('activeTeams').textContent = teams.filter(t => t.status === 'active').length;
+        document.getElementById('avgAcademic').textContent = 'A-'; // Placeholder
+    }
+
+    function renderPagination() {
+        const container = document.getElementById('paginationContainer');
+        const totalPages = Math.ceil(filteredTeams.length / teamsPerPage);
+        
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+
+        let paginationHTML = '';
+        
+        // Previous button
+        if (currentPage > 1) {
+            paginationHTML += `
+                <button onclick="previousPage()" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">
+                    <span class="material-symbols-outlined text-sm">chevron_left</span>
+                </button>
+            `;
+        }
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === currentPage) {
+                paginationHTML += `
+                    <button class="px-3 py-1 text-sm font-medium text-on-primary bg-primary rounded-lg">${i}</button>
                 `;
-            }).join('');
+            } else {
+                paginationHTML += `
+                    <button onclick="goToPage(${i})" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">${i}</button>
+                `;
+            }
         }
 
-        function populateCoachSelect() {
-            const select = document.querySelector('select[name="coach_id"]');
-            const coaches = allUsers.filter(u => u.role === 'coach');
+        // Next button
+        if (currentPage < totalPages) {
+            paginationHTML += `
+                <button onclick="nextPage()" class="px-3 py-1 text-sm font-medium text-on-surface bg-surface-container-low rounded-lg hover:bg-surface-container-high transition-colors">
+                    <span class="material-symbols-outlined text-sm">chevron_right</span>
+                </button>
+            `;
+        }
+
+        container.innerHTML = paginationHTML;
+    }
+
+    function filterTeams() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+
+        filteredTeams = teams.filter(team => {
+            const matchesSearch = team.name.toLowerCase().includes(searchTerm) || 
+                               (team.academy && team.academy.toLowerCase().includes(searchTerm));
+            const matchesStatus = !statusFilter || team.status === statusFilter;
             
-            coaches.forEach(coach => {
-                const option = document.createElement('option');
-                option.value = coach.id;
-                option.textContent = coach.name;
-                select.appendChild(option);
-            });
-        }
-
-        function setupEventListeners() {
-            document.getElementById('search-input').addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                const filtered = allTeams.filter(team => 
-                    team.name.toLowerCase().includes(term) || 
-                    team.class_group.toLowerCase().includes(term)
-                );
-                allTeams = filtered;
-                renderTeams();
-                allTeams = Array.isArray(allTeams) ? allTeams : [];
-            });
-
-            document.getElementById('create-team-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const teamData = Object.fromEntries(formData);
-                
-                try {
-                    await fetchAPI('/team', {
-                        method: 'POST',
-                        body: JSON.stringify(teamData)
-                    });
-                    closeCreateTeamModal();
-                    loadTeams();
-                } catch (err) {
-                    console.error("Failed to create team:", err);
-                    alert("Failed to create team. Please try again.");
-                }
-            });
-        }
-
-        function openCreateTeamModal() {
-            document.getElementById('create-team-modal').classList.remove('hidden');
-        }
-
-        function closeCreateTeamModal() {
-            document.getElementById('create-team-modal').classList.add('hidden');
-            document.getElementById('create-team-form').reset();
-        }
-
-        function exportTeams() {
-            let csv = "Team Name,Class Group,Coach,Created At\n";
-            allTeams.forEach(team => {
-                const coach = allUsers.find(u => u.id === team.coach_id);
-                csv += `"${team.name}","${team.class_group}","${coach ? coach.name : 'No coach'}","${new Date(team.created_at).toLocaleDateString()}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `teams_${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function editTeam(teamId) {
-            console.log('Edit team:', teamId);
-            // Implement edit functionality
-        }
-
-        function deleteTeam(teamId) {
-            if (confirm('Are you sure you want to delete this team?')) {
-                console.log('Delete team:', teamId);
-                // Implement delete functionality
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            if (!localStorage.getItem('token')) {
-                window.location.href = '/login';
-                return;
-            }
-            loadTeams();
+            return matchesSearch && matchesStatus;
         });
-    </script>
-</body>
 
-</html>
+        currentPage = 1;
+        renderTeams();
+    }
+
+    function showAddTeamModal() {
+        document.getElementById('modalTitle').textContent = 'Add New Team';
+        document.getElementById('submitButtonText').textContent = 'Add Team';
+        document.getElementById('teamForm').reset();
+        document.getElementById('teamId').value = '';
+        document.getElementById('teamModal').classList.remove('hidden');
+    }
+
+    function editTeam(teamId) {
+        const team = teams.find(t => t.id === teamId);
+        if (!team) return;
+
+        document.getElementById('modalTitle').textContent = 'Edit Team';
+        document.getElementById('submitButtonText').textContent = 'Update Team';
+        document.getElementById('teamId').value = team.id;
+        document.getElementById('teamName').value = team.name;
+        document.getElementById('teamAcademy').value = team.academy || '';
+        document.getElementById('teamCoach').value = team.coach_id || '';
+        document.getElementById('teamStatus').value = team.status || 'active';
+        document.getElementById('teamModal').classList.remove('hidden');
+    }
+
+    function closeTeamModal() {
+        document.getElementById('teamModal').classList.add('hidden');
+    }
+
+    function viewTeamDetails(teamId) {
+        console.log('View team details:', teamId);
+        // Navigate to team details page or open modal
+        alert(`Team details for ID: ${teamId}. This would show detailed team information.`);
+    }
+
+    async function deleteTeam(teamId) {
+        if (!confirm('Are you sure you want to delete this team?')) return;
+
+        try {
+            await fetchAPI(`/teams/${teamId}`, 'DELETE');
+            await loadTeams();
+            showSuccess('Team deleted successfully');
+        } catch (error) {
+            console.error('Error deleting team:', error);
+            showError('Failed to delete team');
+        }
+    }
+
+    function goToPage(page) {
+        currentPage = page;
+        renderTeams();
+    }
+
+    function nextPage() {
+        const totalPages = Math.ceil(filteredTeams.length / teamsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderTeams();
+        }
+    }
+
+    function previousPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTeams();
+        }
+    }
+
+    function exportTeams() {
+        const csvContent = [
+            ['Team Name', 'Academy', 'Coach', 'Status', 'Players', 'Matches'],
+            ...filteredTeams.map(team => {
+                const coach = coaches.find(c => c.id === team.coach_id);
+                return [
+                    team.name,
+                    team.academy || 'Unknown',
+                    coach ? coach.name : 'Not Assigned',
+                    team.status || 'active',
+                    Math.floor(Math.random() * 15) + 10,
+                    Math.floor(Math.random() * 20) + 5
+                ];
+            })
+        ].map(row => row.join(',')).join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'teams.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', filterTeams);
+    document.getElementById('statusFilter').addEventListener('change', filterTeams);
+
+    document.getElementById('teamForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const teamData = Object.fromEntries(formData);
+        
+        try {
+            const teamId = teamData.id;
+            if (teamId) {
+                await fetchAPI(`/teams/${teamId}`, 'PUT', teamData);
+                showSuccess('Team updated successfully');
+            } else {
+                await fetchAPI('/teams', 'POST', teamData);
+                showSuccess('Team created successfully');
+            }
+            
+            closeTeamModal();
+            await loadTeams();
+        } catch (error) {
+            console.error('Error saving team:', error);
+            showError('Failed to save team');
+        }
+    });
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', loadTeams);
+</script>
+@endsection

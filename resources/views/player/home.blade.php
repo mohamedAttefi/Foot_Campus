@@ -1,108 +1,49 @@
-<!DOCTYPE html>
-<html class="light" lang="en">
+@extends('layouts.app', ['userRole' => 'player', 'currentPage' => 'player-dashboard'])
 
-<head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Player Dashboard | The Scholastic Pitch</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#0f5238",
-                        "primary-container": "#2d6a4f",
-                        "on-primary": "#ffffff",
-                        "secondary": "#4059aa",
-                        "secondary-container": "#8fa7fe",
-                        "secondary-fixed": "#dce1ff",
-                        "surface": "#f7f9fb",
-                        "on-surface": "#191c1e",
-                        "on-surface-variant": "#404943",
-                        "outline-variant": "#bfc9c1",
-                        "error": "#ba1a1a",
-                        "tertiary-container": "#865400",
-                        "on-tertiary-container": "#ffd29e",
-                    },
-                    fontFamily: {
-                        "headline": ["Manrope"],
-                        "body": ["Inter"]
-                    }
-                },
-            },
-        }
-    </script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
+@section('title', 'Player Dashboard | The Scholastic Pitch')
+
+@section('content')
+<style>
+    /* custom loader animation */
+    .loader {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #e2e8f0;
+        border-top: 2px solid #0f5238;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        display: inline-block;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
         }
 
-        .font-headline {
-            font-family: 'Manrope', sans-serif;
+        100% {
+            transform: rotate(360deg);
         }
+    }
 
-        .material-symbols-outlined {
-            vertical-align: middle;
-        }
+    .stat-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-        /* custom loader animation */
-        .loader {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #e2e8f0;
-            border-top: 2px solid #0f5238;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: inline-block;
-        }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+    }
+</style>
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .stat-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
-        }
-    </style>
-</head>
-
-<body class="bg-surface text-on-surface">
-    <aside
-        class="fixed left-0 top-0 h-full w-64 rounded-r-3xl bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md flex flex-col p-6 overflow-y-auto shadow-xl z-50">
-        <div class="mb-10">
-            <h1 class="text-xl font-bold tracking-tighter text-emerald-900 uppercase italic font-headline">The
-                Scholastic Pitch</h1>
-            <p class="text-[10px] tracking-[0.2em] text-on-surface-variant font-bold uppercase mt-1">Elite Academy
-                League</p>
-        </div>
-        <nav class="flex-grow space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 text-emerald-700 font-bold border-r-4 border-emerald-700 text-sm bg-emerald-50/50"
-                href="{{ route('player.home') }}"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a>
-            <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-emerald-600 text-sm" href="{{ route('player.standings') }}"><span
-                    class="material-symbols-outlined">leaderboard</span><span>League Table</span></a>
-            <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-emerald-600 text-sm" href="{{ route('player.team-details') }}"><span
-                    class="material-symbols-outlined">groups</span><span>Teams</span></a>
-            <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-emerald-600 text-sm" href="{{ route('player.match-schedule') }}"><span
-                    class="material-symbols-outlined">sports_soccer</span><span>Matches</span></a>
-            <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-emerald-600 text-sm" href="{{ route('player.academic-results') }}"><span
+<div class="p-8 space-y-8">
+    <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-emerald-600 text-sm" href="{{ route('player.team-details') }}"><span
+            class="material-symbols-outlined">groups</span><span>Teams</span></a>
+    <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-emerald-600 text-sm" href="{{ route('player.match-schedule') }}"><span
+            class="material-symbols-outlined">sports_soccer</span><span>Matches</span></a>
+    <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-emerald-600 text-sm" href="{{ route('player.academic-results') }}"><span
+            class="material-symbols-outlined">school</span><span>Academic Hub</span></a>
+</div>
+@endsection
                     class="material-symbols-outlined">school</span><span>Academic Hub</span></a>
         </nav>
         <div class="mt-auto pt-6 border-t border-outline-variant/10 space-y-2">

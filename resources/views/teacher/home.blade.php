@@ -1,53 +1,8 @@
-<!DOCTYPE html>
-<html class="light" lang="en">
+@extends('layouts.app', ['userRole' => 'teacher', 'currentPage' => 'teacher-dashboard'])
 
-<head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Teacher Dashboard | The Scholastic Pitch</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#0f5238",
-                        "primary-container": "#2d6a4f",
-                        "secondary": "#4059aa",
-                        "secondary-container": "#8fa7fe",
-                        "surface": "#f7f9fb",
-                        "on-surface": "#191c1e",
-                        "on-surface-variant": "#404943",
-                        "outline-variant": "#bfc9c1",
-                        "error": "#ba1a1a",
-                        "tertiary-container": "#865400",
-                    },
-                    fontFamily: {
-                        headline: ["Manrope"],
-                        body: ["Inter"]
-                    }
-                },
-            },
-        }
-    </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
+@section('title', 'Teacher Dashboard | The Scholastic Pitch')
 
-        .font-headline {
-            font-family: 'Manrope', sans-serif;
-        }
-    </style>
-</head>
-
-<body class="bg-surface font-body text-on-surface">
+@section('content')
     <!-- SideNavBar -->
     <aside class="fixed left-0 top-0 h-full w-64 rounded-r-3xl z-50 flex flex-col p-6 overflow-y-auto bg-slate-50/80 backdrop-blur-md shadow-xl font-['Manrope'] tracking-wide text-sm font-semibold">
         <div class="mb-10 flex items-center gap-3">
