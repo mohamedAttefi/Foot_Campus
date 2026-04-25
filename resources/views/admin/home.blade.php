@@ -115,101 +115,121 @@
 
     <!-- Main Content -->
     <main class="ml-64 pt-24 px-8 pb-12 min-h-screen">
-        <!-- Hero Header -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="md:col-span-2 relative overflow-hidden rounded-3xl bg-primary text-white p-8">
-                <div class="absolute right-0 top-0 h-full w-1/2 opacity-20 pointer-events-none">
-                    <img class="w-full h-full object-cover transform scale-125 rotate-12" src="https://images.unsplash.com/photo-1553729455-2fdd9c0c16dd?w=800&h=400&fit=crop" />
-                </div>
-                <div class="relative z-10 max-w-lg">
-                    <span class="uppercase tracking-[0.3em] font-bold text-primary-fixed-dim opacity-80 text-xs">Administrative Overview</span>
-                    <h2 class="text-4xl font-extrabold font-headline mt-2 mb-4 leading-tight">League Management</h2>
-                    <p class="text-primary-fixed leading-relaxed opacity-90 mb-6" id="system-stats">Loading system statistics...</p>
-                    <div class="flex gap-4">
-                        <div class="bg-primary-container/40 backdrop-blur-md rounded-2xl p-4 flex-1">
-                            <p class="text-xs text-primary-fixed-dim uppercase font-bold tracking-widest">Total Users</p>
-                            <p id="total-users" class="text-xl font-bold mt-1">--</p>
-                        </div>
-                        <div class="bg-primary-container/40 backdrop-blur-md rounded-2xl p-4 flex-1">
-                            <p class="text-xs text-primary-fixed-dim uppercase font-bold tracking-widest">Active Teams</p>
-                            <p id="total-teams" class="text-xl font-bold mt-1">--</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+        <div class="p-8 space-y-8">
+            <!-- Hero Header Section -->
+            <section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h3 class="font-headline text-lg font-bold">System Status</h3>
-                    <p class="text-sm text-on-surface-variant">Platform health</p>
+                    <h2 class="text-4xl font-extrabold font-headline tracking-tight text-on-surface">Admin Dashboard</h2>
+                    <p class="text-on-surface-variant font-label mt-1 uppercase tracking-widest text-xs font-bold">
+                        System Administration & Control Center</p>
                 </div>
-                <div class="space-y-4 my-6">
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium">Database</span>
-                        <span class="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-bold">Healthy</span>
+                <div class="flex gap-3">
+                    <div class="flex flex-col items-end">
+                        <span class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter">Total Users</span>
+                        <span class="text-2xl font-black text-primary">247</span>
                     </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium">API</span>
-                        <span class="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-bold">Online</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium">Storage</span>
-                        <span class="px-2 py-1 bg-amber-50 text-amber-700 rounded-full text-[10px] font-bold">45%</span>
+                    <div class="h-10 w-px bg-outline-variant/30 mx-2"></div>
+                    <div class="flex flex-col items-end">
+                        <span class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter">Active Teams</span>
+                        <span class="text-2xl font-black text-secondary">18</span>
                     </div>
                 </div>
-                <button class="w-full text-secondary font-bold text-sm hover:underline text-left flex items-center gap-2">
-                    View System Logs
-                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                </button>
-            </div>
-        </div>
+            </section>
 
-        <!-- Quick Actions -->
-        <div class="mb-8">
-            <h3 class="font-headline text-3xl font-extrabold tracking-tight mb-6">Quick Actions</h3>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white mb-4">
-                        <span class="material-symbols-outlined">person_add</span>
+            <!-- Admin Stats Grid -->
+            <div class="grid grid-cols-12 gap-6">
+                <!-- System Overview Card -->
+                <div class="col-span-12 lg:col-span-6 bg-surface-container-lowest rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+                    <h3 class="font-headline text-xl font-bold mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">monitoring</span>
+                        System Overview
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-surface-container-low p-4 rounded-xl">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-on-surface-variant">Server Status</span>
+                                <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                            </div>
+                            <p class="text-2xl font-bold text-primary">Online</p>
+                        </div>
+                        <div class="bg-surface-container-low p-4 rounded-xl">
+                            <span class="text-sm text-on-surface-variant">Database</span>
+                            <p class="text-2xl font-bold text-secondary">Healthy</p>
+                        </div>
+                        <div class="bg-surface-container-low p-4 rounded-xl">
+                            <span class="text-sm text-on-surface-variant">Active Sessions</span>
+                            <p class="text-2xl font-bold text-tertiary">142</p>
+                        </div>
+                        <div class="bg-surface-container-low p-4 rounded-xl">
+                            <span class="text-sm text-on-surface-variant">API Requests</span>
+                            <p class="text-2xl font-bold text-primary">1.2K</p>
+                        </div>
                     </div>
-                    <h4 class="font-bold text-lg mb-2">Create User</h4>
-                    <p class="text-sm text-on-surface-variant">Add new users to the system</p>
                 </div>
-                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white mb-4">
-                        <span class="material-symbols-outlined">group_add</span>
-                    </div>
-                    <h4 class="font-bold text-lg mb-2">Create Team</h4>
-                    <p class="text-sm text-on-surface-variant">Register new teams</p>
-                </div>
-                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white mb-4">
-                        <span class="material-symbols-outlined">event</span>
-                    </div>
-                    <h4 class="font-bold text-lg mb-2">Schedule Match</h4>
-                    <p class="text-sm text-on-surface-variant">Create new match fixtures</p>
-                </div>
-                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white mb-4">
-                        <span class="material-symbols-outlined">school</span>
-                    </div>
-                    <h4 class="font-bold text-lg mb-2">Academic Rules</h4>
-                    <p class="text-sm text-on-surface-variant">Manage eligibility rules</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Recent Activity -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="bg-white rounded-3xl p-8 shadow-sm">
-                <h3 class="font-headline text-xl font-bold mb-6">Recent Activity</h3>
-                <div id="recent-activity" class="space-y-4">
-                    <div class="text-center text-outline py-8">Loading recent activity...</div>
+                <!-- Recent Activity Card -->
+                <div class="col-span-12 lg:col-span-6 bg-surface-container-lowest rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+                    <h3 class="font-headline text-xl font-bold mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-secondary">history</span>
+                        Recent Activity
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl">
+                            <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-sm">person_add</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-on-surface">New user registration</p>
+                                <p class="text-xs text-on-surface-variant">John Doe - 2 minutes ago</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl">
+                            <div class="w-8 h-8 bg-secondary/10 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-secondary text-sm">sports_soccer</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-on-surface">Match created</p>
+                                <p class="text-xs text-on-surface-variant">Team A vs Team B - 15 minutes ago</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl">
+                            <div class="w-8 h-8 bg-tertiary/10 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-tertiary text-sm">school</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-on-surface">Academic records updated</p>
+                                <p class="text-xs text-on-surface-variant">Grade report generated - 1 hour ago</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="bg-white rounded-3xl p-8 shadow-sm">
-                <h3 class="font-headline text-xl font-bold mb-6">System Statistics</h3>
-                <div id="system-stats-detailed" class="space-y-6">
-                    <div class="text-center text-outline py-8">Loading statistics...</div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-12 bg-surface-container-lowest rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+                    <h3 class="font-headline text-xl font-bold mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">bolt</span>
+                        Quick Actions
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button onclick="createUser()" class="p-4 bg-primary/10 hover:bg-primary/20 rounded-xl transition-colors text-center">
+                            <span class="material-symbols-outlined text-primary text-2xl mb-2">person_add</span>
+                            <p class="text-sm font-medium text-primary">Add User</p>
+                        </button>
+                        <button onclick="createTeam()" class="p-4 bg-secondary/10 hover:bg-secondary/20 rounded-xl transition-colors text-center">
+                            <span class="material-symbols-outlined text-secondary text-2xl mb-2">group_add</span>
+                            <p class="text-sm font-medium text-secondary">Add Team</p>
+                        </button>
+                        <button onclick="createMatch()" class="p-4 bg-tertiary/10 hover:bg-tertiary/20 rounded-xl transition-colors text-center">
+                            <span class="material-symbols-outlined text-tertiary text-2xl mb-2">event_add</span>
+                            <p class="text-sm font-medium text-tertiary">Schedule Match</p>
+                        </button>
+                        <button onclick="generateReport()" class="p-4 bg-surface-container-low hover:bg-surface-container-high rounded-xl transition-colors text-center">
+                            <span class="material-symbols-outlined text-on-surface text-2xl mb-2">assessment</span>
+                            <p class="text-sm font-medium text-on-surface">Generate Report</p>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
