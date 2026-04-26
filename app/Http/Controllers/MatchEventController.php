@@ -15,7 +15,17 @@ class MatchEventController extends Controller
      */
     public function index()
     {
-        $events = MatchEvent::with(['match', 'player', 'team'])->get();
+        $query = MatchEvent::with(['match', 'player.user', 'team']);
+        
+        if (request()->has('game_play_id')) {
+            $query->where('game_play_id', request()->game_play_id);
+        }
+        
+        if (request()->has('player_id')) {
+            $query->where('player_id', request()->player_id);
+        }
+        
+        $events = $query->orderBy('minute', 'asc')->get();
         return response()->json($events);
     }
 
