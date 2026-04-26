@@ -10,7 +10,7 @@ class GamePlay extends Model
     /** @use HasFactory<\Database\Factories\GamePlayFactory> */
     use HasFactory;
     
-    protected $fillable = ['date', 'status', 'home_score', 'away_score'];
+    protected $fillable = ['home_team_id', 'away_team_id', 'season_id', 'date','time', 'location', 'status', 'home_score', 'away_score', 'validated_by_admin'];
 
     public function homeTeam()
     {
@@ -20,6 +20,11 @@ class GamePlay extends Model
     public function awayTeam()
     {
         return $this->belongsTo(Team::class, 'away_team_id');
+    }
+
+    public function season()
+    {
+        return $this->belongsTo(Season::class);
     }
 
     public function lineups()
