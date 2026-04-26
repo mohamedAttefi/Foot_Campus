@@ -15,7 +15,13 @@ class MatchStatController extends Controller
      */
     public function index()
     {
-        $stats = MatchStat::all();
+        $query = MatchStat::query();
+        
+        if (request()->has('game_play_id')) {
+            $query->where('game_play_id', request()->game_play_id);
+        }
+        
+        $stats = $query->get();
         return response()->json($stats);
     }
 
