@@ -50,4 +50,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Team::class, 'coach_id');
     }
+
+    /**
+     * Get the player profile for this user.
+     */
+    public function player()
+    {
+        return $this->hasOne(Player::class, 'user_id');
+    }
 }
