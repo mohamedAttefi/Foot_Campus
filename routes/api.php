@@ -10,6 +10,8 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\MatchEventController;
 use App\Http\Controllers\AcademicRulesController;
 use App\Http\Controllers\GamePlayController;
+use App\Http\Controllers\MatchController;
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\StandingController;
 use App\Http\Controllers\MatchStatController;
 use App\Http\Controllers\UserController;
@@ -30,6 +32,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('player', PlayerController::class);
     Route::get('players/{userId}', [PlayerController::class, 'getPlayerByUserId']);
     Route::post('/player/{playerId}/assign-player-to-team/{teamId}', [PlayerController::class, 'assignToTeam']);
+    Route::get('/players/team/{teamId}', [PlayerController::class, 'getPlayersByTeam']);
+    Route::get('/players/{playerId}/eligibility', [PlayerController::class, 'getEligibilityStatus']);
+    Route::put('/players/{playerId}/eligibility', [PlayerController::class, 'updateEligibilityStatus']);
+    Route::get('/players/{playerId}/stats', [PlayerController::class, 'getPlayerStats']);
+    Route::get('/players/available/{teamId?}', [PlayerController::class, 'getAvailablePlayers']);
     Route::apiResource('lineup', LineupController::class)->only('store', 'update', 'show');
     Route::post('lineup/{id}', [LineupController::class, 'validateLineup']);
     Route::apiResource('team', TeamController::class);
@@ -41,6 +48,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('users', UserController::class);
     Route::get('current-user', [UserController::class, 'me']);
+
+    // Approval routes
+    Route::get('/approval/pending-users', [ApprovalController::class, 'getPendingUsers']);
+    Route::post('/approval/approve-user', [ApprovalController::class, 'approveUser']);
+    Route::get('/approval/all-users-status', [ApprovalController::class, 'getAllUsersStatus']);
 
 
     Route::apiResource('match-events', MatchEventController::class);
