@@ -313,14 +313,14 @@
         let allMatches = [];
         let currentUser = null;
 
-        function formatMatchDate(dateString) {
+        function formatMatchDate(dateString, timeString) {
             if (!dateString) return { month: '--', day: '--', time: '--:--' };
-            const date = new Date(dateString);
+            const date = new Date(dateString + ' ' + (timeString || '00:00'));
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             return {
                 month: months[date.getMonth()],
                 day: date.getDate(),
-                time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                time: timeString || '--:--'
             };
         }
 
@@ -345,9 +345,9 @@
                     // Find next upcoming match
                     const now = new Date();
                     const upcomingMatches = allMatches.filter(m => {
-                        const matchDate = new Date(m.match_date || m.scheduled_at || m.date);
-                        return matchDate > now;
-                    }).sort((a, b) => new Date(a.match_date || a.scheduled_at) - new Date(b.match_date || b.scheduled_at));
+                        const matchDateTime = new Date(m.date + ' ' + (m.time || '00:00'));
+                        return matchDateTime > now;
+                    }).sort((a, b) => new Date(a.date + ' ' + (a.time || '00:00')) - new Date(b.date + ' ' + (b.time || '00:00')));
                     
                     const nextMatch = upcomingMatches[0] || allMatches[0];
                     renderFeaturedMatch(nextMatch);
@@ -392,8 +392,8 @@
             const homeTeam = match.home_team?.name || match.home_team_name || 'Home Team';
             const awayTeam = match.away_team?.name || match.away_team_name || 'Away Team';
             const matchTitle = isHome ? `${homeTeam} vs ${awayTeam}` : `${awayTeam} vs ${homeTeam}`;
-            const matchDate = new Date(match.match_date || match.scheduled_at);
-            const timeStr = matchDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const matchDate = new Date(match.date + ' ' + (match.time || '00:00'));
+            const timeStr = match.time || '--:--';
             const dateStr = matchDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
             
             document.getElementById('featured-badge').innerHTML = `Upcoming • ${dateStr}`;
@@ -453,8 +453,8 @@
             
             // Sort matches by date (upcoming first)
             const sortedMatches = [...matches].sort((a, b) => {
-                const dateA = new Date(a.match_date || a.scheduled_at);
-                const dateB = new Date(b.match_date || b.scheduled_at);
+                const dateA = new Date(a.date + ' ' + (a.time || '00:00'));
+                const dateB = new Date(b.date + ' ' + (b.time || '00:00'));
                 return dateA - dateB;
             });
             
@@ -463,7 +463,7 @@
                 const homeTeam = match.home_team?.name || match.home_team_name || 'Home';
                 const awayTeam = match.away_team?.name || match.away_team_name || 'Away';
                 const matchDisplay = isHome ? `${homeTeam} vs ${awayTeam}` : `${awayTeam} vs ${homeTeam}`;
-                const dateInfo = formatMatchDate(match.match_date || match.scheduled_at);
+                const dateInfo = formatMatchDate(match.date, match.time);
                 const tournament = match.tournament || match.league || 'League Match';
                 const kit = isHome ? 'Home (Green/White)' : 'Away (Navy)';
                 const transport = isHome ? 'MEET AT HUB' : 'BUS DEPARTURE';
