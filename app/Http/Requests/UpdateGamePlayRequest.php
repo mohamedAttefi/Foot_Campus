@@ -11,7 +11,7 @@ class UpdateGamePlayRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,16 @@ class UpdateGamePlayRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'home_team_id' => 'sometimes|required|exists:teams,id',
+            'away_team_id' => 'sometimes|required|exists:teams,id|different:home_team_id',
+            'season_id' => 'sometimes|required|exists:seasons,id',
+            'date' => 'sometimes|required|date|after_or_equal:today',
+            'time' => 'sometimes|required|date_format:H:i',
+            'location' => 'sometimes|required|string|max:255',
+            'status' => 'nullable|string|in:scheduled,live,finished',
+            'home_score' => 'nullable|integer|min:0',
+            'away_score' => 'nullable|integer|min:0',
+            'validated_by_admin' => 'nullable|boolean'
         ];
     }
 }
