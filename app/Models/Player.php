@@ -12,6 +12,11 @@ class Player extends Model
 
 protected $fillable = ['user_id', 'jersey_number', 'is_eligible', 'team_id'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function lineups()
     {
         return $this->belongsToMany(Lineup::class, 'lineup_players')
