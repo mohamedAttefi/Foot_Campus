@@ -3,422 +3,309 @@
 @section('title', 'Teacher Dashboard | The Scholastic Pitch')
 
 @section('content')
-    <!-- SideNavBar -->
-    <aside class="fixed left-0 top-0 h-full w-64 rounded-r-3xl z-50 flex flex-col p-6 overflow-y-auto bg-slate-50/80 backdrop-blur-md shadow-xl font-['Manrope'] tracking-wide text-sm font-semibold">
-        <div class="mb-10 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white shadow-lg">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold tracking-tighter text-emerald-900 uppercase italic leading-none">The Scholastic Pitch</h1>
-                <p class="text-[10px] text-slate-500 uppercase tracking-[0.2em] mt-1">Teacher Portal</p>
-            </div>
+<div class="p-8 space-y-8">
+    <!-- Hero Header Section -->
+    <section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <h2 class="text-4xl font-extrabold font-headline tracking-tight text-on-surface">Teacher Dashboard</h2>
+            <p class="text-on-surface-variant font-label mt-1 uppercase tracking-widest text-xs font-bold">
+                Academic Management & Student Performance</p>
         </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-50/50 transition-all duration-300 text-emerald-700 font-bold border-r-4 border-emerald-700 group" href="#">
-                <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="{{ route('teacher.academic-results') }}">
-                <span class="material-symbols-outlined">grading</span><span>Grade Entry</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="#">
-                <span class="material-symbols-outlined">people</span><span>Students</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/50 transition-all duration-300 text-slate-500 hover:text-emerald-600 group" href="#">
-                <span class="material-symbols-outlined">assessment</span><span>Reports</span>
-            </a>
-        </nav>
-        <div class="mt-auto space-y-6">
-            <button onclick="openGradeEntryModal()" class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-3 rounded-xl font-bold shadow-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-sm">add</span><span>Enter Grades</span>
+        <div class="flex gap-3">
+            <button onclick="showAddGradeModal()" class="bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold py-3 px-6 rounded-xl shadow-lg hover:opacity-90 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add</span>
+                Add Grade
             </button>
-            <div class="space-y-1">
-                <a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-emerald-600 transition-colors" href="#">
-                    <span class="material-symbols-outlined text-xl">settings</span><span>Settings</span>
-                </a>
-                <a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-emerald-600 transition-colors" href="#">
-                    <span class="material-symbols-outlined text-xl">help</span><span>Support</span>
-                </a>
-            </div>
         </div>
-    </aside>
+    </section>
 
-    <!-- TopNavBar -->
-    <header class="fixed top-0 right-0 left-0 flex justify-between items-center h-16 px-8 ml-64 bg-white/80 backdrop-blur-xl z-40 font-['Manrope'] font-medium text-sm border-none">
-        <div class="flex items-center gap-8 flex-1">
-            <div class="relative w-96 max-w-full">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                <input class="w-full bg-slate-100 border-none rounded-full py-2 pl-10 pr-4 focus:ring-2 focus:ring-primary/20 text-on-surface" placeholder="Search students..." type="text" />
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <button class="p-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors relative">
-                <span class="material-symbols-outlined">notifications</span>
-            </button>
-            <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
-                <div class="text-right">
-                    <p id="nav-user-name" class="font-bold leading-none">Teacher</p>
-                    <p id="nav-user-role" class="text-[10px] text-on-surface-variant uppercase tracking-wider mt-1">Educator</p>
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-xl">school</span>
                 </div>
-                <img id="nav-user-avatar" class="w-10 h-10 rounded-full object-cover border-2 border-primary" src="https://ui-avatars.com/api/?name=Teacher&background=0f5238&color=fff" />
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="ml-64 pt-24 px-8 pb-12 min-h-screen">
-        <!-- Hero Header -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="md:col-span-2 relative overflow-hidden rounded-3xl bg-secondary text-white p-8">
-                <div class="absolute right-0 top-0 h-full w-1/2 opacity-20 pointer-events-none">
-                    <img class="w-full h-full object-cover transform scale-125 rotate-12" src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=400&fit=crop" />
-                </div>
-                <div class="relative z-10 max-w-lg">
-                    <span class="uppercase tracking-[0.3em] font-bold text-secondary-fixed-dim opacity-80 text-xs">Academic Management</span>
-                    <h2 class="text-4xl font-extrabold font-headline mt-2 mb-4 leading-tight">Teacher Dashboard</h2>
-                    <p class="text-secondary-fixed leading-relaxed opacity-90 mb-6" id="teaching-stats">Manage student grades and track academic performance.</p>
-                    <div class="flex gap-4">
-                        <div class="bg-secondary-container/40 backdrop-blur-md rounded-2xl p-4 flex-1">
-                            <p class="text-xs text-secondary-fixed-dim uppercase font-bold tracking-widest">Students</p>
-                            <p id="total-students" class="text-xl font-bold mt-1">--</p>
-                        </div>
-                        <div class="bg-secondary-container/40 backdrop-blur-md rounded-2xl p-4 flex-1">
-                            <p class="text-xs text-secondary-fixed-dim uppercase font-bold tracking-widest">Grades Entered</p>
-                            <p id="total-grades" class="text-xl font-bold mt-1">--</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white rounded-3xl p-6 shadow-sm flex flex-col justify-between">
                 <div>
-                    <h3 class="font-headline text-lg font-bold">Quick Actions</h3>
-                    <p class="text-sm text-on-surface-variant">Common tasks</p>
+                    <p class="text-2xl font-black text-primary" id="totalStudents">0</p>
+                    <p class="text-sm text-on-surface-variant">Total Students</p>
                 </div>
-                <div class="space-y-3 my-6">
-                    <button onclick="openGradeEntryModal()" class="w-full px-4 py-3 rounded-xl bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition-colors flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-lg">add</span> Enter Grades
-                    </button>
-                    <button class="w-full px-4 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-lg">assessment</span> View Reports
-                    </button>
+            </div>
+        </div>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-secondary text-xl">assignment</span>
                 </div>
-                <button class="w-full text-secondary font-bold text-sm hover:underline text-left flex items-center gap-2">
-                    View All Students
-                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                <div>
+                    <p class="text-2xl font-black text-secondary" id="totalGrades">0</p>
+                    <p class="text-sm text-on-surface-variant">Total Grades</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-tertiary text-xl">trending_up</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-black text-tertiary" id="avgGPA">0.0</p>
+                    <p class="text-sm text-on-surface-variant">Average GPA</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-surface-container-highest/50 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-on-surface text-xl">menu_book</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-black text-on-surface" id="totalSubjects">0</p>
+                    <p class="text-sm text-on-surface-variant">Subjects Taught</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <h3 class="font-headline text-xl font-bold mb-4">Recent Grades</h3>
+            <div class="space-y-3" id="recentGrades">
+                <!-- Recent grades will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <h3 class="font-headline text-xl font-bold mb-4">Top Performers</h3>
+            <div class="space-y-3" id="topPerformers">
+                <!-- Top performers will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
+            <h3 class="font-headline text-xl font-bold mb-4">Subjects</h3>
+            <div class="space-y-3" id="subjectsList">
+                <!-- Subjects will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Grade Modal -->
+<div id="gradeModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-surface-container-lowest rounded-[1.5rem] w-full max-w-md p-6 shadow-xl border border-outline-variant/10">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-headline text-xl font-bold text-on-surface">Add Grade</h3>
+                <button onclick="closeGradeModal()" class="text-on-surface-variant hover:text-on-surface transition-colors">
+                    <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-        </div>
-
-        <!-- Recent Grades Activity -->
-        <div class="mb-8">
-            <h3 class="font-headline text-3xl font-extrabold tracking-tight mb-6">Recent Grade Entries</h3>
-            <div class="bg-white rounded-3xl overflow-hidden shadow-sm">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-100 uppercase text-[10px] tracking-[0.2em] font-bold text-on-surface-variant bg-slate-50">
-                                <th class="py-5 px-6">Student</th>
-                                <th class="py-5 px-4">Subject</th>
-                                <th class="py-5 px-4">Grade</th>
-                                <th class="py-5 px-4">Term</th>
-                                <th class="py-5 px-4">Date</th>
-                                <th class="py-5 px-6 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="grades-table-body" class="divide-y divide-slate-100">
-                            <tr>
-                                <td colspan="6" class="py-12 text-center text-outline">Loading recent grades...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Student Performance Overview -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="bg-white rounded-3xl p-8 shadow-sm">
-                <h3 class="font-headline text-xl font-bold mb-6">Student Performance</h3>
-                <div id="performance-stats" class="space-y-6">
-                    <div class="text-center py-8 text-outline">Loading performance data...</div>
-                </div>
-            </div>
-            <div class="bg-white rounded-3xl p-8 shadow-sm">
-                <h3 class="font-headline text-xl font-bold mb-6">Eligibility Status</h3>
-                <div id="eligibility-overview" class="space-y-6">
-                    <div class="text-center py-8 text-outline">Loading eligibility data...</div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Grade Entry Modal -->
-    <div id="grade-entry-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-md w-full">
-            <h3 class="font-headline text-2xl font-bold mb-6">Enter Student Grade</h3>
-            <form id="grade-form" class="space-y-4">
+            
+            <form id="gradeForm" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium mb-2">Student</label>
-                    <select name="player_id" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20">
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Student</label>
+                    <select id="studentSelect" required class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                         <option value="">Select Student</option>
+                        <!-- Students will be populated by JavaScript -->
                     </select>
                 </div>
+                
                 <div>
-                    <label class="block text-sm font-medium mb-2">Subject</label>
-                    <select name="subject_id" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20">
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Subject</label>
+                    <select id="subjectSelect" required class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                         <option value="">Select Subject</option>
+                        <!-- Subjects will be populated by JavaScript -->
                     </select>
                 </div>
+                
                 <div>
-                    <label class="block text-sm font-medium mb-2">Score (%)</label>
-                    <input type="number" name="score" min="0" max="100" step="0.1" required class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20" />
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Score</label>
+                    <input type="number" id="scoreInput" required min="0" max="100" step="0.1" placeholder="Enter score (0-100)" class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium mb-2">Term</label>
-                    <input type="text" name="term_name" required placeholder="e.g., Fall 2024" class="w-full px-4 py-2 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-primary/20" />
-                </div>
-                <div class="flex gap-4 pt-4">
-                    <button type="button" onclick="closeGradeEntryModal()" class="flex-1 px-4 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 transition-colors">
-                        Cancel
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition-all">
+                        Add Grade
                     </button>
-                    <button type="submit" class="flex-1 px-4 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 transition-colors">
-                        Enter Grade
+                    <button type="button" onclick="closeGradeModal()" class="flex-1 bg-surface-container text-on-surface font-headline font-bold py-3 rounded-xl hover:bg-surface-container-high transition-colors">
+                        Cancel
                     </button>
                 </div>
             </form>
         </div>
     </div>
+</div>
+@endsection
 
-    <script>
-        const API_BASE = 'http://127.0.0.1:8000/api';
-        let allGrades = [];
-        let allStudents = [];
-        let allSubjects = [];
+@section('scripts')
+<script>
+    let allGrades = [];
+    let allStudents = [];
+    let allSubjects = [];
 
-        function getHeaders() {
-            const token = localStorage.getItem('token');
-            return {
-                'Authorization': token ? `Bearer ${token}` : '',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            };
-        }
-
-        async function fetchAPI(endpoint, options = {}) {
-            const response = await fetch(`${API_BASE}${endpoint}`, {
-                headers: getHeaders(),
-                ...options
-            });
-            if (!response.ok) throw new Error(`API Error ${response.status}`);
-            return response.json();
-        }
-
-        async function loadTeacherData() {
-            try {
-                const [grades, students, subjects] = await Promise.all([
-                    fetchAPI('/grade'),
-                    fetchAPI('/player'),
-                    fetchAPI('/subject')
-                ]);
-                
-                allGrades = Array.isArray(grades) ? grades : (grades.data || []);
-                allStudents = Array.isArray(students) ? students : (students.data || []);
-                allSubjects = Array.isArray(subjects) ? subjects : (subjects.data || []);
-                
-                updateStats();
-                renderRecentGrades();
-                renderPerformanceStats();
-                renderEligibilityOverview();
-                populateSelects();
-                setupEventListeners();
-            } catch (err) {
-                console.error("Failed to load teacher data:", err);
-                document.getElementById('grades-table-body').innerHTML = '<tr><td colspan="6" class="py-12 text-center text-outline">Failed to load data. Please check your connection.</td></tr>';
-            }
-        }
-
-        function updateStats() {
-            document.getElementById('total-students').innerText = allStudents.length;
-            document.getElementById('total-grades').innerText = allGrades.length;
-        }
-
-        function renderRecentGrades() {
-            const tbody = document.getElementById('grades-table-body');
+    async function loadTeacherData() {
+        try {
+            const [grades, students, subjects] = await Promise.all([
+                fetchAPI('/grade'),
+                fetchAPI('/player'),
+                fetchAPI('/subject')
+            ]);
             
-            if (allGrades.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center text-outline">No grades entered yet</td></tr>';
-                return;
-            }
-
-            const recentGrades = allGrades.slice(0, 10).reverse();
+            allGrades = Array.isArray(grades) ? grades : (grades.data || []);
+            allStudents = Array.isArray(students) ? students : (students.data || []);
+            allSubjects = Array.isArray(subjects) ? subjects : (subjects.data || []);
             
-            tbody.innerHTML = recentGrades.map(grade => {
-                const student = allStudents.find(s => s.id === grade.player_id);
-                const subject = allSubjects.find(s => s.id === grade.subject_id);
-                
-                const gradeColor = grade.score >= 70 ? 'text-emerald-600' : grade.score >= 50 ? 'text-amber-600' : 'text-red-600';
-                
-                return `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="py-4 px-6">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white text-xs font-bold">
-                                    ${student ? 'S' : 'U'}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm">${student ? `Student ${student.id}` : 'Unknown Student'}</p>
-                                    <p class="text-xs text-on-surface-variant">ID: ${grade.player_id}</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="py-4 px-4 text-sm">${subject ? subject.name : 'Unknown Subject'}</td>
-                        <td class="py-4 px-4">
-                            <span class="font-bold ${gradeColor}">${grade.score}%</span>
-                        </td>
-                        <td class="py-4 px-4 text-sm text-on-surface-variant">${grade.term_name}</td>
-                        <td class="py-4 px-4 text-sm text-on-surface-variant">${new Date(grade.created_at).toLocaleDateString()}</td>
-                        <td class="py-4 px-6 text-right">
-                            <button onclick="editGrade(${grade.id})" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                                <span class="material-symbols-outlined text-lg">edit</span>
-                            </button>
-                            <button onclick="deleteGrade(${grade.id})" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                                <span class="material-symbols-outlined text-lg">delete</span>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            updateStats();
+            renderRecentGrades();
+            renderTopPerformers();
+            renderSubjects();
+            populateSelects();
+        } catch (error) {
+            console.error('Error loading teacher data:', error);
         }
+    }
 
-        function renderPerformanceStats() {
-            const container = document.getElementById('performance-stats');
-            
-            if (allGrades.length === 0) {
-                container.innerHTML = '<div class="text-center py-8 text-outline">No grade data available</div>';
-                return;
-            }
+    function updateStats() {
+        document.getElementById('totalStudents').textContent = allStudents.length;
+        document.getElementById('totalGrades').textContent = allGrades.length;
+        document.getElementById('totalSubjects').textContent = allSubjects.length;
+        
+        if (allGrades.length > 0) {
+            const avgScore = allGrades.reduce((sum, grade) => sum + (grade.score || 0), 0) / allGrades.length;
+            const gpa = (avgScore / 100) * 4;
+            document.getElementById('avgGPA').textContent = gpa.toFixed(2);
+        } else {
+            document.getElementById('avgGPA').textContent = '0.0';
+        }
+    }
 
-            const averageScore = allGrades.reduce((sum, grade) => sum + parseFloat(grade.score), 0) / allGrades.length;
-            const highPerformers = allGrades.filter(g => g.score >= 80).length;
-            const needsImprovement = allGrades.filter(g => g.score < 60).length;
+    function renderRecentGrades() {
+        const container = document.getElementById('recentGrades');
+        const recentGrades = allGrades.slice(-5).reverse();
+        
+        if (recentGrades.length === 0) {
+            container.innerHTML = '<p class="text-on-surface-variant text-center">No recent grades</p>';
+            return;
+        }
+        
+        container.innerHTML = recentGrades.map(grade => {
+            const student = allStudents.find(s => s.id === grade.user_id);
+            const subject = allSubjects.find(s => s.id === grade.subject_id);
             
-            container.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-on-surface-variant">Class Average</span>
-                        <span class="font-bold text-lg text-primary">${averageScore.toFixed(1)}%</span>
+            return `
+                <div class="flex items-center justify-between p-2 bg-surface-container-lowest rounded-lg">
+                    <div>
+                        <p class="font-medium text-on-surface">${student ? student.name : 'Unknown Student'}</p>
+                        <p class="text-xs text-on-surface-variant">${subject ? subject.name : 'Unknown Subject'}</p>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-on-surface-variant">High Performers (80%+)</span>
-                        <span class="font-bold text-emerald-600">${highPerformers}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-on-surface-variant">Needs Improvement (&lt;60%)</span>
-                        <span class="font-bold text-amber-600">${needsImprovement}</span>
-                    </div>
-                    <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden mt-4">
-                        <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full transition-all duration-700" style="width: ${averageScore}%"></div>
-                    </div>
+                    <span class="font-bold text-primary">${grade.score || 0}</span>
                 </div>
             `;
-        }
+        }).join('');
+    }
 
-        function renderEligibilityOverview() {
-            const container = document.getElementById('eligibility-overview');
-            
-            const eligibleCount = allStudents.filter(s => s.is_eligible).length;
-            const ineligibleCount = allStudents.length - eligibleCount;
-            const eligibilityRate = allStudents.length > 0 ? (eligibleCount / allStudents.length * 100).toFixed(1) : 0;
-            
-            container.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-on-surface-variant">Eligible Students</span>
-                        <span class="font-bold text-emerald-600">${eligibleCount}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-on-surface-variant">Ineligible Students</span>
-                        <span class="font-bold text-red-600">${ineligibleCount}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-on-surface-variant">Eligibility Rate</span>
-                        <span class="font-bold text-primary">${eligibilityRate}%</span>
-                    </div>
-                    <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden mt-4">
-                        <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full transition-all duration-700" style="width: ${eligibilityRate}%"></div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function populateSelects() {
-            const studentSelect = document.querySelector('select[name="player_id"]');
-            const subjectSelect = document.querySelector('select[name="subject_id"]');
-
-            allStudents.forEach(student => {
-                const option = document.createElement('option');
-                option.value = student.id;
-                option.textContent = `Student ${student.id}`;
-                studentSelect.appendChild(option);
-            });
-
-            allSubjects.forEach(subject => {
-                const option = document.createElement('option');
-                option.value = subject.id;
-                option.textContent = subject.name;
-                subjectSelect.appendChild(option);
-            });
-        }
-
-        function setupEventListeners() {
-            document.getElementById('grade-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const gradeData = Object.fromEntries(formData);
-                
-                try {
-                    await fetchAPI('/grade', {
-                        method: 'POST',
-                        body: JSON.stringify(gradeData)
-                    });
-                    closeGradeEntryModal();
-                    loadTeacherData();
-                } catch (err) {
-                    console.error("Failed to enter grade:", err);
-                    alert("Failed to enter grade. Please try again.");
-                }
-            });
-        }
-
-        function openGradeEntryModal() {
-            document.getElementById('grade-entry-modal').classList.remove('hidden');
-        }
-
-        function closeGradeEntryModal() {
-            document.getElementById('grade-entry-modal').classList.add('hidden');
-            document.getElementById('grade-form').reset();
-        }
-
-        function editGrade(gradeId) {
-            console.log('Edit grade:', gradeId);
-            // Implement edit functionality
-        }
-
-        function deleteGrade(gradeId) {
-            if (confirm('Are you sure you want to delete this grade?')) {
-                console.log('Delete grade:', gradeId);
-                // Implement delete functionality
+    function renderTopPerformers() {
+        const container = document.getElementById('topPerformers');
+        
+        // Calculate average scores per student
+        const studentAverages = {};
+        allGrades.forEach(grade => {
+            if (!studentAverages[grade.user_id]) {
+                studentAverages[grade.user_id] = { total: 0, count: 0 };
             }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            if (!localStorage.getItem('token')) {
-                window.location.href = '/login';
-                return;
-            }
-            loadTeacherData();
+            studentAverages[grade.user_id].total += grade.score || 0;
+            studentAverages[grade.user_id].count += 1;
         });
-    </script>
-</body>
+        
+        const topStudents = Object.entries(studentAverages)
+            .map(([studentId, data]) => ({
+                student: allStudents.find(s => s.id == studentId),
+                average: data.total / data.count
+            }))
+            .filter(item => item.student)
+            .sort((a, b) => b.average - a.average)
+            .slice(0, 5);
+        
+        if (topStudents.length === 0) {
+            container.innerHTML = '<p class="text-on-surface-variant text-center">No data available</p>';
+            return;
+        }
+        
+        container.innerHTML = topStudents.map((item, index) => `
+            <div class="flex items-center justify-between p-2 bg-surface-container-lowest rounded-lg">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg font-bold text-primary">${index + 1}</span>
+                    <p class="font-medium text-on-surface">${item.student.name}</p>
+                </div>
+                <span class="font-bold text-tertiary">${item.average.toFixed(1)}</span>
+            </div>
+        `).join('');
+    }
 
-</html>
+    function renderSubjects() {
+        const container = document.getElementById('subjectsList');
+        
+        if (allSubjects.length === 0) {
+            container.innerHTML = '<p class="text-on-surface-variant text-center">No subjects</p>';
+            return;
+        }
+        
+        container.innerHTML = allSubjects.slice(0, 5).map(subject => {
+            const gradeCount = allGrades.filter(g => g.subject_id === subject.id).length;
+            return `
+                <div class="flex items-center justify-between p-2 bg-surface-container-lowest rounded-lg">
+                    <p class="font-medium text-on-surface">${subject.name}</p>
+                    <span class="text-sm text-on-surface-variant">${gradeCount} grades</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function populateSelects() {
+        const studentSelect = document.getElementById('studentSelect');
+        const subjectSelect = document.getElementById('subjectSelect');
+        
+        studentSelect.innerHTML = '<option value="">Select Student</option>' + 
+            allStudents.map(student => `<option value="${student.id}">${student.name}</option>`).join('');
+        
+        subjectSelect.innerHTML = '<option value="">Select Subject</option>' + 
+            allSubjects.map(subject => `<option value="${subject.id}">${subject.name}</option>`).join('');
+    }
+
+    function showAddGradeModal() {
+        document.getElementById('gradeModal').classList.remove('hidden');
+    }
+
+    function closeGradeModal() {
+        document.getElementById('gradeModal').classList.add('hidden');
+        document.getElementById('gradeForm').reset();
+    }
+
+    document.getElementById('gradeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const gradeData = {
+            user_id: document.getElementById('studentSelect').value,
+            subject_id: document.getElementById('subjectSelect').value,
+            score: parseFloat(document.getElementById('scoreInput').value)
+        };
+        
+        try {
+            await fetchAPI('/grade', 'POST', gradeData);
+            showSuccess('Grade added successfully');
+            closeGradeModal();
+            await loadTeacherData();
+        } catch (error) {
+            console.error('Error adding grade:', error);
+            showError('Failed to add grade');
+        }
+    });
+
+    window.addEventListener('DOMContentLoaded', loadTeacherData);
+</script>
+@endsection
