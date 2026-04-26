@@ -10,7 +10,7 @@ class Standing extends Model
     /** @use HasFactory<\Database\Factories\StandingFactory> */
     use HasFactory;
 
-    protected $fillable = ['points', 'wins', 'draws', 'losses', 'season_id', 'goals_for', 'goals_against', 'goal_difference'];
+    protected $fillable = ['team_id', 'points', 'wins', 'draws', 'losses', 'season_id', 'goals_for', 'goals_against', 'goal_difference'];
 
     public function team()
     {
