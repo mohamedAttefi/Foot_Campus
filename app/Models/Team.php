@@ -11,6 +11,11 @@ class Team extends Model
     use HasFactory;
     protected $fillable = ['name', 'class_group'];
 
+    public function coach()
+    {
+        return $this->belongsTo(User::class, 'coach_id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
