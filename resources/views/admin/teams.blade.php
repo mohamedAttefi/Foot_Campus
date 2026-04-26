@@ -169,8 +169,7 @@
 
 @section('scripts')
 <script>
-    const API_BASE = 'http://127.0.0.1:8000/api';
-    let teams = [];
+        let teams = [];
     let coaches = [];
     let currentPage = 1;
     let teamsPerPage = 9;
