@@ -15,7 +15,7 @@ class StandingController extends Controller
      */
     public function index()
     {
-        $standings = Standing::all();
+        $standings = Standing::with('team')->orderBy('points', 'desc')->get();
         return response()->json($standings);
     }
 
