@@ -1,0 +1,855 @@
+name: Create Sprint Issues
+
+on:
+  push:
+    branches:
+      - 'copilot/create-github-issues-sprint-1-2'
+    paths:
+      - '.github/workflows/create-issues.yml'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  create-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Labels
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          create_label() {
+            local name="$1"
+            local color="$2"
+            local description="$3"
+            gh label create "$name" --color "$color" --description "$description" --repo "$REPO" 2>/dev/null || \
+            gh label edit "$name" --color "$color" --description "$description" --repo "$REPO" 2>/dev/null || true
+          }
+
+          # Epic labels
+          create_label "epic:auth"      "0075ca" "Authentication & Roles epic"
+          create_label "epic:academic"  "e4e669" "Academic Management & Eligibility epic"
+          create_label "epic:teams"     "d93f0b" "Teams & Players epic"
+          create_label "epic:matches"   "0e8a16" "Match Scheduling epic"
+          create_label "epic:lineups"   "5319e7" "Lineup Management epic"
+          create_label "epic:timeline"  "f9d0c4" "Match Timeline & Events epic"
+          create_label "epic:stats"     "c2e0c6" "Statistics & Standings epic"
+          create_label "epic:public"    "bfd4f2" "Public Interface epic"
+
+          # Priority labels
+          create_label "priority:critical" "b60205" "Critical priority"
+          create_label "priority:high"     "e99695" "High priority"
+          create_label "priority:medium"   "fbca04" "Medium priority"
+          create_label "priority:low"      "c5def5" "Low priority"
+
+          # Sprint labels
+          create_label "sprint:1" "1d76db" "Sprint 1"
+          create_label "sprint:2" "1d76db" "Sprint 2"
+          create_label "sprint:3" "1d76db" "Sprint 3"
+          create_label "sprint:4" "1d76db" "Sprint 4"
+
+  create-sprint1-issues:
+    runs-on: ubuntu-latest
+    needs: create-labels
+    steps:
+      - name: Create Sprint 1 Issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Issue 1: User Registration & Login
+          gh issue create \
+            --repo "$REPO" \
+            --title "User Registration & Login" \
+            --label "epic:auth,priority:critical,sprint:1" \
+            --body "## User Story
+          As a user, I want to register and log in securely, so that I can access the platform.
+
+          **Story Points:** 3
+          **Sprint:** Sprint 1
+          **Epic:** Authentication & Roles
+
+          ## Acceptance Criteria
+          - [ ] Users can register with email and password
+          - [ ] Passwords must be 8+ chars (uppercase, lowercase, number)
+          - [ ] Users can log in with email/password
+          - [ ] Email verification required
+          - [ ] Failed login attempts logged
+
+          ## Tasks
+          - [ ] Backend: User model and migration
+          - [ ] Backend: Auth endpoints (register, login)
+          - [ ] Frontend: Registration page (Blade + Tailwind)
+          - [ ] Frontend: Login page (Blade + Tailwind)
+          - [ ] Frontend: Form validation (JavaScript)
+          - [ ] Tests: Auth flow tests"
+
+          # Issue 2: Password Reset via Email
+          gh issue create \
+            --repo "$REPO" \
+            --title "Password Reset via Email" \
+            --label "epic:auth,priority:high,sprint:1" \
+            --body "## User Story
+          As a user, I want to reset my password via email, so that I can regain access.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 1
+          **Epic:** Authentication & Roles
+
+          ## Acceptance Criteria
+          - [ ] User can request password reset
+          - [ ] Reset link sent to email (24h expiry)
+          - [ ] User can set new password with link
+          - [ ] Confirmation message after reset
+
+          ## Tasks
+          - [ ] Backend: Password reset endpoint
+          - [ ] Backend: Email template
+          - [ ] Frontend: Reset password page
+          - [ ] Frontend: Form validation
+          - [ ] Tests: Reset flow"
+
+          # Issue 3: Roles & Permissions Setup
+          gh issue create \
+            --repo "$REPO" \
+            --title "Roles & Permissions Setup" \
+            --label "epic:auth,priority:critical,sprint:1" \
+            --body "## User Story
+          As an admin, I want to assign roles with permissions, so users only access what's allowed.
+
+          **Story Points:** 3
+          **Sprint:** Sprint 1
+          **Epic:** Authentication & Roles
+
+          ## Acceptance Criteria
+          - [ ] Five roles defined: Admin, Teacher, Coach, Player, Visitor
+          - [ ] Permissions enforced at route level
+          - [ ] Unauthorized access denied with 403
+          - [ ] Audit log for access attempts
+
+          ## Tasks
+          - [ ] Backend: Role model and migration
+          - [ ] Backend: Permission model and migration
+          - [ ] Backend: Route middleware for permissions
+          - [ ] Backend: Seeder with roles/permissions
+          - [ ] Tests: Role/permission tests"
+
+          # Issue 4: Admin User Management Dashboard
+          gh issue create \
+            --repo "$REPO" \
+            --title "Admin User Management Dashboard" \
+            --label "epic:auth,priority:high,sprint:1" \
+            --body "## User Story
+          As an admin, I want to manage users (list, edit, deactivate), so I can control platform access.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 1
+          **Epic:** Authentication & Roles
+
+          ## Acceptance Criteria
+          - [ ] Admin-only dashboard
+          - [ ] List all users with search/filter
+          - [ ] Edit user roles
+          - [ ] Deactivate/reactivate users
+          - [ ] Audit log visible
+
+          ## Tasks
+          - [ ] Backend: User listing endpoints with filters
+          - [ ] Backend: User edit/status endpoints
+          - [ ] Frontend: Admin dashboard (Blade)
+          - [ ] Frontend: Users table component
+          - [ ] Frontend: User edit modal
+          - [ ] Tests: Admin dashboard tests"
+
+          # Issue 5: Student Grade Entry
+          gh issue create \
+            --repo "$REPO" \
+            --title "Student Grade Entry" \
+            --label "epic:academic,priority:critical,sprint:1" \
+            --body "## User Story
+          As a teacher, I want to enter and edit student grades, so academic records are current.
+
+          **Story Points:** 3
+          **Sprint:** Sprint 1
+          **Epic:** Academic Management & Eligibility
+
+          ## Acceptance Criteria
+          - [ ] Add/edit grades per subject (0-100 scale)
+          - [ ] Grade history visible
+          - [ ] Only teachers can edit their grades
+          - [ ] Validation: score between 0-100
+
+          ## Tasks
+          - [ ] Backend: Grade model and migration
+          - [ ] Backend: Grade CRUD endpoints
+          - [ ] Frontend: Grade entry form (Blade)
+          - [ ] Frontend: Grades table view
+          - [ ] Frontend: Inline editing
+          - [ ] Tests: Grade logic tests"
+
+          # Issue 6: GPA Calculation & Display
+          gh issue create \
+            --repo "$REPO" \
+            --title "GPA Calculation & Display" \
+            --label "epic:academic,priority:critical,sprint:1" \
+            --body "## User Story
+          As a teacher, I want GPA auto-calculated, so eligibility can be checked automatically.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 1
+          **Epic:** Academic Management & Eligibility
+
+          ## Acceptance Criteria
+          - [ ] GPA calculated after each grade entry
+          - [ ] GPA visible on student profile
+          - [ ] Correct calculation (4.0 scale or weighted)
+          - [ ] Update triggered on grade change
+
+          ## Tasks
+          - [ ] Backend: GPA calculation logic
+          - [ ] Backend: GPA query endpoint
+          - [ ] Frontend: Display GPA on profile
+          - [ ] Tests: GPA calculation accuracy tests"
+
+          # Issue 7: Basic Eligibility Rules Engine
+          gh issue create \
+            --repo "$REPO" \
+            --title "Basic Eligibility Rules Engine" \
+            --label "epic:academic,priority:critical,sprint:1" \
+            --body "## User Story
+          As a coach, I want player eligibility auto-checked against GPA and grades, so ineligible students are blocked.
+
+          **Story Points:** 3
+          **Sprint:** Sprint 1
+          **Epic:** Academic Management & Eligibility
+
+          ## Acceptance Criteria
+          - [ ] Minimum GPA threshold enforced (default 2.0)
+          - [ ] Any F-grade triggers ineligibility
+          - [ ] Eligibility status updates on grade change
+          - [ ] Eligibility visible in player profile
+
+          ## Tasks
+          - [ ] Backend: Eligibility calculation logic
+          - [ ] Backend: Rule validation endpoint
+          - [ ] Backend: Event listener on grade update
+          - [ ] Frontend: Eligibility status indicator
+          - [ ] Tests: Eligibility engine tests"
+
+          # Issue 8: Configure Eligibility Rules (Admin)
+          gh issue create \
+            --repo "$REPO" \
+            --title "Configure Eligibility Rules (Admin)" \
+            --label "epic:academic,priority:medium,sprint:1" \
+            --body "## User Story
+          As an admin, I want to set eligibility rules, so the system matches our policy.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 1
+          **Epic:** Academic Management & Eligibility
+
+          ## Acceptance Criteria
+          - [ ] Admin can set minimum GPA threshold
+          - [ ] Admin can set F-grade policy
+          - [ ] Changes apply to future eligibility checks
+          - [ ] Rules editable anytime
+
+          ## Tasks
+          - [ ] Backend: EligibilityRule model and migration
+          - [ ] Backend: Rule CRUD endpoints
+          - [ ] Backend: Apply rules in eligibility check
+          - [ ] Frontend: Rules configuration UI (admin)
+          - [ ] Tests: Rule configuration tests"
+
+  create-sprint2-issues:
+    runs-on: ubuntu-latest
+    needs: create-sprint1-issues
+    steps:
+      - name: Create Sprint 2 Issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Issue 9: Player Registration
+          gh issue create \
+            --repo "$REPO" \
+            --title "Player Registration" \
+            --label "epic:teams,priority:critical,sprint:2" \
+            --body "## User Story
+          As a coach, I want to register players with contact and academic info, so I can build my roster.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 2
+          **Epic:** Teams & Players
+
+          ## Acceptance Criteria
+          - [ ] Register player (name, email, student ID, position, year)
+          - [ ] Link to user account and academic record
+          - [ ] Upload profile photo
+
+          ## Tasks
+          - [ ] Backend: Player model/migration
+          - [ ] Backend: Player registration endpoint
+          - [ ] Frontend: Registration form & photo upload
+          - [ ] Tests: Player registration tests"
+
+          # Issue 10: Team Creation & Management
+          gh issue create \
+            --repo "$REPO" \
+            --title "Team Creation & Management" \
+            --label "epic:teams,priority:critical,sprint:2" \
+            --body "## User Story
+          As a coach, I want to create and manage my team, so I can organize players.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 2
+          **Epic:** Teams & Players
+
+          ## Acceptance Criteria
+          - [ ] Create team (name, coach, description)
+          - [ ] Edit team details
+          - [ ] List all teams
+
+          ## Tasks
+          - [ ] Backend: Team model, migration, CRUD endpoints
+          - [ ] Frontend: Create/edit team form, teams list view
+          - [ ] Tests: Team CRUD tests"
+
+          # Issue 11: Add/Remove Players from Team
+          gh issue create \
+            --repo "$REPO" \
+            --title "Add/Remove Players from Team" \
+            --label "epic:teams,priority:high,sprint:2" \
+            --body "## User Story
+          As a coach, I want to manage my team roster, so players can be added or removed.
+
+          **Story Points:** 1
+          **Sprint:** Sprint 2
+          **Epic:** Teams & Players
+
+          ## Acceptance Criteria
+          - [ ] Add/remove players to/from team
+          - [ ] Only coach/admin can edit
+          - [ ] Roster history tracked
+
+          ## Tasks
+          - [ ] Backend: Add/remove endpoints
+          - [ ] Frontend: Roster management UI
+          - [ ] Tests: Roster management tests"
+
+          # Issue 12: Player Eligibility Status Display in Roster
+          gh issue create \
+            --repo "$REPO" \
+            --title "Player Eligibility Status Display in Roster" \
+            --label "epic:teams,priority:critical,sprint:2" \
+            --body "## User Story
+          As a coach, I want to see each player's eligibility status quickly, so I can plan lineups.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 2
+          **Epic:** Teams & Players
+
+          ## Acceptance Criteria
+          - [ ] Roster shows eligibility indicator (green/red)
+          - [ ] Reason for ineligibility on hover/click
+          - [ ] Ineligible players blocked in lineup UI
+
+          ## Tasks
+          - [ ] Backend: Eligibility status in API
+          - [ ] Frontend: Eligibility indicator (badge/color)
+          - [ ] Frontend: Tooltip with reason
+          - [ ] Tests: Eligibility display tests"
+
+          # Issue 13: Match Scheduling
+          gh issue create \
+            --repo "$REPO" \
+            --title "Match Scheduling" \
+            --label "epic:matches,priority:critical,sprint:2" \
+            --body "## User Story
+          As a coach, I want to schedule matches, so the league has a calendar.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 2
+          **Epic:** Match Scheduling
+
+          ## Acceptance Criteria
+          - [ ] Schedule match (teams, date/time, venue)
+          - [ ] Prevent double-booking
+          - [ ] Only future dates allowed
+
+          ## Tasks
+          - [ ] Backend: Match model, migration, scheduling endpoint
+          - [ ] Frontend: Match form/calendar
+          - [ ] Tests: Match scheduling tests"
+
+          # Issue 14: Edit Match Details (24h Rule)
+          gh issue create \
+            --repo "$REPO" \
+            --title "Edit Match Details (24h Rule)" \
+            --label "epic:matches,priority:medium,sprint:2" \
+            --body "## User Story
+          As a coach, I want to edit match info until 24h before, so updates are possible.
+
+          **Story Points:** 1
+          **Sprint:** Sprint 2
+          **Epic:** Match Scheduling
+
+          ## Acceptance Criteria
+          - [ ] Can edit match info until 24h before match
+          - [ ] Lock after cutoff, admin can override
+
+          ## Tasks
+          - [ ] Backend: Edit match endpoint with time check
+          - [ ] Frontend: Edit form
+          - [ ] Tests: Time restriction tests"
+
+          # Issue 15: Lineup Builder - Eligible Players Only
+          gh issue create \
+            --repo "$REPO" \
+            --title "Lineup Builder - Eligible Players Only" \
+            --label "epic:lineups,priority:critical,sprint:2" \
+            --body "## User Story
+          As a coach, I want to build a lineup with only eligible players, so we comply with rules.
+
+          **Story Points:** 3
+          **Sprint:** Sprint 2
+          **Epic:** Lineup Management
+
+          ## Acceptance Criteria
+          - [ ] Only eligible players selectable (11 starters, 7 subs max)
+          - [ ] Ineligible players blocked (red/disabled)
+          - [ ] Reason on hover
+
+          ## Tasks
+          - [ ] Backend: Lineup model, create endpoint, eligibility filtering
+          - [ ] Frontend: Lineup builder UI
+          - [ ] Tests: Eligibility in lineup tests"
+
+          # Issue 16: Submit & Lock Lineup
+          gh issue create \
+            --repo "$REPO" \
+            --title "Submit & Lock Lineup" \
+            --label "epic:lineups,priority:critical,sprint:2" \
+            --body "## User Story
+          As a coach, I want to submit my final lineup, so the system knows our official squad.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 2
+          **Epic:** Lineup Management
+
+          ## Acceptance Criteria
+          - [ ] Submit lineup with confirmation
+          - [ ] Cannot submit with ineligible players
+          - [ ] Lineup locked after submission/match kickoff
+
+          ## Tasks
+          - [ ] Backend: Lineup submission, lock logic
+          - [ ] Frontend: Confirmation modal/UI lock
+          - [ ] Tests: Submit/lock flow tests"
+
+  create-sprint3-issues:
+    runs-on: ubuntu-latest
+    needs: create-sprint2-issues
+    steps:
+      - name: Create Sprint 3 Issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Issue 17: Record Match Events
+          gh issue create \
+            --repo "$REPO" \
+            --title "Record Match Events (Goals, Cards, Substitutions)" \
+            --label "epic:timeline,priority:critical,sprint:3" \
+            --body "## User Story
+          As a referee, I want to log goals, cards, and substitutions live, so the match timeline is accurate.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 3
+          **Epic:** Match Timeline & Events
+
+          ## Acceptance Criteria
+          - [ ] Log goals (player, minute, own-goal flag)
+          - [ ] Log yellow/red cards (player, minute, reason)
+          - [ ] Log substitutions (out/in, minute)
+          - [ ] Events show in chronological order
+          - [ ] Can edit events until match ends
+
+          ## Tasks
+          - [ ] Backend: MatchEvent model & migration
+          - [ ] Backend: Event creation endpoints (goal, card, sub)
+          - [ ] Backend: Validate substitutes in lineup
+          - [ ] Frontend: Event logging form
+          - [ ] Frontend: Real-time event list display
+          - [ ] Tests: Event recording & validation tests"
+
+          # Issue 18: Live Match View & Timeline
+          gh issue create \
+            --repo "$REPO" \
+            --title "Live Match View & Timeline" \
+            --label "epic:timeline,priority:high,sprint:3" \
+            --body "## User Story
+          As a viewer, I want to see a live match timeline with updates, so I can follow the game.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 3
+          **Epic:** Match Timeline & Events
+
+          ## Acceptance Criteria
+          - [ ] Public match page with live score
+          - [ ] Timeline auto-refreshes every 10 seconds
+          - [ ] All events visible (goals, cards, subs)
+          - [ ] Player names and minute timestamps shown
+          - [ ] Mobile-responsive
+
+          ## Tasks
+          - [ ] Backend: Live match data endpoint
+          - [ ] Backend: Events feed endpoint (paginated)
+          - [ ] Frontend: Match page layout (score + timeline)
+          - [ ] Frontend: AJAX auto-refresh logic
+          - [ ] Frontend: Event display formatting
+          - [ ] Tests: Live view functionality"
+
+          # Issue 19: Complete & Lock Match
+          gh issue create \
+            --repo "$REPO" \
+            --title "Complete & Lock Match" \
+            --label "epic:timeline,priority:critical,sprint:3" \
+            --body "## User Story
+          As a referee, I want to mark a match completed and lock it, so stats update and edits stop.
+
+          **Story Points:** 1
+          **Sprint:** Sprint 3
+          **Epic:** Match Timeline & Events
+
+          ## Acceptance Criteria
+          - [ ] Mark match as completed
+          - [ ] All events/lineups locked from editing
+          - [ ] Results saved to database
+          - [ ] Coaches notified of completion
+
+          ## Tasks
+          - [ ] Backend: Match completion endpoint
+          - [ ] Backend: Locking mechanism for events
+          - [ ] Backend: Trigger stats/standings updates
+          - [ ] Frontend: Complete match button
+          - [ ] Tests: Completion & locking logic"
+
+          # Issue 20: League Standings Calculation
+          gh issue create \
+            --repo "$REPO" \
+            --title "League Standings Calculation" \
+            --label "epic:stats,priority:critical,sprint:3" \
+            --body "## User Story
+          As a viewer, I want to see an up-to-date league table, so I can track standings.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 3
+          **Epic:** Statistics & Standings
+
+          ## Acceptance Criteria
+          - [ ] Standings sorted by points (wins, draws, losses)
+          - [ ] Auto-updates after match completion
+          - [ ] Tiebreaker by goal difference
+          - [ ] Historical standings available
+
+          ## Tasks
+          - [ ] Backend: Standings model/table
+          - [ ] Backend: Calculation logic (W=3pts, D=1pt)
+          - [ ] Backend: Auto-update on match completion
+          - [ ] Frontend: Standings table (Blade template)
+          - [ ] Tests: Standings accuracy tests"
+
+          # Issue 21: Player Statistics Tracking
+          gh issue create \
+            --repo "$REPO" \
+            --title "Player Statistics Tracking" \
+            --label "epic:stats,priority:high,sprint:3" \
+            --body "## User Story
+          As a coach, I want individual player stats (goals, cards, appearances), so I can evaluate athletes.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 3
+          **Epic:** Statistics & Standings
+
+          ## Acceptance Criteria
+          - [ ] Track: appearances, goals, assists, yellow/red cards
+          - [ ] Career stats & season stats available
+          - [ ] Top scorers leaderboard (public)
+          - [ ] Most carded leaderboard (public)
+          - [ ] Stats update after match completion
+
+          ## Tasks
+          - [ ] Backend: PlayerStatistics model/migration
+          - [ ] Backend: Stats calculation logic
+          - [ ] Backend: Update on match completion
+          - [ ] Backend: Leaderboard endpoints
+          - [ ] Frontend: Player stats page (Blade)
+          - [ ] Frontend: Leaderboard displays
+          - [ ] Tests: Stats calculation tests"
+
+          # Issue 22: Bulk Grade Import (CSV)
+          gh issue create \
+            --repo "$REPO" \
+            --title "Bulk Grade Import (CSV)" \
+            --label "epic:academic,priority:medium,sprint:3" \
+            --body "## User Story
+          As a teacher, I want to import grades via CSV, so I can update records quickly.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 3
+          **Epic:** Academic Management & Eligibility
+
+          ## Acceptance Criteria
+          - [ ] Upload CSV with student grades
+          - [ ] Parse and validate each row
+          - [ ] Show success/error results
+          - [ ] Rollback on critical errors
+
+          ## Tasks
+          - [ ] Backend: CSV import endpoint
+          - [ ] Backend: CSV parser & validator
+          - [ ] Frontend: File upload form
+          - [ ] Frontend: Results/error display
+          - [ ] Tests: CSV import tests"
+
+          # Issue 23: Bulk Import Players (CSV)
+          gh issue create \
+            --repo "$REPO" \
+            --title "Bulk Import Players (CSV)" \
+            --label "epic:teams,priority:medium,sprint:3" \
+            --body "## User Story
+          As a coach, I want to import players in bulk via CSV, so I can build my roster quickly.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 3
+          **Epic:** Teams & Players
+
+          ## Acceptance Criteria
+          - [ ] Upload CSV with player info
+          - [ ] Parse, validate, import players
+          - [ ] Show import summary (success/failed)
+          - [ ] Link to academic records by student ID
+
+          ## Tasks
+          - [ ] Backend: CSV import endpoint
+          - [ ] Backend: Parser & validator
+          - [ ] Frontend: File upload form
+          - [ ] Frontend: Summary display
+          - [ ] Tests: Bulk import tests"
+
+          # Issue 24: Public Homepage
+          gh issue create \
+            --repo "$REPO" \
+            --title "Public Homepage" \
+            --label "epic:public,priority:high,sprint:3" \
+            --body "## User Story
+          As a visitor, I want to see upcoming matches and standings, so I can stay updated.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 3
+          **Epic:** Public Interface
+
+          ## Acceptance Criteria
+          - [ ] Next 5 upcoming matches displayed
+          - [ ] Current league standings widget
+          - [ ] Last 5 completed matches
+          - [ ] Top scorers widget
+          - [ ] No auth required
+
+          ## Tasks
+          - [ ] Backend: Homepage data endpoints
+          - [ ] Frontend: Public homepage layout (Blade)
+          - [ ] Frontend: Responsive design (mobile/tablet/desktop)
+          - [ ] Tests: Homepage functionality"
+
+          # Issue 25: Public Match Details Page
+          gh issue create \
+            --repo "$REPO" \
+            --title "Public Match Details Page" \
+            --label "epic:public,priority:high,sprint:3" \
+            --body "## User Story
+          As a visitor, I want to view full match details including timeline and lineups.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 3
+          **Epic:** Public Interface
+
+          ## Acceptance Criteria
+          - [ ] Match info (teams, date, venue, referee)
+          - [ ] Live timeline visible
+          - [ ] Lineups displayed (starters + subs)
+          - [ ] Final score and statistics
+          - [ ] Mobile-responsive
+
+          ## Tasks
+          - [ ] Backend: Public match details endpoint
+          - [ ] Frontend: Match page layout (Blade)
+          - [ ] Frontend: Timeline/lineups display
+          - [ ] Frontend: Responsive design
+          - [ ] Tests: Public match page"
+
+  create-sprint4-issues:
+    runs-on: ubuntu-latest
+    needs: create-sprint3-issues
+    steps:
+      - name: Create Sprint 4 Issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Issue 26: Public Team Profiles
+          gh issue create \
+            --repo "$REPO" \
+            --title "Public Team Profiles" \
+            --label "epic:public,priority:medium,sprint:4" \
+            --body "## User Story
+          As a visitor, I want to view team profiles with rosters and stats.
+
+          **Story Points:** 1
+          **Sprint:** Sprint 4
+          **Epic:** Public Interface
+
+          ## Acceptance Criteria
+          - [ ] Team info (name, logo, coach, year)
+          - [ ] Team roster with player names & positions
+          - [ ] Team statistics (wins, losses, points)
+          - [ ] Recent and upcoming matches
+
+          ## Tasks
+          - [ ] Backend: Public team endpoint
+          - [ ] Frontend: Team profile page (Blade)
+          - [ ] Frontend: Responsive design
+          - [ ] Tests: Team profile page"
+
+          # Issue 27: UI/UX Polish & Bug Fixes
+          gh issue create \
+            --repo "$REPO" \
+            --title "UI/UX Polish & Bug Fixes" \
+            --label "epic:public,priority:high,sprint:4" \
+            --body "## User Story
+          As a user, I want smooth UI/UX and no bugs, so the app is enjoyable to use.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 4
+          **Epic:** Public Interface
+
+          ## Acceptance Criteria
+          - [ ] Forms are user-friendly with clear error messages
+          - [ ] Consistent styling across all pages (colors, fonts, spacing)
+          - [ ] Critical bugs fixed
+          - [ ] Mobile-responsive throughout
+
+          ## Tasks
+          - [ ] Frontend: UI consistency review
+          - [ ] Frontend: Form error message improvements
+          - [ ] Frontend: Loading states & spinners
+          - [ ] Backend: Critical bug fixes
+          - [ ] Testing: Cross-browser testing (Chrome, Firefox, Safari, Edge)
+          - [ ] Tests: Final regression tests"
+
+          # Issue 28: Accessibility & Performance Optimization
+          gh issue create \
+            --repo "$REPO" \
+            --title "Accessibility & Performance Optimization" \
+            --label "epic:public,priority:medium,sprint:4" \
+            --body "## User Story
+          As a user, I want the site accessible and fast, so everyone can use it comfortably.
+
+          **Story Points:** 1
+          **Sprint:** Sprint 4
+          **Epic:** Public Interface
+
+          ## Acceptance Criteria
+          - [ ] WCAG AA accessibility compliance (color contrast, alt text, etc.)
+          - [ ] Pages load < 3 seconds
+          - [ ] No render-blocking assets
+          - [ ] Mobile-friendly performance
+
+          ## Tasks
+          - [ ] Frontend: Accessibility audit & fixes
+          - [ ] Frontend: Image optimization & lazy loading
+          - [ ] Backend: Query optimization (N+1 checks)
+          - [ ] Backend: Database indexing
+          - [ ] Tests: Lighthouse performance audit"
+
+          # Issue 29: Cross-browser & Mobile Testing
+          gh issue create \
+            --repo "$REPO" \
+            --title "Cross-browser & Mobile Testing" \
+            --label "epic:public,priority:medium,sprint:4" \
+            --body "## User Story
+          As a user, I want the app to work flawlessly across devices, so I can access it anywhere.
+
+          **Story Points:** 1
+          **Sprint:** Sprint 4
+          **Epic:** Public Interface
+
+          ## Acceptance Criteria
+          - [ ] Works on Chrome, Firefox, Safari, Edge
+          - [ ] Responsive on mobile, tablet, desktop
+          - [ ] Touch interactions work on mobile
+          - [ ] No console errors
+
+          ## Tasks
+          - [ ] Testing: Cross-browser testing
+          - [ ] Testing: Mobile responsiveness audit
+          - [ ] Testing: Touch/gesture testing
+          - [ ] Testing: Screenshot tests for UI consistency
+          - [ ] Fix platform-specific bugs"
+
+          # Issue 30: Eligibility Override & Audit Logs (Admin)
+          gh issue create \
+            --repo "$REPO" \
+            --title "Eligibility Override & Audit Logs (Admin)" \
+            --label "epic:academic,priority:medium,sprint:4" \
+            --body "## User Story
+          As an admin, I want to manually override player eligibility with full audit logs for transparency.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 4
+          **Epic:** Academic Management & Eligibility
+
+          ## Acceptance Criteria
+          - [ ] Admin can override eligibility (set eligible/ineligible)
+          - [ ] Override reason logged
+          - [ ] Audit trail shows who, what, when
+          - [ ] Original eligibility still visible in history
+
+          ## Tasks
+          - [ ] Backend: Override endpoint
+          - [ ] Backend: Audit log model/migration
+          - [ ] Backend: Log all override actions
+          - [ ] Frontend: Override UI in player profile (admin only)
+          - [ ] Frontend: Audit log viewer
+          - [ ] Tests: Override and audit functionality"
+
+          # Issue 31: Admin Match Results Reports (Optional)
+          gh issue create \
+            --repo "$REPO" \
+            --title "Admin Match Results Reports (Optional)" \
+            --label "epic:stats,priority:medium,sprint:4" \
+            --body "## User Story
+          As an admin, I want to generate match results reports for analysis and archiving.
+
+          **Story Points:** 2
+          **Sprint:** Sprint 4
+          **Epic:** Statistics & Standings
+
+          ## Acceptance Criteria
+          - [ ] Generate report for specific match or date range
+          - [ ] Include: final score, events, lineups, player stats
+          - [ ] Export as PDF
+          - [ ] Search/filter past reports
+
+          ## Tasks
+          - [ ] Backend: Report generation logic
+          - [ ] Backend: PDF export endpoint
+          - [ ] Frontend: Report request form
+          - [ ] Frontend: Reports list/archive
+          - [ ] Tests: Report generation tests"
+
+          echo "All 31 issues created successfully!"
