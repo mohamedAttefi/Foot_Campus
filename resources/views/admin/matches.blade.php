@@ -90,9 +90,8 @@
                 <select id="statusFilter" class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                     <option value="">All Status</option>
                     <option value="scheduled">Scheduled</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
+                    <option value="live">Live</option>
+                    <option value="finished">Finished</option>
                 </select>
             </div>
             <div>
@@ -174,7 +173,13 @@
                 
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Match Date</label>
-                    <input type="datetime-local" id="matchDate" name="match_date" required
+                    <input type="date" id="matchDate" name="date" required
+                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-on-surface-variant mb-2">Match Time</label>
+                    <input type="time" id="matchTime" name="time" required
                            class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
                 
@@ -201,7 +206,6 @@
 
 @section('scripts')
 <script>
-    const API_BASE = 'http://127.0.0.1:8000/api';
     let matches = [];
     let teams = [];
     let currentPage = 1;
@@ -212,11 +216,13 @@
         try {
             const [matchesResponse, teamsResponse] = await Promise.all([
                 fetchAPI('/matches'),
-                fetchAPI('/teams')
+                fetchAPI('/team')
             ]);
             
-            matches = Array.isArray(matchesResponse) ? matchesResponse : (matchesResponse.data || []);
-            teams = Array.isArray(teamsResponse) ? teamsResponse : (teamsResponse.data || []);
+            matches = matchesResponse
+            console.log(matchesResponse)
+            teams = teamsResponse.teams
+            console.log(teamsResponse.teams)
             filteredMatches = [...matches];
             
             populateTeamsDropdown();
@@ -261,14 +267,13 @@
             const homeTeam = teams.find(t => t.id === match.home_team_id);
             const awayTeam = teams.find(t => t.id === match.away_team_id);
             
-            const statusColor = match.status === 'completed' ? 'text-tertiary' : 
-                              match.status === 'cancelled' ? 'text-error' : 
-                              match.status === 'in_progress' ? 'text-secondary' : 'text-primary';
-            const statusBg = match.status === 'completed' ? 'bg-tertiary-container' : 
-                           match.status === 'cancelled' ? 'bg-error-container' : 
-                           match.status === 'in_progress' ? 'bg-secondary-container' : 'bg-primary-container';
+            const statusColor = match.status === 'finished' ? 'text-tertiary' : 
+                              match.status === 'live' ? 'text-secondary' : 'text-primary';
+            const statusBg = match.status === 'finished' ? 'bg-tertiary-container' : 
+                           match.status === 'live' ? 'bg-secondary-container' : 'bg-primary-container';
             
             const matchDate = new Date(match.match_date || match.date);
+            const matchTime = match.time || '00:00';
             const isToday = matchDate.toDateString() === new Date().toDateString();
             
             return `
@@ -276,7 +281,7 @@
                     <td class="px-6 py-4">
                         <div>
                             <p class="font-medium text-on-surface">${matchDate.toLocaleDateString()}</p>
-                            <p class="text-sm text-on-surface-variant">${matchDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                            <p class="text-sm text-on-surface-variant">${matchTime}</p>
                             ${isToday ? '<span class="text-xs text-primary font-bold">Today</span>' : ''}
                         </div>
                     </td>
@@ -302,7 +307,7 @@
                         </span>
                     </td>
                     <td class="px-6 py-4">
-                        ${match.status === 'completed' ? 
+                        ${match.status === 'finished' ? 
                             `<div class="flex items-center gap-2">
                                 <span class="font-bold text-on-surface">${match.home_score || 0}</span>
                                 <span class="text-on-surface-variant">-</span>
@@ -312,12 +317,20 @@
                         }
                     </td>
                     <td class="px-6 py-4 text-right">
-                        <button onclick="editMatch(${match.id})" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                            <span class="material-symbols-outlined text-lg">edit</span>
-                        </button>
-                        <button onclick="deleteMatch(${match.id})" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                            <span class="material-symbols-outlined text-lg">delete</span>
-                        </button>
+                        <div class="flex items-center gap-1 justify-end">
+                            <button onclick="showMatchEventsModal(${match.id})" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Match Events">
+                                <span class="material-symbols-outlined text-lg">event_note</span>
+                            </button>
+                            <button onclick="showMatchStatsModal(${match.id})" class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="Match Statistics">
+                                <span class="material-symbols-outlined text-lg">analytics</span>
+                            </button>
+                            <button onclick="editMatch(${match.id})" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors" title="Edit Match">
+                                <span class="material-symbols-outlined text-lg">edit</span>
+                            </button>
+                            <button onclick="deleteMatch(${match.id})" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Match">
+                                <span class="material-symbols-outlined text-lg">delete</span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `;
@@ -333,9 +346,9 @@
         
         document.getElementById('totalMatches').textContent = matches.length;
         document.getElementById('upcomingMatches').textContent = matches.filter(m => m.status === 'scheduled').length;
-        document.getElementById('completedMatches').textContent = matches.filter(m => m.status === 'completed').length;
+        document.getElementById('completedMatches').textContent = matches.filter(m => m.status === 'finished').length;
         document.getElementById('thisWeek').textContent = matches.filter(m => {
-            const matchDate = new Date(m.match_date || m.date);
+            const matchDate = new Date(m.date);
             return matchDate >= now && matchDate <= weekFromNow;
         }).length;
     }
@@ -399,7 +412,7 @@
                                (awayTeam && awayTeam.name.toLowerCase().includes(searchTerm)) ||
                                (match.location && match.location.toLowerCase().includes(searchTerm));
             const matchesStatus = !statusFilter || match.status === statusFilter;
-            const matchesDate = !dateFilter || new Date(match.match_date || match.date).toDateString() === new Date(dateFilter).toDateString();
+            const matchesDate = !dateFilter || new Date(match.date).toDateString() === new Date(dateFilter).toDateString();
             
             return matchesSearch && matchesStatus && matchesDate;
         });
@@ -414,10 +427,11 @@
         document.getElementById('matchForm').reset();
         document.getElementById('matchId').value = '';
         
-        // Set default date to tomorrow
+        // Set default date to tomorrow and time to 14:00
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        document.getElementById('matchDate').value = tomorrow.toISOString().slice(0, 16);
+        document.getElementById('matchDate').value = tomorrow.toISOString().slice(0, 10);
+        document.getElementById('matchTime').value = '14:00';
         
         document.getElementById('matchModal').classList.remove('hidden');
     }
@@ -433,7 +447,8 @@
         document.getElementById('awayTeam').value = match.away_team_id || '';
         
         const matchDate = new Date(match.match_date || match.date);
-        document.getElementById('matchDate').value = matchDate.toISOString().slice(0, 16);
+        document.getElementById('matchDate').value = matchDate.toISOString().slice(0, 10);
+        document.getElementById('matchTime').value = match.time || '14:00';
         document.getElementById('matchLocation').value = match.location || '';
         
         document.getElementById('matchModal').classList.remove('hidden');
@@ -482,7 +497,7 @@
             ...filteredMatches.map(match => {
                 const homeTeam = teams.find(t => t.id === match.home_team_id);
                 const awayTeam = teams.find(t => t.id === match.away_team_id);
-                const matchDate = new Date(match.match_date || match.date);
+                const matchDate = new Date(match.date);
                 
                 return [
                     matchDate.toLocaleDateString(),
@@ -512,22 +527,32 @@
 
     document.getElementById('matchForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const formData = new FormData(e.target);
-        const matchData = Object.fromEntries(formData);
         
-        // Prevent selecting same team for both home and away
+        // Manual data collection using selectors
+        const matchData = {
+            home_team_id: document.getElementById('homeTeam').value,
+            away_team_id: document.getElementById('awayTeam').value,
+            season_id: 1, // Default season ID - you may need to get this dynamically
+            date: document.getElementById('matchDate').value,
+            time: document.getElementById('matchTime').value,
+            location: document.getElementById('matchLocation').value
+        };
+        
         if (matchData.home_team_id === matchData.away_team_id) {
             showError('Home and away teams must be different');
             return;
         }
         
         try {
-            const matchId = matchData.id;
+            const matchId = document.getElementById('matchId').value;
             if (matchId) {
+                matchData.id = matchId;
                 await fetchAPI(`/matches/${matchId}`, 'PUT', matchData);
                 showSuccess('Match updated successfully');
             } else {
-                await fetchAPI('/matches', 'POST', matchData);
+                console.log('Sending match data:', matchData);
+                let res = await fetchAPI('/matches', 'POST', matchData);
+                console.log('API response:', res);
                 showSuccess('Match scheduled successfully');
             }
             
@@ -539,7 +564,291 @@
         }
     });
 
+    // Match Events Functions
+    function showMatchEventsModal(matchId) {
+        document.getElementById('matchEventsModal').classList.remove('hidden');
+        document.getElementById('matchEventsMatchId').value = matchId;
+        populateEventDropdowns(matchId);
+        loadMatchEvents(matchId);
+    }
+
+    async function populateEventDropdowns(matchId) {
+        try {
+            const match = matches.find(m => m.id === matchId);
+            if (!match) return;
+
+            // Populate team dropdown
+            const teamSelect = document.getElementById('eventTeam');
+            teamSelect.innerHTML = '<option value="">Select Team</option>';
+            
+            const homeTeam = teams.find(t => t.id === match.home_team_id);
+            const awayTeam = teams.find(t => t.id === match.away_team_id);
+            
+            if (homeTeam) {
+                teamSelect.innerHTML += `<option value="${homeTeam.id}">${homeTeam.name} (Home)</option>`;
+            }
+            if (awayTeam) {
+                teamSelect.innerHTML += `<option value="${awayTeam.id}">${awayTeam.name} (Away)</option>`;
+            }
+
+            // Populate player dropdown (will be populated when team is selected)
+            const playerSelect = document.getElementById('eventPlayer');
+            playerSelect.innerHTML = '<option value="">Select Team First</option>';
+            
+            // Add event listener to team dropdown
+            teamSelect.onchange = async function() {
+                const teamId = this.value;
+                if (!teamId) {
+                    playerSelect.innerHTML = '<option value="">Select Team First</option>';
+                    return;
+                }
+
+                try {
+                    const players = await fetchAPI(`/players/team/${teamId}`);
+                    playerSelect.innerHTML = '<option value="">Select Player</option>';
+                    players.forEach(player => {
+                        playerSelect.innerHTML += `<option value="${player.id}">${player.user?.name || `Player ${player.id}`}</option>`;
+                    });
+                } catch (error) {
+                    console.error('Error loading players:', error);
+                    playerSelect.innerHTML = '<option value="">Error loading players</option>';
+                }
+            };
+        } catch (error) {
+            console.error('Error populating dropdowns:', error);
+        }
+    }
+
+    async function loadMatchEvents(matchId) {
+        try {
+            const events = await fetchAPI(`/match-events?game_play_id=${matchId}`);
+            renderMatchEvents(events);
+        } catch (error) {
+            console.error('Error loading match events:', error);
+        }
+    }
+
+    function renderMatchEvents(events) {
+        const eventsList = document.getElementById('matchEventsList');
+        if (!events || events.length === 0) {
+            eventsList.innerHTML = '<div class="text-center py-8 text-gray-500">No events recorded</div>';
+            return;
+        }
+
+        eventsList.innerHTML = events.map(event => `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg font-bold">${event.minute}'</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">${event.type}</span>
+                    <span class="text-sm">${event.player?.name || 'Unknown'}</span>
+                </div>
+                <button onclick="deleteMatchEvent(${event.id})" class="text-red-600 hover:text-red-800">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    async function addMatchEvent() {
+        const eventData = {
+            game_play_id: document.getElementById('matchEventsMatchId').value,
+            minute: parseInt(document.getElementById('eventMinute').value),
+            type: document.getElementById('eventType').value,
+            player_id: document.getElementById('eventPlayer').value,
+            team_id: document.getElementById('eventTeam').value
+        };
+
+        try {
+            await fetchAPI('/match-events', 'POST', eventData);
+            showSuccess('Event added successfully');
+            document.getElementById('eventForm').reset();
+            loadMatchEvents(eventData.game_play_id);
+        } catch (error) {
+            console.error('Error adding event:', error);
+            showError('Failed to add event');
+        }
+    }
+
+    async function deleteMatchEvent(eventId) {
+        if (!confirm('Are you sure you want to delete this event?')) return;
+
+        try {
+            await fetchAPI(`/match-events/${eventId}`, 'DELETE');
+            showSuccess('Event deleted successfully');
+            const matchId = document.getElementById('matchEventsMatchId').value;
+            loadMatchEvents(matchId);
+        } catch (error) {
+            console.error('Error deleting event:', error);
+            showError('Failed to delete event');
+        }
+    }
+
+    // Match Statistics Functions
+    function showMatchStatsModal(matchId) {
+        document.getElementById('matchStatsModal').classList.remove('hidden');
+        document.getElementById('matchStatsMatchId').value = matchId;
+        loadMatchStats(matchId);
+    }
+
+    async function loadMatchStats(matchId) {
+        try {
+            const stats = await fetchAPI(`/match-stats?game_play_id=${matchId}`);
+            if (stats && stats.length > 0) {
+                const stat = stats[0];
+                document.getElementById('homePossession').value = stat.home_possession || '';
+                document.getElementById('awayPossession').value = stat.away_possession || '';
+                document.getElementById('homeShots').value = stat.home_shots || '';
+                document.getElementById('awayShots').value = stat.away_shots || '';
+            }
+        } catch (error) {
+            console.error('Error loading match stats:', error);
+        }
+    }
+
+    async function saveMatchStats() {
+        const statsData = {
+            game_play_id: document.getElementById('matchStatsMatchId').value,
+            home_possession: parseInt(document.getElementById('homePossession').value) || 0,
+            away_possession: parseInt(document.getElementById('awayPossession').value) || 0,
+            home_shots: parseInt(document.getElementById('homeShots').value) || 0,
+            away_shots: parseInt(document.getElementById('awayShots').value) || 0
+        };
+
+        try {
+            const existingStats = await fetchAPI(`/match-stats?game_play_id=${statsData.game_play_id}`);
+            if (existingStats && existingStats.length > 0) {
+                await fetchAPI(`/match-stats/${existingStats[0].id}`, 'PUT', statsData);
+            } else {
+                await fetchAPI('/match-stats', 'POST', statsData);
+            }
+            showSuccess('Statistics saved successfully');
+            closeMatchStatsModal();
+        } catch (error) {
+            console.error('Error saving stats:', error);
+            showError('Failed to save statistics');
+        }
+    }
+
+    function closeMatchEventsModal() {
+        document.getElementById('matchEventsModal').classList.add('hidden');
+    }
+
+    function closeMatchStatsModal() {
+        document.getElementById('matchStatsModal').classList.add('hidden');
+    }
+
     // Initialize
     window.addEventListener('DOMContentLoaded', loadMatches);
 </script>
+
+<!-- Match Events Modal -->
+<div id="matchEventsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">Match Events</h3>
+            <button onclick="closeMatchEventsModal()" class="text-gray-500 hover:text-gray-700">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <input type="hidden" id="matchEventsMatchId">
+
+        <!-- Add Event Form -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+            <h4 class="font-semibold mb-3">Add New Event</h4>
+            <form id="eventForm" onsubmit="event.preventDefault(); addMatchEvent();">
+                <div class="grid grid-cols-2 gap-4 mb-3">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Minute</label>
+                        <input type="number" id="eventMinute" min="1" max="120" required class="w-full border rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Event Type</label>
+                        <select id="eventType" required class="w-full border rounded px-3 py-2">
+                            <option value="">Select Type</option>
+                            <option value="goal">Goal</option>
+                            <option value="yellow_card">Yellow Card</option>
+                            <option value="red_card">Red Card</option>
+                            <option value="substitution">Substitution</option>
+                            <option value="corner">Corner</option>
+                            <option value="foul">Foul</option>
+                            <option value="offside">Offside</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Player</label>
+                        <select id="eventPlayer" required class="w-full border rounded px-3 py-2">
+                            <option value="">Select Player</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Team</label>
+                        <select id="eventTeam" required class="w-full border rounded px-3 py-2">
+                            <option value="">Select Team</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Add Event
+                </button>
+            </form>
+        </div>
+
+        <!-- Events List -->
+        <div>
+            <h4 class="font-semibold mb-3">Recorded Events</h4>
+            <div id="matchEventsList" class="space-y-2 max-h-60 overflow-y-auto">
+                <div class="text-center py-8 text-gray-500">Loading events...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Match Statistics Modal -->
+<div id="matchStatsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">Match Statistics</h3>
+            <button onclick="closeMatchStatsModal()" class="text-gray-500 hover:text-gray-700">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <input type="hidden" id="matchStatsMatchId">
+
+        <form id="statsForm" onsubmit="event.preventDefault(); saveMatchStats();">
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Home Possession (%)</label>
+                        <input type="number" id="homePossession" min="0" max="100" class="w-full border rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Away Possession (%)</label>
+                        <input type="number" id="awayPossession" min="0" max="100" class="w-full border rounded px-3 py-2">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Home Shots</label>
+                        <input type="number" id="homeShots" min="0" class="w-full border rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Away Shots</label>
+                        <input type="number" id="awayShots" min="0" class="w-full border rounded px-3 py-2">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex-1">
+                    Save Statistics
+                </button>
+                <button type="button" onclick="closeMatchStatsModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
