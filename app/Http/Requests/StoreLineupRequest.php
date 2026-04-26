@@ -26,9 +26,10 @@ class StoreLineupRequest extends FormRequest
     {
         return [
             'match_id' => 'required|exists:game_plays,id',
-            'team_id' => 'required|exists:teams,id',
-            'starters' => 'required|array',
-            'substitutes' => 'required|array',
+            'starters' => 'required|array|min:1',
+            'substitutes' => 'required|array|min:1',
+            'starters.*' => 'exists:players,id',
+            'substitutes.*' => 'exists:players,id',
         ];
     }
 
