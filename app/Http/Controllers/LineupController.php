@@ -27,9 +27,14 @@ class LineupController extends Controller
     {
         $validated = $request->validated();
 
+        $lineup = Lineup::create([
+            'match_id' => $validated['match_id'],
+            'validated_by_admin' => false,
+        ]);
+
         foreach ($validated['starters'] as $playerId) {
             LineupPlayer::create([
-                'lineup_id' => $validated['match_id'],
+                'lineup_id' => $lineup->id,
                 'player_id' => $playerId,
                 'is_starter' => true,
             ]);
@@ -37,13 +42,13 @@ class LineupController extends Controller
 
         foreach ($validated['substitutes'] as $playerId) {
             LineupPlayer::create([
-                'lineup_id' => $validated['match_id'],
+                'lineup_id' => $lineup->id,
                 'player_id' => $playerId,
                 'is_starter' => false,
             ]);
         }
 
-        return response()->json(['message' => 'Lineup saved successfully!']);
+        return response()->json(['message' => 'Lineup saved successfully!', 'lineup' => $lineup->load('lineupPlayers.player')]);
     }
 
     /**
@@ -51,7 +56,7 @@ class LineupController extends Controller
      */
     public function show(Lineup $lineup)
     {
-        //
+        return response()->json($lineup->load('lineupPlayers.player'));
     }
 
     /**
