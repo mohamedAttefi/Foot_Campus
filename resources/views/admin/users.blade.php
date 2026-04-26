@@ -160,8 +160,7 @@
 
 @section('scripts')
 <script>
-    const API_BASE = 'http://127.0.0.1:8000/api';
-    let users = [];
+        let users = [];
     let currentPage = 1;
     let usersPerPage = 10;
     let filteredUsers = [];
