@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AcademicRules;
+use App\Models\AcademicRecord;
 use App\Http\Requests\StoreAcademicRulesRequest;
 use App\Http\Requests\UpdateAcademicRulesRequest;
 use Illuminate\Support\Facades\Auth;
@@ -80,7 +81,7 @@ class AcademicRulesController extends Controller
      */
     public function checkEligibility($playerId)
     {
-        $playerRecords = AcademicRecords::where('player_id', $playerId)->get();
+        $playerRecords = AcademicRecord::where('player_id', $playerId)->get();
         $activeRule = AcademicRules::where('is_active', true)->first();
 
         if (!$activeRule) {
