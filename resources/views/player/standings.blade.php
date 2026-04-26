@@ -277,22 +277,22 @@
                     matchesPlayed[event.player_id] = (matchesPlayed[event.player_id] || 0) + 1;
                 });
 
-                const playersArray = playersRes ? playersRes : [];
+                const playersArray = Array.isArray(playersRes) ? playersRes : (playersRes.data || []);
 
+                console.log("Players data:", playersArray);
 
-
-                if (!playersArray || !Object.values(playersArray)[0]) {
+                if (!playersArray || playersArray.length === 0) {
                     console.error("No players data available");
                     return;
                 }
-                allPlayers = await Promise.all(Object.values(playersArray)[0].map(async (p) => {
+                allPlayers = await Promise.all(playersArray.map(async (p) => {
                     const team = teamsMap[p.team_id];
-                    const playerData = await getPlayer(p.user_id);
-                    console.log(playerData)
+                    const playerName = p.name || `Player ${p.id}`;
+                    console.log("Processing player:", playerName, p);
                     return {
                         id: p.id,
                         user_id: p.user_id,
-                        name: playerData.name,
+                        name: playerName,
                         team_id: p.team_id,
                         team_name: team?.name || 'Free Agent',
                         class_group: team?.class_group || 'N/A',
@@ -326,9 +326,10 @@
                 renderTable();
 
                 async function getPlayer(id) {
-                    console.log(id)
+                    console.log("Getting user for ID:", id);
                     const users = await fetchAPI('/users').catch(() => []);
-                    return Object.values(users).find(e => e.id === id && e.role == 'player');
+                    const usersArray = Array.isArray(users) ? users : (users.data || []);
+                    return usersArray.find(e => e.id === id && e.role === 'player');
                 }
 
                 setupEventListeners();
@@ -350,8 +351,8 @@
 
         async function loadAcademicLeaders(gradesRes, subjectsRes) {
             const container = document.getElementById('academic-leaders');
-            const grades = gradesRes ? gradesRes : [];
-            console.log(grades)
+            const grades = Array.isArray(gradesRes) ? gradesRes : (gradesRes.data || []);
+            console.log("Grades data:", grades);
             const subjects = Array.isArray(subjectsRes) ? subjectsRes : (subjectsRes.data || []);
             const subjectMap = new Map(subjects.map(s => [s.id, s.name]));
 
@@ -361,9 +362,8 @@
             }
 
             const playerAvg = {};
-            console.log(Object.values(grades))
 
-            Object.values(grades)[0].forEach(g => {
+            grades.forEach(g => {
                 if (!playerAvg[g.player_id]) {
                     playerAvg[g.player_id] = {
                         sum: 0,
