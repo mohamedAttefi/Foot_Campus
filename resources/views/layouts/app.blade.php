@@ -157,8 +157,17 @@
             return { 'Authorization': token ? `Bearer ${token}` : '', 'Content-Type': 'application/json', 'Accept': 'application/json' };
         }
 
-        async function fetchAPI(endpoint, options = {}) {
-            const response = await fetch(`${API_BASE}${endpoint}`, { headers: getHeaders(), ...options });
+        async function fetchAPI(endpoint, method = 'GET', data = null) {
+            const options = {
+                method: method,
+                headers: getHeaders()
+            };
+            
+            if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
+                options.body = JSON.stringify(data);
+            }
+            
+            const response = await fetch(`${API_BASE}${endpoint}`, options);
             if (!response.ok) throw new Error(`API Error ${response.status}`);
             return response.json();
         }
@@ -176,6 +185,19 @@
             setTimeout(() => errorDiv.remove(), 5000);
         }
 
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'fixed top-20 right-8 bg-tertiary-container text-on-tertiary-container p-4 rounded-xl shadow-lg z-50';
+            successDiv.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">check_circle</span>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(successDiv);
+            setTimeout(() => successDiv.remove(), 5000);
+        }
+
         // Load current user data
         async function loadCurrentUser() {
             try {
@@ -185,15 +207,7 @@
                 }
 
                 currentUser = await fetchAPI('/current-user');
-                
-                // Validate token and user role
-                if (!currentUser || !currentUser.role) {
-                    console.error('Invalid user data or missing role');
-                    localStorage.removeItem('token');
-                    currentUser = { role: 'visitor', name: 'Guest' };
-                    updateUserInfo();
-                    return;
-                }
+                if(currentUser.approval_status == false) window.location.href = '/note-found'
 
                 // Validate token is still valid
                 if (token && currentUser) {
@@ -204,7 +218,6 @@
 
                 updateUserInfo();
                 
-                // Initialize dynamic sidebar after user is loaded
                 if (typeof renderDynamicSidebar === 'function') {
                     const currentPage = getCurrentPageIdentifier();
                     renderDynamicSidebar(currentUser.role, currentPage);
