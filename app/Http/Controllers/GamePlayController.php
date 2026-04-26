@@ -20,7 +20,7 @@ class GamePlayController extends Controller
      */
     public function index()
     {
-        $matches = GamePlay::all();
+        $matches = GamePlay::with(['homeTeam', 'awayTeam'])->get();
         return response()->json($matches);
     }
 
@@ -31,6 +31,7 @@ class GamePlayController extends Controller
     {
         $validated = $request->validated();
         $match = GamePlay::create($validated);
+        $match->load(['homeTeam', 'awayTeam']);
         return response()->json($match, 201);
     }
 
@@ -42,7 +43,7 @@ class GamePlayController extends Controller
         if (!in_array(Auth::user()->role, ['admin', 'coach', 'teacher'])) {
             return response()->json([self::UNAUTHORIZED_MESSAGE], 403);
         }
-
+        $gamePlay->load(['homeTeam', 'awayTeam']);
         return response()->json($gamePlay);
     }
 
@@ -57,6 +58,7 @@ class GamePlayController extends Controller
 
         $validated = $request->validated();
         $gamePlay->update($validated);
+        $gamePlay->load(['homeTeam', 'awayTeam']);
         return response()->json($gamePlay);
     }
 
