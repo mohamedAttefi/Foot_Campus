@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/players/{playerId}/eligibility', [PlayerController::class, 'updateEligibilityStatus']);
     Route::get('/players/{playerId}/stats', [PlayerController::class, 'getPlayerStats']);
     Route::get('/players/available/{teamId?}', [PlayerController::class, 'getAvailablePlayers']);
-    Route::apiResource('lineup', LineupController::class)->only('store', 'update', 'show');
+    Route::apiResource('lineup', LineupController::class);
     Route::post('lineup/{id}', [LineupController::class, 'validateLineup']);
     Route::apiResource('team', TeamController::class);
     Route::get('/team/{id}/eligible-players', [TeamController::class, 'getEligiblePlayers']);
