@@ -254,9 +254,9 @@
     async function loadAcademicData() {
         try {
             const [subjectsResponse, rulesResponse, gradesResponse] = await Promise.all([
-                fetchAPI('/subjects'),
+                fetchAPI('/subject'),
                 fetchAPI('/academic-rules'),
-                fetchAPI('/grades')
+                fetchAPI('/grade')
             ]);
             
             subjects = Array.isArray(subjectsResponse) ? subjectsResponse : (subjectsResponse.data || []);
@@ -493,7 +493,7 @@
         if (!confirm('Are you sure you want to delete this subject?')) return;
 
         try {
-            await fetchAPI(`/subjects/${subjectId}`, 'DELETE');
+            await fetchAPI(`/subject/${subjectId}`, 'DELETE');
             await loadAcademicData();
             showSuccess('Subject deleted successfully');
         } catch (error) {
@@ -564,10 +564,10 @@
         try {
             const subjectId = subjectData.id;
             if (subjectId) {
-                await fetchAPI(`/subjects/${subjectId}`, 'PUT', subjectData);
+                await fetchAPI(`/subject/${subjectId}`, 'PUT', subjectData);
                 showSuccess('Subject updated successfully');
             } else {
-                await fetchAPI('/subjects', 'POST', subjectData);
+                await fetchAPI('/subject', 'POST', subjectData);
                 showSuccess('Subject created successfully');
             }
             
