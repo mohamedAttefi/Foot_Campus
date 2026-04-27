@@ -251,7 +251,7 @@
         }
 
         async function fetchAPI(endpoint, options = {}) {
-            const response = await fetch(`${API_BASE}${endpoint}`, { headers: getHeaders(), ...options });
+            const response = await fetch(`${CREATE_LINEUP_API_BASE}${endpoint}`, { headers: getHeaders(), ...options });
             if (!response.ok) throw new Error(`API Error ${response.status}`);
             
             const text = await response.text();
