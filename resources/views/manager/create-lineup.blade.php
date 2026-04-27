@@ -523,7 +523,7 @@
         
         function renderPitch() {
             const container = document.getElementById('pitch-container');
-            const positions = formationPositions[currentFormation] || formationPositions['4-3-3'];
+            const positions = formationPositions[createLineupCurrentFormation] || formationPositions['4-3-3'];
             
             if (startingXI.filter(p => p !== null).length === 0) {
                 container.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-white/50 text-sm">Drag players from sidebar to build your lineup</div>';
@@ -648,7 +648,7 @@
         
         function setupEventListeners() {
             document.getElementById('formation-select').addEventListener('change', (e) => {
-                currentFormation = e.target.value;
+                createLineupCurrentFormation = e.target.value;
                 renderPitch();
                 updateStats();
             });
