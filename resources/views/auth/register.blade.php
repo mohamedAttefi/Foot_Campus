@@ -51,6 +51,25 @@
 
         <main class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-surface">
             <div class="w-full max-w-lg">
+                <!-- Flash Messages -->
+                @if(session('error'))
+                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <div class="flex items-center">
+                        <span class="material-symbols-outlined text-red-600 mr-3">error</span>
+                        <p class="text-red-800 font-medium">{{ session('error') }}</p>
+                    </div>
+                </div>
+                @endif
+                
+                @if(session('success'))
+                <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                    <div class="flex items-center">
+                        <span class="material-symbols-outlined text-green-600 mr-3">check_circle</span>
+                        <p class="text-green-800 font-medium">{{ session('success') }}</p>
+                    </div>
+                </div>
+                @endif
+
                 <header class="mb-8">
                     <h1 class="text-3xl font-extrabold mb-2">Academy Registration</h1>
                     <p class="text-on-surface-variant font-medium">Create your profile to join the league.</p>
