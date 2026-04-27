@@ -311,19 +311,19 @@
                 const matchesRes = await fetchAPI('/matches');
                 const matches = Array.isArray(matchesRes) ? matchesRes : (matchesRes.data || []);
                 const now = new Date();
-                currentMatch = matches.find(m => {
+                createLineupCurrentMatch = matches.find(m => {
                     const matchDate = new Date(m.match_date || m.date);
-                    return matchDate > now && (m.home_team_id === currentTeam?.id || m.away_team_id === currentTeam?.id);
+                    return matchDate > now && (m.home_team_id === createLineupCurrentTeam?.id || m.away_team_id === createLineupCurrentTeam?.id);
                 });
                 
                 // Get existing lineup for this match
-                if (currentMatch) {
+                if (createLineupCurrentMatch) {
                     const lineupsRes = await fetchAPI('/lineup');
                     console.log('Lineups response:', lineupsRes);
                     
                     if (lineupsRes) {
                         const lineups = Array.isArray(lineupsRes) ? lineupsRes : (lineupsRes.data || []);
-                        const existingLineup = lineups.find(l => l.game_play_id === currentMatch.id && l.team_id === currentTeam?.id);
+                        const existingLineup = lineups.find(l => l.game_play_id === createLineupCurrentMatch.id && l.team_id === createLineupCurrentTeam?.id);
                         
                         if (existingLineup) {
                             const lineupPlayersRes = await fetchAPI('/lineup-players');
@@ -353,11 +353,11 @@
         
         function updateMatchInfo() {
             const matchInfo = document.getElementById('match-info');
-            if (currentMatch) {
-                const isHome = currentMatch.home_team_id === currentTeam?.id;
-                const opponent = isHome ? currentMatch.away_team?.name || 'Opponent' : currentMatch.home_team?.name || 'Opponent';
-                const date = new Date(currentMatch.match_date || currentMatch.date);
-                matchInfo.innerHTML = `${currentTeam?.name || 'Your Team'} vs. ${opponent} — ${date.toLocaleDateString()}`;
+            if (createLineupCurrentMatch) {
+                const isHome = createLineupCurrentMatch.home_team_id === createLineupCurrentTeam?.id;
+                const opponent = isHome ? createLineupCurrentMatch.away_team?.name || 'Opponent' : createLineupCurrentMatch.home_team?.name || 'Opponent';
+                const date = new Date(createLineupCurrentMatch.match_date || createLineupCurrentMatch.date);
+                matchInfo.innerHTML = `${createLineupCurrentTeam?.name || 'Your Team'} vs. ${opponent} — ${date.toLocaleDateString()}`;
             } else {
                 matchInfo.innerHTML = 'No upcoming matches scheduled';
             }
@@ -593,14 +593,14 @@
             const fitnessPercent = Math.min(95, 75 + starterPlayers.length * 2);
             document.getElementById('readiness-bar').style.width = `${fitnessPercent}%`;
             document.getElementById('readiness-text').innerHTML = `${fitnessPercent}% of squad is fit for full 90 minutes`;
-            document.getElementById('tactical-focus').innerHTML = currentFormation === '4-3-3' ? 'Direct Play' : 'Possession Based';
+            document.getElementById('tactical-focus').innerHTML = createLineupCurrentFormation === '4-3-3' ? 'Direct Play' : 'Possession Based';
             document.getElementById('tactical-note').innerHTML = starterPlayers.length >= 11 ? 
                 'Full lineup selected. Ensure players are briefed on tactical responsibilities.' : 
                 `Select ${11 - starterPlayers.length} more players to complete your starting XI.`;
         }
         
         async function saveLineup() {
-            if (!currentMatch) {
+            if (!createLineupCurrentMatch) {
                 alert('No upcoming match found. Cannot save lineup.');
                 return;
             }
@@ -610,7 +610,7 @@
                 let lineupId = null;
                 const existingLineups = await fetchAPI('/lineup');
                 const lineups = Array.isArray(existingLineups) ? existingLineups : (existingLineups.data || []);
-                const existing = lineups.find(l => l.game_play_id === currentMatch.id && l.team_id === currentTeam?.id);
+                const existing = lineups.find(l => l.game_play_id === createLineupCurrentMatch.id && l.team_id === createLineupCurrentTeam?.id);
                 
                 if (existing) {
                     lineupId = existing.id;
@@ -618,8 +618,8 @@
                     const newLineup = await fetchAPI('/lineup', {
                         method: 'POST',
                         body: JSON.stringify({
-                            game_play_id: currentMatch.id,
-                            team_id: currentTeam?.id
+                            game_play_id: createLineupCurrentMatch.id,
+                            team_id: createLineupCurrentTeam?.id
                         })
                     });
                     lineupId = newLineup.id || newLineup.data?.id;
