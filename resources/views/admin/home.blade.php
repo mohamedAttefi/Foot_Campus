@@ -1,6 +1,8 @@
 @extends('layouts.app', ['userRole' => 'admin', 'currentPage' => 'admin-dashboard'])
 
 @section('title', 'Admin Dashboard | The Scholastic Pitch')
+@section('layouts.dynamic-dashboard')
+
 
 @section('content')
 <div class="p-8 space-y-8">
