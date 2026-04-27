@@ -25,28 +25,47 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if ($user && Hash::check($request->password, $user->password)) {
+            // Set session for web routes
             Auth::login($user);
+            
+            // Create token for API calls
             $token = $user->createToken('token')->plainTextToken;
-            if ($user->role === 'player') {
-                return response()->json([
-                    'message' => 'Registration successful!',
-                    'redirect_to' => route('player.home'),
-                    'access_token' => $token,
-                    'token_type' => 'Bearer',
-                    'user' => $user,
-                ]);
-            } elseif ($user->role === 'admin') {
-                return response()->json([
-                    'message' => 'Registration successful!',
-                    'redirect_to' => route('admin.dashboard'),
-                    'access_token' => $token,
-                    'token_type' => 'Bearer',
-                    'user' => $user,
-                ]);
-            }
+            
+            // Redirect based on role
+            $redirectRoute = $this->getRedirectRoute($user->role);
+            
+            return response()->json([
+                'message' => 'Login successful!',
+                'redirect_to' => route($redirectRoute),
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ]);
         }
 
         return response()->json(['message' => 'Invalid credentials'], 422);
+    }
+
+    /**
+     * Get the appropriate redirect route based on user role.
+     *
+     * @param string $role
+     * @return string
+     */
+    private function getRedirectRoute($role)
+    {
+        switch ($role) {
+            case 'admin':
+                return 'admin.dashboard';
+            case 'teacher':
+                return 'teacher.dashboard';
+            case 'coach':
+                return 'manager.dashboard';
+            case 'player':
+                return 'player.home';
+            default:
+                return 'login';
+        }
     }
 
     public function logout(Request $request)
@@ -81,26 +100,11 @@ class AuthController extends Controller
         $token = $user->createToken('token')->plainTextToken;
 
         // Redirect based on role
-        if ($validated['role'] === 'player') {
-            return response()->json([
-                'message' => 'Registration successful!',
-                'redirect_to' => route('player.home'),
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'user' => $user,
-            ]);
-        } elseif ($validated['role'] === 'admin') {
-            return response()->json([
-                'message' => 'Registration successful!',
-                'redirect_to' => route('admin.dashboard'),
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'user' => $user,
-            ]);
-        }
-
+        $redirectRoute = $this->getRedirectRoute($validated['role']);
+        
         return response()->json([
             'message' => 'Registration successful!',
+            'redirect_to' => route($redirectRoute),
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user,
