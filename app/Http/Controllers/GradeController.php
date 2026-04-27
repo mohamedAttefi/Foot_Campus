@@ -15,7 +15,7 @@ class GradeController extends Controller
     public function index()
     {
         $grades = Grade::with(['player', 'subject'])->get();
-        return response()->json(['grades' => $grades]);
+        return response()->json($grades);
     }
 
     public function store(StoreGradeRequest $request)
