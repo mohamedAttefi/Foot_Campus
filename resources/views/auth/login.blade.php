@@ -61,6 +61,25 @@
 
         <main class="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12 bg-surface">
             <div class="w-full max-w-md">
+                <!-- Flash Messages -->
+                @if(session('error'))
+                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <div class="flex items-center">
+                        <span class="material-symbols-outlined text-red-600 mr-3">error</span>
+                        <p class="text-red-800 font-medium">{{ session('error') }}</p>
+                    </div>
+                </div>
+                @endif
+                
+                @if(session('success'))
+                <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                    <div class="flex items-center">
+                        <span class="material-symbols-outlined text-green-600 mr-3">check_circle</span>
+                        <p class="text-green-800 font-medium">{{ session('success') }}</p>
+                    </div>
+                </div>
+                @endif
+
                 <header class="mb-10">
                     <h1 class="text-3xl font-extrabold tracking-tight mb-2">Secure Access</h1>
                     <p class="text-on-surface-variant font-medium">Enter your credentials to enter the Pitch.</p>
@@ -168,7 +187,12 @@
                     return;
                 }
 
+                // Store token for API calls
                 localStorage.setItem('token', data.access_token);
+                
+                // Set session cookie for web routes
+                document.cookie = `laravel_session=${data.access_token}; path=/; max-age=3600`;
+                
                 Swal.fire({
                         icon: 'success',
                         title: 'Authenticated',
@@ -176,7 +200,7 @@
                         showConfirmButton: false
                     })
                     .then(() => {
-                        
+                        console.log(data.user.role)
                         if (data.user.role == 'player') window.location.href = 'player/home'
                         if (data.user.role == 'coach') window.location.href = 'manager/dashboard'
                         if (data.user.role == 'admin') window.location.href = 'admin/dashboard'
