@@ -106,8 +106,21 @@
 </head>
 
 <body class="flex min-h-screen">
-    <!-- Include Dynamic Sidebar -->
-    @include('components.dynamic-sidebar', ['userRole' => $userRole ?? 'visitor', 'currentPage' => $currentPage ?? 'dashboard'])
+    {{-- Simple Frontend Authentication --}}
+    @include('components.simple-auth')
+
+    {{-- Role-Specific Sidebar --}}
+    @if(isset($userRole) && $userRole === 'admin')
+        @include('components.admin-sidebar')
+    @elseif(isset($userRole) && $userRole === 'player')
+        @include('components.player-sidebar')
+    @elseif(isset($userRole) && $userRole === 'coach')
+        @include('components.manager-sidebar')
+    @elseif(isset($userRole) && $userRole === 'teacher')
+        @include('components.teacher-sidebar')
+    @else
+        @include('components.dynamic-sidebar')
+    @endif
 
     <!-- Main Content Area -->
     <main class="flex-1 ml-64 min-h-screen">
