@@ -65,4 +65,17 @@ class MatchEventController extends Controller
         $matchEvent->delete();
         return response()->json(null, 204);
     }
+
+    public function showMatchDetails()
+    {
+        $matchDetails = [
+            'match_id' => 1,
+            'home_team' => 'Elite Academy',
+            'away_team' => 'Rival Prep',
+            'date' => '2026-05-01',
+            'venue' => 'Elite Academy Stadium',
+        ];
+
+        return view('player.match-details', compact('matchDetails'));
+    }
 }
