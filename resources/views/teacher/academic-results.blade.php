@@ -241,6 +241,7 @@
                 
                 allGrades = Array.isArray(grades) ? grades : (grades.data || []);
                 allStudents = Array.isArray(students) ? students : (students.data || []);
+                console.log(students)
                 allSubjects = Array.isArray(subjects) ? subjects : (subjects.data || []);
                 
                 renderGrades();
@@ -307,7 +308,7 @@
             allStudents.forEach(student => {
                 const option = document.createElement('option');
                 option.value = student.id;
-                option.textContent = `Student ${student.id}`;
+                option.textContent = `${student.user.name}`;
                 studentSelect.appendChild(option);
             });
 
