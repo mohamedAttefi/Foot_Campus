@@ -224,10 +224,10 @@
         let teamPlayers = [];
         let startingXI = [];
         let substitutes = [];
-        let currentUser = null;
-        let currentTeam = null;
-        let currentMatch = null;
-        let currentFormation = '4-3-3';
+        let createLineupCurrentUser = null;
+        let createLineupCurrentTeam = null;
+        let createLineupCurrentMatch = null;
+        let createLineupCurrentFormation = '4-3-3';
         
         const formationPositions = {
             '4-3-3': [
