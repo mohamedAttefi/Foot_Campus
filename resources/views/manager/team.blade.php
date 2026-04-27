@@ -280,7 +280,7 @@
     function updateTeamStats() {
         // Calculate win rate from matches
         const teamMatches = matches.filter(m => 
-            (m.home_team_id === currentTeam?.id || m.away_team_id === currentTeam?.id) && 
+            (m.home_team_id === currentTeam?.id || m.away_team_id === currentTeam?.id) &&
             m.status === 'completed'
         );
         
