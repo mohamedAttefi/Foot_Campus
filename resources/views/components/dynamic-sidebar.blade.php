@@ -135,6 +135,14 @@
             <span class="material-symbols-outlined">help</span>
             <span>Support</span>
         </a>
+        
+        <!-- Logout -->
+        @if($userRole !== 'visitor')
+        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-red-50/50 dark:hover:bg-red-900/20 transition-all duration-300 text-red-600 dark:text-red-400 font-medium">
+            <span class="material-symbols-outlined">logout</span>
+            <span>Logout</span>
+        </button>
+        @endif
     </div>
 </aside>
 
@@ -273,5 +281,78 @@ function viewSchedule() {
 
 function registerInterest() {
     alert('Visitor: Opening registration form...');
+}
+
+// Logout function
+async function handleLogout() {
+    try {
+        // Show confirmation dialog
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You will be logged out of the system.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#0f5238',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, logout',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (result.isConfirmed) {
+            // Get token from localStorage
+            const token = localStorage.getItem('token');
+            
+            if (token) {
+                // Call logout API
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Clear local storage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    
+                    // Show success message
+                    await Swal.fire({
+                        title: 'Logged Out!',
+                        text: 'You have been successfully logged out.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    
+                    // Redirect to login page
+                    window.location.href = '/login';
+                } else {
+                    throw new Error('Logout failed');
+                }
+            } else {
+                // No token found, redirect to login
+                window.location.href = '/login';
+            }
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+        
+        // Show error message but still redirect
+        await Swal.fire({
+            title: 'Logout Error',
+            text: 'There was an issue logging out. Redirecting to login page...',
+            icon: 'error',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        
+        // Force redirect to login
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 2000);
+    }
 }
 </script>
