@@ -12,7 +12,7 @@ class SubjectController extends Controller
 {
     public function index()
     {
-        return response()->json(['subjects' => Subject::all()]);
+        return response()->json(Subject::all());
     }
 
     public function store(StoreSubjectRequest $request)
