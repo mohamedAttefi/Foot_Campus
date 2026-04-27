@@ -25,15 +25,8 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if ($user && Hash::check($request->password, $user->password)) {
-            \Log::info('AuthController: User authenticated', ['user_id' => $user->id, 'email' => $user->email, 'role' => $user->role]);
-            
-            // Set session for web routes
-            Auth::login($user);
-            \Log::info('AuthController: Session set', ['session_id' => session()->getId(), 'auth_check_after' => Auth::check()]);
-            
             // Create token for API calls
             $token = $user->createToken('token')->plainTextToken;
-            \Log::info('AuthController: Token created', ['token_length' => strlen($token)]);
             
             // Redirect based on role
             $redirectRoute = $this->getRedirectRoute($user->role);
