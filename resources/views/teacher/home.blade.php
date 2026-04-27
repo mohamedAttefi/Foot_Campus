@@ -155,7 +155,7 @@
                 fetchAPI('/player'),
                 fetchAPI('/subject')
             ]);
-            
+            console.log('grades',grades)
             allGrades = Array.isArray(grades) ? grades : (grades.data || []);
             allStudents = Array.isArray(students) ? students : (students.data || []);
             allSubjects = Array.isArray(subjects) ? subjects : (subjects.data || []);
