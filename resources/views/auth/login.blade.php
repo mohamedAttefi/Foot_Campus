@@ -176,7 +176,7 @@
                         });
                         console.log(data)
                     } else {
-                        localStorage.setItem('token', response.access_token)
+                        localStorage.setItem('token', data.access_token)
 
                         Swal.fire({
                             icon: 'warning',
@@ -190,8 +190,13 @@
                 // Store token for API calls
                 localStorage.setItem('token', data.access_token);
                 
-                // Set session cookie for web routes
-                document.cookie = `laravel_session=${data.access_token}; path=/; max-age=3600`;
+                // Store user data for frontend auth
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                
+                console.log('Login successful:', {
+                    role: data.user.role,
+                    redirectUrl: '/teacher/dashboard'
+                });
                 
                 Swal.fire({
                         icon: 'success',
@@ -200,10 +205,19 @@
                         showConfirmButton: false
                     })
                     .then(() => {
-                        console.log(data.user.role)
-                        if (data.user.role == 'player') window.location.href = 'player/home'
-                        if (data.user.role == 'coach') window.location.href = 'manager/dashboard'
-                        if (data.user.role == 'admin') window.location.href = 'admin/dashboard'
+                        console.log('User role:', data.user.role);
+                        
+                        // Redirect based on role
+                        const redirects = {
+                            'player': '/player/home',
+                            'coach': '/manager/dashboard', 
+                            'admin': '/admin/dashboard',
+                            'teacher': '/teacher/dashboard'
+                        };
+                        
+                        const redirectUrl = redirects[data.user.role] || '/login';
+                        console.log('Redirecting to:', redirectUrl, 'for role:', data.user.role);
+                        window.location.href = redirectUrl;
                     });
 
             } catch (err) {
