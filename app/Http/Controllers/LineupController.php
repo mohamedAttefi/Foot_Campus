@@ -17,7 +17,8 @@ class LineupController extends Controller
      */
     public function index()
     {
-        //
+        $lineups = Lineup::with('lineupPlayers.player')->get();
+        return response()->json($lineups);
     }
 
     /**
