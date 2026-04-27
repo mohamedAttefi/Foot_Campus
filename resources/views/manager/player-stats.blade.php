@@ -1,4 +1,4 @@
-@extends('layouts.app', ['userRole' => 'coach', 'currentPage' => 'manager-stats'])
+@extends('layouts.app')
 
 @section('content')
 <div class="p-8">
