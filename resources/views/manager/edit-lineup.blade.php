@@ -122,16 +122,16 @@
 
 <script>
     const EDIT_LINEUP_API_BASE = 'http://127.0.0.1:8000/api';
-    let allPlayers = [];
-    let teamPlayers = [];
-    let startingXI = [];
-    let substitutes = [];
-    let currentUser = null;
-    let currentTeam = null;
-    let currentMatch = null;
-    let currentLineup = null;
-    let currentFormation = '4-3-3';
-    let originalLineup = null; // For reset functionality
+    let editAllPlayers = [];
+    let editTeamPlayers = [];
+    let editStartingXI = [];
+    let editSubstitutes = [];
+    let editCurrentUser = null;
+    let editCurrentTeam = null;
+    let editCurrentMatch = null;
+    let editCurrentLineup = null;
+    let editCurrentFormation = '4-3-3';
+    let editOriginalLineup = null; // For reset functionality
     
     const formationPositions = {
         '4-3-3': [
@@ -222,31 +222,31 @@
                 return;
             }
 
-            currentUser = await fetchAPI('/current-user');
-            console.log('User data:', currentUser)
+            editCurrentUser = await fetchAPI('/current-user');
+            console.log('User data:', editCurrentUser)
             
-            if (currentUser.team) {
-                currentTeam = currentUser.team;
-                console.log('Team loaded from relationship:', currentTeam);
+            if (editCurrentUser.team) {
+                editCurrentTeam = editCurrentUser.team;
+                console.log('Team loaded from relationship:', editCurrentTeam);
             } else {
                 console.log('No team found for this coach');
-                currentTeam = null;
+                editCurrentTeam = null;
             }
             
             // Load current lineup
-            currentLineup = await fetchAPI(`/lineup/${lineupId}`);
-            console.log('Current lineup:', currentLineup);
+            editCurrentLineup = await fetchAPI(`/lineup/${lineupId}`);
+            console.log('Current lineup:', editCurrentLineup);
             
             // Store original lineup for reset
-            originalLineup = JSON.parse(JSON.stringify(currentLineup));
+            editOriginalLineup = JSON.parse(JSON.stringify(editCurrentLineup));
             
             // Get players in the team
             const playersRes = await fetchAPI('/player');
             const allPlayersRes = Array.isArray(playersRes) ? playersRes : (playersRes.data || []);
-            teamPlayers = allPlayersRes.filter(p => p.team_id === currentTeam?.id);
+            editTeamPlayers = allPlayersRes.filter(p => p.team_id === editCurrentTeam?.id);
             
             // Enhance with user data
-            for (let player of teamPlayers) {
+            for (let player of editTeamPlayers) {
                 try {
                     const userData = await fetchAPI(`/users/${player.user_id}`);
                     player.user = userData;
@@ -256,17 +256,17 @@
             }
             
             // Get match information
-            if (currentLineup.game_play_id) {
-                currentMatch = await fetchAPI(`/matches/${currentLineup.game_play_id}`);
+            if (editCurrentLineup.game_play_id) {
+                editCurrentMatch = await fetchAPI(`/matches/${editCurrentLineup.game_play_id}`);
             }
             
             // Load existing lineup players
             const lineupPlayersRes = await fetchAPI('/lineup-players');
             const allLineupPlayers = Array.isArray(lineupPlayersRes) ? lineupPlayersRes : (lineupPlayersRes.data || []);
-            const lineupPlayersList = allLineupPlayers.filter(lp => lp.lineup_id === currentLineup.id);
+            const lineupPlayersList = allLineupPlayers.filter(lp => lp.lineup_id === editCurrentLineup.id);
             
-            startingXI = lineupPlayersList.filter(lp => lp.is_starter).slice(0, 11);
-            substitutes = lineupPlayersList.filter(lp => !lp.is_starter);
+            editStartingXI = lineupPlayersList.filter(lp => lp.is_starter).slice(0, 11);
+            editSubstitutes = lineupPlayersList.filter(lp => !lp.is_starter);
             
             updateMatchInfo();
             renderPlayersList();
@@ -282,11 +282,11 @@
     
     function updateMatchInfo() {
         const matchInfo = document.getElementById('match-info');
-        if (currentMatch) {
-            const isHome = currentMatch.home_team_id === currentTeam?.id;
-            const opponent = isHome ? currentMatch.away_team?.name || 'Opponent' : currentMatch.home_team?.name || 'Opponent';
-            const date = new Date(currentMatch.match_date || currentMatch.date);
-            matchInfo.innerHTML = `${currentTeam?.name || 'Your Team'} vs. ${opponent} — ${date.toLocaleDateString()}`;
+        if (editCurrentMatch) {
+            const isHome = editCurrentMatch.home_team_id === editCurrentTeam?.id;
+            const opponent = isHome ? editCurrentMatch.away_team?.name || 'Opponent' : editCurrentMatch.home_team?.name || 'Opponent';
+            const date = new Date(editCurrentMatch.match_date || editCurrentMatch.date);
+            matchInfo.innerHTML = `${editCurrentTeam?.name || 'Your Team'} vs. ${opponent} — ${date.toLocaleDateString()}`;
         } else {
             matchInfo.innerHTML = 'Edit Lineup';
         }
@@ -294,15 +294,15 @@
     
     function renderPlayersList() {
         const container = document.getElementById('players-list');
-        const starterIds = new Set(startingXI.map(p => p.player_id));
-        const subIds = new Set(substitutes.map(p => p.player_id));
+        const starterIds = new Set(editStartingXI.map(p => p.player_id));
+        const subIds = new Set(editSubstitutes.map(p => p.player_id));
         
-        if (teamPlayers.length === 0) {
+        if (editTeamPlayers.length === 0) {
             container.innerHTML = '<div class="text-center text-outline py-8">No players found in your team</div>';
             return;
         }
         
-        container.innerHTML = teamPlayers.map(player => {
+        container.innerHTML = editTeamPlayers.map(player => {
             const isStarter = starterIds.has(player.id);
             const isSub = subIds.has(player.id);
             const position = player.position || 'MID';
@@ -349,12 +349,12 @@
     }
     
     function addToLineup(playerId) {
-        const player = teamPlayers.find(p => p.id === playerId);
+        const player = editTeamPlayers.find(p => p.id === playerId);
         if (!player) return;
         
-        if (startingXI.filter(p => p !== null).length >= 11) {
-            if (substitutes.length < 7) {
-                substitutes.push({ player_id: playerId, is_starter: false, position: player?.position || 'SUB' });
+        if (editStartingXI.filter(p => p !== null).length >= 11) {
+            if (editSubstitutes.length < 7) {
+                editSubstitutes.push({ player_id: playerId, is_starter: false, position: player?.position || 'SUB' });
                 renderPlayersList();
                 updateStats();
             } else {
@@ -362,7 +362,7 @@
             }
         } else {
             // Find the correct position index based on player's actual position
-            const positions = formationPositions[currentFormation] || formationPositions['4-3-3'];
+            const positions = formationPositions[editCurrentFormation] || formationPositions['4-3-3'];
             let targetIndex = -1;
             
             // Map player position to formation position
@@ -376,12 +376,12 @@
                 targetIndex = positions.findIndex(p => p.pos === 'RB' || p.pos === 'RWB');
             } else if (playerPos === 'CB' || playerPos === 'LCB' || playerPos === 'RCB') {
                 const cbIndices = positions.map((p, idx) => p.pos === 'CB' ? idx : -1).filter(idx => idx !== -1);
-                targetIndex = cbIndices.find(idx => !startingXI[idx]) || cbIndices[0];
+                targetIndex = cbIndices.find(idx => !editStartingXI[idx]) || cbIndices[0];
             } else if (playerPos === 'CDM' || playerPos === 'DM') {
                 targetIndex = positions.findIndex(p => p.pos === 'CDM');
             } else if (playerPos === 'CM' || playerPos === 'LM' || playerPos === 'RM') {
                 const cmIndices = positions.map((p, idx) => (p.pos === 'CM' || p.pos === 'LM' || p.pos === 'RM') ? idx : -1).filter(idx => idx !== -1);
-                targetIndex = cmIndices.find(idx => !startingXI[idx]) || cmIndices[0];
+                targetIndex = cmIndices.find(idx => !editStartingXI[idx]) || cmIndices[0];
             } else if (playerPos === 'LW' || playerPos === 'LM' || playerPos === 'LF') {
                 targetIndex = positions.findIndex(p => p.pos === 'LW' || p.pos === 'LM');
             } else if (playerPos === 'RW' || playerPos === 'RM' || playerPos === 'RF') {
@@ -389,36 +389,30 @@
             } else if (playerPos === 'ST' || playerPos === 'CF' || playerPos === 'CAM') {
                 targetIndex = positions.findIndex(p => p.pos === 'ST' || p.pos === 'CAM');
             } else if (playerPos === 'DEF') {
-                const defIndices = positions.map((p, idx) => 
-                    (p.pos === 'LB' || p.pos === 'RB' || p.pos === 'CB' || p.pos === 'LWB' || p.pos === 'RWB') ? idx : -1
-                ).filter(idx => idx !== -1);
-                targetIndex = defIndices.find(idx => !startingXI[idx]) || defIndices[0];
+                const defIndices = positions.map((p, idx) => (p.pos === 'LB' || p.pos === 'RB' || p.pos === 'CB' || p.pos === 'LWB' || p.pos === 'RWB') ? idx : -1).filter(idx => idx !== -1);
+                targetIndex = defIndices.find(idx => !editStartingXI[idx]) || defIndices[0];
             } else if (playerPos === 'MID') {
-                const midIndices = positions.map((p, idx) => 
-                    (p.pos === 'CM' || p.pos === 'LM' || p.pos === 'RM' || p.pos === 'CDM' || p.pos === 'CAM') ? idx : -1
-                ).filter(idx => idx !== -1);
-                targetIndex = midIndices.find(idx => !startingXI[idx]) || midIndices[0];
+                const midIndices = positions.map((p, idx) => (p.pos === 'CM' || p.pos === 'LM' || p.pos === 'RM' || p.pos === 'CDM' || p.pos === 'CAM') ? idx : -1).filter(idx => idx !== -1);
+                targetIndex = midIndices.find(idx => !editStartingXI[idx]) || midIndices[0];
             } else if (playerPos === 'FWD') {
-                const fwdIndices = positions.map((p, idx) => 
-                    (p.pos === 'LW' || p.pos === 'RW' || p.pos === 'ST') ? idx : -1
-                ).filter(idx => idx !== -1);
-                targetIndex = fwdIndices.find(idx => !startingXI[idx]) || fwdIndices[0];
+                const fwdIndices = positions.map((p, idx) => (p.pos === 'LW' || p.pos === 'RW' || p.pos === 'ST') ? idx : -1).filter(idx => idx !== -1);
+                targetIndex = fwdIndices.find(idx => !editStartingXI[idx]) || fwdIndices[0];
             } else {
-                targetIndex = startingXI.findIndex(p => p === null);
-                if (targetIndex === -1) targetIndex = startingXI.length;
+                targetIndex = editStartingXI.findIndex(p => p === null);
+                if (targetIndex === -1) targetIndex = editStartingXI.length;
             }
             
             // If position is already taken, find first empty slot
-            if (targetIndex !== -1 && startingXI[targetIndex]) {
-                targetIndex = startingXI.findIndex(p => p === null);
-                if (targetIndex === -1) targetIndex = startingXI.length;
+            if (targetIndex !== -1 && editStartingXI[targetIndex]) {
+                targetIndex = editStartingXI.findIndex(p => p === null);
+                if (targetIndex === -1) targetIndex = editStartingXI.length;
             }
             
             // If still no valid index, append to end
-            if (targetIndex === -1) targetIndex = startingXI.length;
+            if (targetIndex === -1) targetIndex = editStartingXI.length;
             
             // Insert player at the correct position
-            startingXI[targetIndex] = { player_id: playerId, is_starter: true, position: player?.position || 'MID' };
+            editStartingXI[targetIndex] = { player_id: playerId, is_starter: true, position: player?.position || 'MID' };
             
             renderPitch();
             renderPlayersList();
@@ -427,13 +421,13 @@
     }
     
     function removeFromLineup(playerId) {
-        const starterIndex = startingXI.findIndex(p => p && p.player_id === playerId);
+        const starterIndex = editStartingXI.findIndex(p => p && p.player_id === playerId);
         if (starterIndex !== -1) {
-            startingXI[starterIndex] = null;
+            editStartingXI[starterIndex] = null;
         }
-        const subIndex = substitutes.findIndex(p => p.player_id === playerId);
+        const subIndex = editSubstitutes.findIndex(p => p.player_id === playerId);
         if (subIndex !== -1) {
-            substitutes.splice(subIndex, 1);
+            editSubstitutes.splice(subIndex, 1);
         }
         renderPitch();
         renderPlayersList();
@@ -442,17 +436,17 @@
     
     function renderPitch() {
         const container = document.getElementById('pitch-container');
-        const positions = formationPositions[currentFormation] || formationPositions['4-3-3'];
+        const positions = formationPositions[editCurrentFormation] || formationPositions['4-3-3'];
         
-        if (startingXI.filter(p => p !== null).length === 0) {
+        if (editStartingXI.filter(p => p !== null).length === 0) {
             container.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-white/50 text-sm">Drag players from the sidebar to build your lineup</div>';
             return;
         }
         
         let pitchHtml = '';
         positions.forEach((pos, idx) => {
-            const player = startingXI[idx];
-            const playerData = player ? teamPlayers.find(p => p.id === player.player_id) : null;
+            const player = editStartingXI[idx];
+            const playerData = player ? editTeamPlayers.find(p => p.id === player.player_id) : null;
             const playerName = playerData?.user?.name;
             
             pitchHtml += `
@@ -473,12 +467,12 @@
     }
     
     function updateStats() {
-        const totalPlayers = startingXI.filter(p => p !== null).length + substitutes.length;
+        const totalPlayers = editStartingXI.filter(p => p !== null).length + editSubstitutes.length;
         document.getElementById('readiness-bar').style.width = `${(totalPlayers / 18) * 100}%`;
         document.getElementById('readiness-text').textContent = `${totalPlayers}/18 players selected`;
         
         // Update average stats (simplified)
-        const selectedPlayers = [...startingXI.filter(p => p !== null), ...substitutes];
+        const selectedPlayers = [...editStartingXI.filter(p => p !== null), ...editSubstitutes];
         if (selectedPlayers.length > 0) {
             document.getElementById('avg-age').textContent = '22'; // Placeholder
             document.getElementById('avg-gpa').textContent = '3.2'; // Placeholder
@@ -486,12 +480,12 @@
     }
     
     async function saveLineup() {
-        if (!currentLineup || !currentLineup.id) {
+        if (!editCurrentLineup || !editCurrentLineup.id) {
             showError('No lineup to save');
             return;
         }
         
-        const totalPlayers = startingXI.filter(p => p !== null).length + substitutes.length;
+        const totalPlayers = editStartingXI.filter(p => p !== null).length + editSubstitutes.length;
         if (totalPlayers === 0) {
             showError('Please select at least one player');
             return;
@@ -501,19 +495,19 @@
             // Delete existing lineup players
             const existingLineupPlayers = await fetchAPI('/lineup-players');
             const allLineupPlayers = Array.isArray(existingLineupPlayers) ? existingLineupPlayers : (existingLineupPlayers.data || []);
-            const currentLineupPlayers = allLineupPlayers.filter(lp => lp.lineup_id === currentLineup.id);
+            const currentLineupPlayers = allLineupPlayers.filter(lp => lp.lineup_id === editCurrentLineup.id);
             
             for (const lineupPlayer of currentLineupPlayers) {
                 await fetchAPI(`/lineup-players/${lineupPlayer.id}`, { method: 'DELETE' });
             }
             
             // Add new lineup players
-            const validStarters = startingXI.filter(p => p !== null);
+            const validStarters = editStartingXI.filter(p => p !== null);
             for (const starter of validStarters) {
                 await fetchAPI('/lineup-players', {
                     method: 'POST',
                     body: JSON.stringify({
-                        lineup_id: currentLineup.id,
+                        lineup_id: editCurrentLineup.id,
                         player_id: starter.player_id,
                         position: starter.position,
                         is_starter: true
@@ -521,11 +515,11 @@
                 });
             }
             
-            for (const sub of substitutes) {
+            for (const sub of editSubstitutes) {
                 await fetchAPI('/lineup-players', {
                     method: 'POST',
                     body: JSON.stringify({
-                        lineup_id: currentLineup.id,
+                        lineup_id: editCurrentLineup.id,
                         player_id: sub.player_id,
                         position: sub.position,
                         is_starter: false
@@ -536,10 +530,10 @@
             showSuccess('Lineup saved successfully!');
             
             // Update original lineup for reset functionality
-            originalLineup = {
-                ...currentLineup,
-                startingXI: JSON.parse(JSON.stringify(startingXI)),
-                substitutes: JSON.parse(JSON.stringify(substitutes))
+            editOriginalLineup = {
+                ...editCurrentLineup,
+                startingXI: JSON.parse(JSON.stringify(editStartingXI)),
+                substitutes: JSON.parse(JSON.stringify(editSubstitutes))
             };
             
         } catch (error) {
@@ -549,9 +543,9 @@
     }
     
     function resetChanges() {
-        if (originalLineup && originalLineup.startingXI && originalLineup.substitutes) {
-            startingXI = JSON.parse(JSON.stringify(originalLineup.startingXI));
-            substitutes = JSON.parse(JSON.stringify(originalLineup.substitutes));
+        if (editOriginalLineup && editOriginalLineup.startingXI && editOriginalLineup.substitutes) {
+            editStartingXI = JSON.parse(JSON.stringify(editOriginalLineup.startingXI));
+            editSubstitutes = JSON.parse(JSON.stringify(editOriginalLineup.substitutes));
             
             renderPitch();
             renderPlayersList();
@@ -604,7 +598,7 @@
         // Formation buttons
         document.querySelectorAll('.formation-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                currentFormation = btn.dataset.formation;
+                editCurrentFormation = btn.dataset.formation;
                 document.querySelectorAll('.formation-btn').forEach(b => {
                     b.classList.remove('bg-primary', 'text-white');
                     b.classList.add('bg-white', 'text-on-surface');
