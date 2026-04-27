@@ -270,28 +270,28 @@
 
         async function loadData() {
             try {
-                currentUser = await fetchAPI('/current-user');
-                console.log('User data:', currentUser)
-                console.log('User team:', currentUser.team);
+                createLineupCurrentUser = await fetchAPI('/current-user');
+                console.log('User data:', createLineupCurrentUser)
+                console.log('User team:', createLineupCurrentUser.team);
                 
-                document.getElementById('nav-user-name').innerText = currentUser.name?.split(' ')[0] || 'Coach';
-                document.getElementById('nav-user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'Coach')}&background=0f5238&color=fff&size=40`;
+                document.getElementById('nav-user-name').innerText = createLineupCurrentUser.name?.split(' ')[0] || 'Coach';
+                document.getElementById('nav-user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(createLineupCurrentUser.name || 'Coach')}&background=0f5238&color=fff&size=40`;
                 
-                if (currentUser.team) {
-                    currentTeam = currentUser.team;
-                    document.getElementById('nav-user-role').innerText = currentTeam.name;
-                    console.log('Team loaded from relationship:', currentTeam);
+                if (createLineupCurrentUser.team) {
+                    createLineupCurrentTeam = createLineupCurrentUser.team;
+                    document.getElementById('nav-user-role').innerText = createLineupCurrentTeam.name;
+                    console.log('Team loaded from relationship:', createLineupCurrentTeam);
                 } else {
                     console.log('No team found for this coach');
                     document.getElementById('nav-user-role').innerText = 'No Team Assigned';
-                    currentTeam = null;
+                    createLineupCurrentTeam = null;
                 }
-                console.log('Final team data:', currentTeam);
+                console.log('Final team data:', createLineupCurrentTeam);
                 
                 // Get players in team
                 const playersRes = await fetchAPI('/player');
                 const allPlayersRes = Array.isArray(playersRes) ? playersRes : (playersRes.data || []);
-                teamPlayers = allPlayersRes.filter(p => p.team_id === currentTeam?.id);
+                teamPlayers = allPlayersRes.filter(p => p.team_id === createLineupCurrentTeam?.id);
                 // console.log('Team players:', teamPlayers);
                 
                 // Enhance with user data
