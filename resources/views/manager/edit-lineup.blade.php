@@ -121,7 +121,7 @@
 </div>
 
 <script>
-    const API_BASE = 'http://127.0.0.1:8000/api';
+    const EDIT_LINEUP_API_BASE = 'http://127.0.0.1:8000/api';
     let allPlayers = [];
     let teamPlayers = [];
     let startingXI = [];
@@ -194,7 +194,7 @@
     }
 
     async function fetchAPI(endpoint, options = {}) {
-        const response = await fetch(`${API_BASE}${endpoint}`, { headers: getHeaders(), ...options });
+        const response = await fetch(`${EDIT_LINEUP_API_BASE}${endpoint}`, { headers: getHeaders(), ...options });
         if (!response.ok) throw new Error(`API Error ${response.status}`);
         
         const text = await response.text();
