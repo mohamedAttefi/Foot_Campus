@@ -14,6 +14,40 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->count(50)->create();
+        // Create specific users for testing
+        $users = [
+            [
+                'name' => 'Admin User',
+                'email' => 'admin@campus.com',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+            ],
+            [
+                'name' => 'Coach Johnson',
+                'email' => 'coach@campus.com',
+                'password' => Hash::make('password'),
+                'role' => 'coach',
+            ],
+            [
+                'name' => 'Teacher Smith',
+                'email' => 'teacher@campus.com',
+                'password' => Hash::make('password'),
+                'role' => 'teacher',
+            ],
+        ];
+
+        // Create 30 player users
+        for ($i = 1; $i <= 30; $i++) {
+            $users[] = [
+                'name' => "Player " . $i,
+                'email' => "player{$i}@campus.com",
+                'password' => Hash::make('password'),
+                'role' => 'player',
+            ];
+        }
+
+        foreach ($users as $user) {
+            User::create($user);
+        }
     }
 }
