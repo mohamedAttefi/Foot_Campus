@@ -1,187 +1,9 @@
-<!DOCTYPE html>
-<html class="light" lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Player Profile | The Scholastic Pitch</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "on-secondary-fixed-variant": "#264191",
-                        "on-primary": "#ffffff",
-                        "on-tertiary-fixed": "#2a1700",
-                        "tertiary-container": "#865400",
-                        "secondary-fixed": "#dce1ff",
-                        "surface-container-lowest": "#ffffff",
-                        "surface": "#f7f9fb",
-                        "on-secondary-container": "#1d3989",
-                        "inverse-on-surface": "#eff1f3",
-                        "surface-tint": "#2c694e",
-                        "on-surface-variant": "#404943",
-                        "tertiary-fixed": "#ffddb8",
-                        "inverse-surface": "#2d3133",
-                        "primary-container": "#2d6a4f",
-                        "on-secondary-fixed": "#00164e",
-                        "on-background": "#191c1e",
-                        "secondary-container": "#8fa7fe",
-                        "on-surface": "#191c1e",
-                        "surface-bright": "#f7f9fb",
-                        "error": "#ba1a1a",
-                        "surface-variant": "#e0e3e5",
-                        "tertiary-fixed-dim": "#ffb95f",
-                        "background": "#f7f9fb",
-                        "on-primary-container": "#a8e7c5",
-                        "outline": "#707973",
-                        "outline-variant": "#bfc9c1",
-                        "primary-fixed": "#b1f0ce",
-                        "primary": "#0f5238",
-                        "primary-fixed-dim": "#95d4b3",
-                        "on-tertiary": "#ffffff",
-                        "secondary": "#4059aa",
-                        "on-tertiary-container": "#ffd29e",
-                        "on-secondary": "#ffffff",
-                        "inverse-primary": "#95d4b3",
-                        "on-primary-fixed": "#002114",
-                        "on-error": "#ffffff",
-                        "error-container": "#ffdad6",
-                        "on-error-container": "#93000a",
-                        "secondary-fixed-dim": "#b6c4ff",
-                        "surface-dim": "#d8dadc",
-                        "tertiary": "#663f00",
-                        "surface-container-highest": "#e0e3e5",
-                        "on-primary-fixed-variant": "#0e5138",
-                        "surface-container": "#eceef0",
-                        "surface-container-low": "#f2f4f6",
-                        "surface-container-high": "#e6e8ea",
-                        "on-tertiary-fixed-variant": "#653e00"
-                    },
-                    borderRadius: {
-                        DEFAULT: "0.25rem",
-                        lg: "0.5rem",
-                        xl: "0.75rem",
-                        "2xl": "1.5rem",
-                        full: "9999px"
-                    },
-                    fontFamily: {
-                        headline: ["Manrope"],
-                        body: ["Inter"],
-                        label: ["Inter"]
-                    }
-                },
-            },
-        }
-    </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-        .pitch-gradient {
-            background: linear-gradient(135deg, #0f5238 0%, #2d6a4f 100%);
-        }
-        .glass-sidebar {
-            backdrop-filter: blur(20px);
-        }
-        /* Skeleton loading animation */
-        .skeleton {
-            background: linear-gradient(90deg, #e0e3e5 25%, #f2f4f6 50%, #e0e3e5 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        /* Hide scrollbar for cleaner look */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-    </style>
-</head>
+@extends('layouts.app', ['userRole' => 'player', 'currentPage' => 'player-profile'])
 
-<body class="bg-surface font-body text-on-surface">
-    <!-- SideNavBar -->
-    <aside class="fixed left-0 top-0 h-full w-64 rounded-r-2xl bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md flex flex-col p-6 overflow-y-auto shadow-xl shadow-emerald-900/5 z-50">
-        <div class="mb-10">
-            <h1 class="text-xl font-bold tracking-tighter text-emerald-900 dark:text-emerald-100 uppercase italic font-headline">The Scholastic Pitch</h1>
-            <p class="text-[10px] uppercase tracking-[0.2em] text-outline font-bold mt-1">Elite Academy League</p>
-        </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined">dashboard</span>
-                Dashboard
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined">leaderboard</span>
-                League Table
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined">groups</span>
-                Teams
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined">sports_soccer</span>
-                Matches
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-emerald-700 font-bold border-r-4 border-emerald-700 bg-emerald-50/50 transition-all duration-300 font-['Manrope'] tracking-wide text-sm" href="#">
-                <span class="material-symbols-outlined">query_stats</span>
-                Player Stats
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined">school</span>
-                Academic Hub
-            </a>
-        </nav>
-        <button class="mt-8 mb-8 pitch-gradient text-on-primary py-3 px-4 rounded-xl font-headline font-bold text-sm shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-            <span class="material-symbols-outlined text-sm">add</span>
-            Create Match
-        </button>
-        <div class="mt-auto space-y-2 border-t border-outline-variant/20 pt-6">
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined">settings</span>
-                Settings
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined">help</span>
-                Support
-            </a>
-        </div>
-    </aside>
-    <div class="ml-64 min-h-screen flex flex-col">
-        <!-- TopNavBar -->
-        <header class="sticky top-0 w-full z-40 bg-white/80 backdrop-blur-xl flex justify-between items-center h-16 px-8 transition-opacity">
-            <div class="flex items-center gap-8">
-                <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-                    <input class="bg-surface-container-highest border-none rounded-full pl-10 pr-4 py-1.5 text-sm w-64 focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search players, teams..." type="text" />
-                </div>
-                <nav class="flex items-center gap-6">
-                    <a class="text-slate-600 hover:text-emerald-500 font-['Manrope'] font-medium text-sm transition-colors" href="#">Standings</a>
-                    <a class="text-slate-600 hover:text-emerald-500 font-['Manrope'] font-medium text-sm transition-colors" href="#">Schedule</a>
-                    <a class="text-slate-600 hover:text-emerald-500 font-['Manrope'] font-medium text-sm transition-colors" href="#">Awards</a>
-                </nav>
-            </div>
-            <div class="flex items-center gap-4">
-                <button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition-colors">
-                    <span class="material-symbols-outlined">notifications</span>
-                </button>
-                <div class="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
-                    <div class="text-right">
-                        <p id="nav-user-name" class="text-xs font-bold font-headline">Loading...</p>
-                        <p id="nav-user-role" class="text-[10px] text-outline">Player</p>
-                    </div>
-                    <img id="nav-user-avatar" alt="User Profile Avatar" class="w-8 h-8 rounded-full border border-outline-variant/30 object-cover" src="https://ui-avatars.com/api/?name=Player&background=0f5238&color=fff" />
-                </div>
-            </div>
-        </header>
-        <!-- Main Content Area -->
-        <main class="p-8 space-y-8 flex-1">
+@section('title', 'Player Profile | The Scholastic Pitch')
+
+@section('content')
+<div class="p-8 space-y-8 flex-1">
             <!-- Hero Profile Section -->
             <section class="relative grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 bg-surface-container-lowest rounded-2xl p-8 flex flex-col md:flex-row gap-8 relative overflow-hidden">
@@ -310,192 +132,207 @@
         </main>
     </div>
 
-    <script>
-        const API_BASE = 'http://127.0.0.1:8000/api';
-        
-        function getHeaders() {
-            const token = localStorage.getItem('token');
-            return {
-                'Authorization': token ? `Bearer ${token}` : '',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            };
+    <style>
+        .pitch-gradient {
+            background: linear-gradient(135deg, #0f5238 0%, #2d6a4f 100%);
         }
+        .filter-btn.active-filter {
+            background-color: #0f5238;
+            color: white;
+        }
+    </style>
 
-        async function fetchAPI(endpoint) {
-            const response = await fetch(`${API_BASE}${endpoint}`, { headers: getHeaders() });
-            if (!response.ok) throw new Error(`API Error ${response.status}`);
-            return response.json();
-        }
-        
-        // Store raw stats for filtering
-        let rawMatchStats = [];
-        
+    <script>
+        // API Configuration
+        const API_BASE = 'http://127.0.0.1:8000/api';
+
+        // Sample data for demonstration
+        const samplePlayerData = {
+            name: "Alex Johnson",
+            position: "Central Midfielder",
+            team_location: "St. Jude's Academy",
+            height: "178",
+            weight: "72",
+            foot: "Right",
+            jersey: "10",
+            goals: 12,
+            assists: 8,
+            pass_accuracy: 85,
+            gpa: 3.7,
+            academic_status: "Eligible",
+            attributes: {
+                pace: 78,
+                shooting: 72,
+                passing: 85,
+                dribbling: 80,
+                defending: 70
+            },
+            match_stats: [
+                { tournament: "Premier League U19", mp: 15, g: 8, a: 5, yc: 2, rc: 0, rating: 7.8 },
+                { tournament: "National Cup", mp: 3, g: 2, a: 1, yc: 0, rc: 0, rating: 8.2 },
+                { tournament: "Premier League U19", mp: 12, g: 2, a: 2, yc: 3, rc: 0, rating: 7.5 }
+            ],
+            career: [
+                { year: "2023", team: "St. Jude's Academy U19", level: "Elite Academy" },
+                { year: "2022", team: "Riverside FC U17", level: "Regional Academy" },
+                { year: "2021", team: "Youth Development Center", level: "Foundation" }
+            ]
+        };
+
+        // Load player profile data
         async function loadPlayerProfile() {
             try {
-                const user = await fetchAPI('/current-user');
-                let player = user;
-                try {
-                    const playerData = await fetchAPI(`/players/${user.id}`);
-                    player = { ...user, ...playerData };
-                    console.log(player)
-                } catch(e) { console.warn("Player specific endpoint fallback", e); }
+                // Try to load from API first
+                const token = localStorage.getItem('token');
+                let playerData = null;
                 
-                // Update UI with player data
-                document.getElementById('player-name').innerText = player.name || "Athlete";
-                document.getElementById('player-position').innerText = player.position || "Midfielder";
-                document.getElementById('player-team-location').innerText = player.team_name || "Scholastic Academy";
-                document.getElementById('player-height').innerText = player.height ? `${player.height} cm` : "178 cm";
-                document.getElementById('player-weight').innerText = player.weight ? `${player.weight} kg` : "72 kg";
-                document.getElementById('player-foot').innerText = player.preferred_foot || "Right";
-                document.getElementById('player-jersey').innerText = player.jersey_number || "10";
-                document.getElementById('nav-user-name').innerText = player.name?.split(' ')[0] || "Player";
-                document.getElementById('nav-user-role').innerText = player.role || "Athlete";
-                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name || 'Player')}&background=0f5238&color=fff&size=200`;
-                document.getElementById('profile-avatar').src = avatarUrl;
-                document.getElementById('nav-user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name || 'Player')}&background=0f5238&color=fff&size=32`;
-                
-                await loadMatchStatsForPlayer();
-                await loadAcademicData();
-                await loadCareerTimeline();
-                
-                document.querySelectorAll('.filter-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        document.querySelectorAll('.filter-btn').forEach(b => {
-                            b.classList.remove('active-filter', 'bg-surface-container-high', 'text-on-surface-variant');
-                            b.classList.add('text-outline');
+                if (token) {
+                    try {
+                        const response = await fetch(`${API_BASE}/current-user`, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            }
                         });
-                        this.classList.add('active-filter', 'bg-surface-container-high', 'text-on-surface-variant');
-                        this.classList.remove('text-outline');
-                        const filter = this.dataset.filter;
-                        filterStatsTable(filter);
-                    });
-                });
-            } catch(err) {
-                console.error("Profile load error:", err);
-                document.getElementById('player-name').innerText = "Marcus Henderson";
-                document.getElementById('player-position').innerText = "Central Midfielder";
-                document.getElementById('player-bio').innerText = "Exceptionally talented midfielder with excellent vision and passing range. Captain of the academy team.";
+                        
+                        if (response.ok) {
+                            const userData = await response.json();
+                            playerData = userData.player;
+                        }
+                    } catch (error) {
+                        console.log('API call failed, using sample data');
+                    }
+                }
+                
+                // Use sample data if API fails or no token
+                const data = playerData || samplePlayerData;
+                
+                // Update profile information
+                document.getElementById('player-name').textContent = data.name;
+                document.getElementById('player-position').textContent = data.position;
+                document.getElementById('player-team-location').textContent = data.team_location;
+                document.getElementById('player-height').textContent = data.height + ' cm';
+                document.getElementById('player-weight').textContent = data.weight + ' kg';
+                document.getElementById('player-foot').textContent = data.foot;
+                document.getElementById('player-jersey').textContent = data.jersey;
+                
+                // Update quick stats
+                document.getElementById('quick-goals').textContent = data.goals;
+                document.getElementById('quick-assists').textContent = data.assists;
+                document.getElementById('quick-pass-accuracy').textContent = data.pass_accuracy + '%';
+                document.getElementById('academic-status').textContent = 'Academic Status: ' + data.academic_status;
+                document.getElementById('academic-gpa').textContent = 'GPA: ' + data.gpa + ' / 4.0';
+                
+                // Update attribute bars
+                updateAttributeBar('pace', data.attributes.pace);
+                updateAttributeBar('shooting', data.attributes.shooting);
+                updateAttributeBar('passing', data.attributes.passing);
+                updateAttributeBar('dribbling', data.attributes.dribbling);
+                updateAttributeBar('defending', data.attributes.defending);
+                
+                // Create sparklines
+                createSparkline('goals-spark', [3, 5, 2, 8, 4, 6, 12]);
+                createSparkline('assists-spark', [1, 3, 2, 4, 1, 5, 8]);
+                createSparkline('pass-spark', [78, 82, 80, 85, 83, 84, 85]);
+                
+                // Load match statistics
+                loadMatchStatistics(data.match_stats || []);
+                
+                // Load career timeline
+                loadCareerTimeline(data.career || []);
+                
+            } catch (error) {
+                console.error('Error loading player profile:', error);
             }
         }
-        
-        function filterStatsTable(filterType) {
-            if (!rawMatchStats.length) return;
+
+        function updateAttributeBar(attribute, value) {
+            const valueElement = document.getElementById(attribute + '-value');
+            const barElement = document.getElementById(attribute + '-bar');
             
-            let filtered = [...rawMatchStats];
-            if (filterType === 'league') {
-                filtered = filtered.filter(s => s.match_type === 'league' || (!s.match_type && s.tournament?.toLowerCase().includes('league')));
-            } else if (filterType === 'cup') {
-                filtered = filtered.filter(s => s.match_type === 'cup' || s.tournament?.toLowerCase().includes('cup'));
-            }
+            if (valueElement) valueElement.textContent = value;
+            if (barElement) barElement.style.width = value + '%';
+        }
+
+        function createSparkline(containerId, data) {
+            const container = document.getElementById(containerId);
+            if (!container || !data.length) return;
             
-            const tournamentMap = new Map();
-            filtered.forEach(s => {
-                const tourney = s.tournament || (s.match_type === 'cup' ? 'Scholastic Cup' : 'League Competition');
-                if (!tournamentMap.has(tourney)) tournamentMap.set(tourney, { mp:0, g:0, a:0, yc:0, rc:0, ratingSum:0 });
-                let t = tournamentMap.get(tourney);
-                t.mp++; t.g += s.goals||0; t.a += s.assists||0; t.yc += s.yellow_cards||0; t.rc += s.red_cards||0; t.ratingSum += s.rating||0;
+            const max = Math.max(...data);
+            const min = Math.min(...data);
+            const range = max - min || 1;
+            
+            const bars = data.map(value => {
+                const height = ((value - min) / range) * 32;
+                return `<div class="bg-primary/60 rounded-sm" style="height: ${height}px; width: 3px;"></div>`;
             });
             
+            container.innerHTML = bars.join('');
+        }
+
+        function loadMatchStatistics(stats) {
             const tbody = document.getElementById('stats-table-body');
-            if (tournamentMap.size === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-outline">No match statistics available for this filter</td></tr>';
-            } else {
-                tbody.innerHTML = Array.from(tournamentMap.entries()).map(([name, data]) => {
-                    const avgRating = data.mp ? (data.ratingSum / data.mp).toFixed(1) : '0.0';
-                    const colorClass = name.toLowerCase().includes('cup') ? 'secondary' : 'primary';
-                    return `<tr class="hover:bg-surface/50 transition-colors">
-                        <td class="px-6 py-5"><div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-${colorClass}"></div><span class="text-sm font-bold">${name}</span></div></td>
-                        <td class="px-6 py-5 text-sm font-medium text-center">${data.mp}</td>
-                        <td class="px-6 py-5 text-sm font-bold text-center">${data.g}</td>
-                        <td class="px-6 py-5 text-sm font-medium text-center">${data.a}</td>
-                        <td class="px-6 py-5 text-sm font-medium text-center">${data.yc}</td>
-                        <td class="px-6 py-5 text-sm font-medium text-center">${data.rc}</td>
-                        <td class="px-6 py-5 text-right"><span class="bg-${colorClass}/10 text-${colorClass} px-2.5 py-1 rounded-lg font-bold text-xs">${avgRating}</span></td>
-                    </tr>`;
-                }).join('');
+            if (!stats.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-outline">No match statistics available</td></tr>';
+                return;
             }
+            
+            const rows = stats.map(stat => `
+                <tr class="hover:bg-surface/50 transition-colors">
+                    <td class="px-6 py-4 font-medium">${stat.tournament}</td>
+                    <td class="px-6 py-4 text-center">${stat.mp}</td>
+                    <td class="px-6 py-4 text-center font-bold text-primary">${stat.g}</td>
+                    <td class="px-6 py-4 text-center font-bold text-secondary">${stat.a}</td>
+                    <td class="px-6 py-4 text-center">${stat.yc}</td>
+                    <td class="px-6 py-4 text-center">${stat.rc}</td>
+                    <td class="px-6 py-4 text-right font-bold">${stat.rating.toFixed(1)}</td>
+                </tr>
+            `);
+            
+            tbody.innerHTML = rows.join('');
         }
-        
-        async function loadMatchStatsForPlayer() {
-            try {
-                const stats = await fetchAPI('/match-stats');
-                if (!Array.isArray(stats)) return;
-                rawMatchStats = stats;
-                let totalGoals = 0, totalAssists = 0;
-                const tournamentMap = new Map();
-                stats.forEach(s => {
-                    totalGoals += s.goals || 0;
-                    totalAssists += s.assists || 0;
-                    const tourney = s.tournament || (s.match_type === 'cup' ? 'Scholastic Cup' : 'League Competition');
-                    if (!tournamentMap.has(tourney)) tournamentMap.set(tourney, { mp:0, g:0, a:0, yc:0, rc:0, ratingSum:0 });
-                    let t = tournamentMap.get(tourney);
-                    t.mp++; t.g += s.goals||0; t.a += s.assists||0; t.yc += s.yellow_cards||0; t.rc += s.red_cards||0; t.ratingSum += s.rating||0;
-                });
-                document.getElementById('quick-goals').innerText = totalGoals;
-                document.getElementById('quick-assists').innerText = totalAssists;
-                // Calculate realistic pass accuracy from stats or use default
-                const totalPasses = stats.reduce((acc, s) => acc + (s.passes_completed || 0) + (s.passes_attempted || 0), 0);
-                let passAcc = 89;
-                if (totalPasses > 0) {
-                    const completed = stats.reduce((acc, s) => acc + (s.passes_completed || 0), 0);
-                    const attempted = stats.reduce((acc, s) => acc + (s.passes_attempted || 0), 0);
-                    if (attempted > 0) passAcc = Math.round((completed / attempted) * 100);
-                } else {
-                    passAcc = 85 + Math.floor(Math.random() * 12);
-                }
-                document.getElementById('quick-pass-accuracy').innerText = `${Math.min(passAcc, 99)}%`;
-                
-                // Spark bars (visual flair)
-                document.getElementById('goals-spark').innerHTML = '<div class="w-2 bg-primary/20 h-3 rounded-full"></div><div class="w-2 bg-primary/40 h-5 rounded-full"></div><div class="w-2 bg-primary/60 h-4 rounded-full"></div><div class="w-2 bg-primary/80 h-7 rounded-full"></div><div class="w-2 bg-primary h-8 rounded-full"></div>';
-                document.getElementById('assists-spark').innerHTML = '<div class="w-2 bg-secondary/20 h-6 rounded-full"></div><div class="w-2 bg-secondary/40 h-4 rounded-full"></div><div class="w-2 bg-secondary h-7 rounded-full"></div><div class="w-2 bg-secondary/60 h-3 rounded-full"></div><div class="w-2 bg-secondary/80 h-5 rounded-full"></div>';
-                document.getElementById('pass-spark').innerHTML = '<div class="w-2 bg-outline-variant h-7 rounded-full"></div><div class="w-2 bg-outline-variant h-8 rounded-full"></div><div class="w-2 bg-outline-variant h-6 rounded-full"></div><div class="w-2 bg-outline-variant h-8 rounded-full"></div><div class="w-2 bg-outline-variant h-7 rounded-full"></div>';
-                
-                filterStatsTable('all');
-            } catch(e) { console.warn("Stats error", e); }
-        }
-        
-        async function loadAcademicData() {
-            try {
-                const grades = await fetchAPI('/grade');
-                if (grades && grades.length) {
-                    let avg = grades.reduce((a,b) => a + (b.score||0), 0)/grades.length;
-                    let gpaVal = (avg / 100 * 4).toFixed(1);
-                    document.getElementById('academic-gpa').innerHTML = `GPA: ${gpaVal} / 4.0`;
-                    document.getElementById('academic-status').innerHTML = `Academic Status: ${gpaVal >= 3.5 ? 'Honors' : (gpaVal >= 2.5 ? 'Good Standing' : 'Academic Watch')}`;
-                } else {
-                    document.getElementById('academic-gpa').innerHTML = "GPA: 3.8 / 4.0";
-                    document.getElementById('academic-status').innerHTML = "Academic Status: Honors";
-                }
-            } catch(e) { console.warn("Academic error", e); }
-        }
-        
-        async function loadCareerTimeline() {
+
+        function loadCareerTimeline(career) {
             const container = document.getElementById('career-timeline');
-            try {
-                const teams = await fetchAPI('/team');
-                if (Array.isArray(teams) && teams.length) {
-                    container.innerHTML = teams.slice(0,3).map((t, idx) => `
-                        <div class="flex gap-4 relative ${idx < 2 ? 'pb-6' : ''}">
-                            ${idx < 2 ? '<div class="absolute left-4 top-8 bottom-0 w-0.5 bg-outline-variant/30" style="height: calc(100% - 32px);"></div>' : ''}
-                            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 z-10"><span class="material-symbols-outlined text-white text-xs">sports_soccer</span></div>
-                            <div><p class="text-sm font-bold">${t.name || t.team_name || 'Academy'}</p><p class="text-[10px] text-outline">${t.joined_year || '2021'} — ${t.left_year || 'Present'}</p><p class="text-xs text-on-surface-variant mt-1">${t.description || (idx === 0 ? 'First Team Player' : 'Youth Development')}</p></div>
-                        </div>
-                    `).join('');
-                } else {
-                    container.innerHTML = `
-                        <div class="flex gap-4 relative pb-6"><div class="absolute left-4 top-8 bottom-0 w-0.5 bg-outline-variant/30"></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center z-10"><span class="material-symbols-outlined text-white text-xs">sports_soccer</span></div><div><p class="text-sm font-bold">St. Jude's Academy</p><p class="text-[10px] text-outline">2021 — Present</p><p class="text-xs text-on-surface-variant mt-1">First Team Captain</p></div></div>
-                        <div class="flex gap-4 relative pb-6"><div class="absolute left-4 top-8 bottom-0 w-0.5 bg-outline-variant/30"></div><div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center z-10"><span class="material-symbols-outlined text-outline text-xs">history</span></div><div><p class="text-sm font-bold">Elite City Juniors</p><p class="text-[10px] text-outline">2018 — 2021</p><p class="text-xs text-on-surface-variant mt-1">Youth Development Program</p></div></div>
-                        <div class="flex gap-4"><div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center z-10"><span class="material-symbols-outlined text-outline text-xs">school</span></div><div><p class="text-sm font-bold">Green Park Primary</p><p class="text-[10px] text-outline">2014 — 2018</p><p class="text-xs text-on-surface-variant mt-1">School Representative Team</p></div></div>
-                    `;
-                }
-            } catch(e) { 
-                container.innerHTML = `<div class="flex gap-4"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-white text-xs">sports_soccer</span></div><div><p class="text-sm font-bold">St. Jude's Academy</p><p class="text-[10px] text-outline">2021 — Present</p><p class="text-xs text-on-surface-variant mt-1">First Team Player</p></div></div>`; 
+            if (!career.length) {
+                container.innerHTML = '<div class="text-center text-outline py-8">No career history available</div>';
+                return;
             }
+            
+            const timeline = career.map(item => `
+                <div class="flex gap-4">
+                    <div class="flex flex-col items-center">
+                        <div class="w-3 h-3 bg-primary rounded-full"></div>
+                        <div class="w-0.5 h-16 bg-outline-variant/30"></div>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-bold text-sm">${item.year}</p>
+                        <p class="font-medium">${item.team}</p>
+                        <p class="text-xs text-outline">${item.level}</p>
+                    </div>
+                </div>
+            `);
+            
+            container.innerHTML = timeline.join('');
         }
-        
-       
-        
+
+        // Filter functionality
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active-filter', 'bg-primary', 'text-white');
+                    btn.classList.add('text-outline');
+                });
+                
+                e.target.classList.add('active-filter', 'bg-primary', 'text-white');
+                e.target.classList.remove('text-outline');
+                
+                // Filter stats based on tournament type
+                const filter = e.target.dataset.filter;
+                // Implement filtering logic here
+            }
+        });
+
         // Initialize
         window.addEventListener('DOMContentLoaded', () => {
             if (!localStorage.getItem('token')) {
@@ -504,5 +341,5 @@
             loadPlayerProfile();
         });
     </script>
-</body>
+@endsection
 </html>
