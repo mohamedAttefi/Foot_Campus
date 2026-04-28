@@ -126,7 +126,7 @@
     let allPlayers = [];
     let allStats = [];
     let filteredStats = [];
-    let currentUser = null;
+    let currentCoach = null;
     let currentTeam = null;
 
     async function loadStatsData() {
@@ -139,7 +139,7 @@
             
             allPlayers = Array.isArray(players) ? players : (players.data || []);
             allStats = Array.isArray(stats) ? stats : (stats.data || []);
-            currentUser = userData;
+            currentCoach = userData;
             currentTeam = userData?.team;
             
             // Filter for current team
