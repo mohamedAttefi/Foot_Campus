@@ -23,11 +23,6 @@ protected $fillable = ['user_id', 'jersey_number', 'is_eligible', 'team_id'];
             ->withPivot('position', 'is_starter');
     }
 
-    public function academicRecords()
-    {
-        return $this->hasMany(AcademicRecord::class);
-    }
-
     public function team()
     {
         return $this->belongsTo(Team::class);
