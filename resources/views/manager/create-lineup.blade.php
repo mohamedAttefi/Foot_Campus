@@ -220,10 +220,10 @@
 
     <script>
         const CREATE_LINEUP_API_BASE = 'http://127.0.0.1:8000/api';
-        let allPlayers = [];
-        let teamPlayers = [];
-        let startingXI = [];
-        let substitutes = [];
+        let allPlayersList = [];
+        let teamPlayersList = [];
+        let startingLineup = [];
+        let substitutesList = [];
         let createLineupCurrentUser = null;
         let createLineupCurrentTeam = null;
         let createLineupCurrentMatch = null;
@@ -250,9 +250,29 @@
             return { 'Authorization': token ? `Bearer ${token}` : '', 'Content-Type': 'application/json', 'Accept': 'application/json' };
         }
 
+        function redirectToDashboard(role) {
+            const dashboardRoutes = {
+                'coach': '/manager/dashboard',
+                'player': '/player/home',
+                'admin': '/manager/dashboard',
+                'teacher': '/teacher/dashboard'
+            };
+            
+            const targetRoute = dashboardRoutes[role] || '/login';
+            window.location.href = targetRoute;
+        }
+
         async function fetchAPI(endpoint, options = {}) {
             const response = await fetch(`${CREATE_LINEUP_API_BASE}${endpoint}`, { headers: getHeaders(), ...options });
-            if (!response.ok) throw new Error(`API Error ${response.status}`);
+            if (!response.ok) {
+                // Handle 401 Unauthorized - redirect to login
+                if (response.status === 401) {
+                    localStorage.removeItem('token'); // Clear invalid token
+                    window.location.href = '/login';
+                    throw new Error('Unauthorized - redirecting to login');
+                }
+                throw new Error(`API Error ${response.status}`);
+            }
             
             const text = await response.text();
             if (!text) {
@@ -274,6 +294,13 @@
                 console.log('User data:', createLineupCurrentUser)
                 console.log('User team:', createLineupCurrentUser.team);
                 
+                // Check if user has appropriate role for this page
+                if (!createLineupCurrentUser || !['coach', 'admin'].includes(createLineupCurrentUser.role)) {
+                    console.log('User does not have permission to access this page. Role:', createLineupCurrentUser?.role);
+                    redirectToDashboard(createLineupCurrentUser?.role || 'guest');
+                    return;
+                }
+                
                 document.getElementById('nav-user-name').innerText = createLineupCurrentUser.name?.split(' ')[0] || 'Coach';
                 document.getElementById('nav-user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(createLineupCurrentUser.name || 'Coach')}&background=0f5238&color=fff&size=40`;
                 
@@ -287,15 +314,14 @@
                     createLineupCurrentTeam = null;
                 }
                 console.log('Final team data:', createLineupCurrentTeam);
-                
-                // Get players in team
+                // Get players in the team
                 const playersRes = await fetchAPI('/player');
                 const allPlayersRes = Array.isArray(playersRes) ? playersRes : (playersRes.data || []);
-                teamPlayers = allPlayersRes.filter(p => p.team_id === createLineupCurrentTeam?.id);
-                // console.log('Team players:', teamPlayers);
+                teamPlayersList = allPlayersRes.filter(p => p.team_id === createLineupCurrentTeam?.id);
+                // console.log('Team players:', teamPlayersList);
                 
                 // Enhance with user data
-                for (let player of teamPlayers) {
+                for (let player of teamPlayersList) {
                     try {
                         // console.log(player.user_id)
                         const userData = await fetchAPI(`/users/${player.user_id}`);
@@ -305,7 +331,7 @@
                         console.log(e)
                     }
                 }
-                // console.log('Team players with user data:', teamPlayers);
+                // console.log('Team players with user data:', teamPlayersList);
                 
                 // Get next match
                 const matchesRes = await fetchAPI('/matches');
@@ -319,22 +345,17 @@
                 // Get existing lineup for this match
                 if (createLineupCurrentMatch) {
                     const lineupsRes = await fetchAPI('/lineup');
-                    console.log('Lineups response:', lineupsRes);
                     
-                    if (lineupsRes) {
-                        const lineups = Array.isArray(lineupsRes) ? lineupsRes : (lineupsRes.data || []);
-                        const existingLineup = lineups.find(l => l.game_play_id === createLineupCurrentMatch.id && l.team_id === createLineupCurrentTeam?.id);
+                    const lineups = Array.isArray(lineupsRes) ? lineupsRes : (lineupsRes.data || []);
+                    const existingLineup = lineups.find(l => l.game_play_id === createLineupCurrentMatch.id && l.team_id === createLineupCurrentTeam?.id);
+                    
+                    if (existingLineup) {
+                        const lineupPlayersRes = await fetchAPI('/lineup-players');
+                        const allLineupPlayers = Array.isArray(lineupPlayersRes) ? lineupPlayersRes : (lineupPlayersRes.data || []);
+                        const lineupPlayersList = allLineupPlayers.filter(lp => lp.lineup_id === existingLineup.id);
                         
-                        if (existingLineup) {
-                            const lineupPlayersRes = await fetchAPI('/lineup-players');
-                            if (lineupPlayersRes) {
-                                const allLineupPlayers = Array.isArray(lineupPlayersRes) ? lineupPlayersRes : (lineupPlayersRes.data || []);
-                                const lineupPlayersList = allLineupPlayers.filter(lp => lp.lineup_id === existingLineup.id);
-                                
-                                startingXI = lineupPlayersList.filter(lp => lp.is_starter).slice(0, 11);
-                                substitutes = lineupPlayersList.filter(lp => !lp.is_starter);
-                            }
-                        }
+                        startingLineup = lineupPlayersList.filter(lp => lp.is_starter).slice(0, 11);
+                        substitutesList = lineupPlayersList.filter(lp => !lp.is_starter);
                     }
                 }
                 
@@ -365,15 +386,15 @@
         
         function renderPlayersList() {
             const container = document.getElementById('players-list');
-            const starterIds = new Set(startingXI.map(p => p.player_id));
-            const subIds = new Set(substitutes.map(p => p.player_id));
+            const starterIds = new Set(startingLineup.map(p => p.player_id));
+            const subIds = new Set(substitutesList.map(p => p.player_id));
             
-            if (teamPlayers.length === 0) {
+            if (teamPlayersList.length === 0) {
                 container.innerHTML = '<div class="text-center text-outline py-8">No players found in your team</div>';
                 return;
             }
             
-            container.innerHTML = teamPlayers.map(player => {
+            container.innerHTML = teamPlayersList.map(player => {
                 const isStarter = starterIds.has(player.id);
                 const isSub = subIds.has(player.id);
                 const position = player.position || 'MID';
@@ -420,20 +441,20 @@
         }
         
         function addToLineup(playerId) {
-            const player = teamPlayers.find(p => p.id === playerId);
+            const player = teamPlayersList.find(p => p.id === playerId);
             if (!player) return;
             
-            if (startingXI.filter(p => p !== null).length >= 11) {
-                if (substitutes.length < 7) {
-                    substitutes.push({ player_id: playerId, is_starter: false, position: player?.position || 'SUB' });
+            if (startingLineup.filter(p => p !== null).length >= 11) {
+                if (substitutesList.length < 7) {
+                    substitutesList.push({ player_id: playerId, is_starter: false, position: player?.position || 'SUB' });
                     renderBench();
                     renderPlayersList();
                 } else {
                     alert('Maximum 11 starters and 7 substitutes allowed');
                 }
             } else {
-                // Find correct position index based on player's actual position
-                const positions = formationPositions[currentFormation] || formationPositions['4-3-3'];
+                // Find the correct position index based on player's actual position
+                const positions = formationPositions[createLineupCurrentFormation] || formationPositions['4-3-3'];
                 let targetIndex = -1;
                 
                 // Map player position to formation position
@@ -449,13 +470,13 @@
                 } else if (playerPos === 'CB' || playerPos === 'LCB' || playerPos === 'RCB') {
                     // Find first available CB position
                     const cbIndices = positions.map((p, idx) => p.pos === 'CB' ? idx : -1).filter(idx => idx !== -1);
-                    targetIndex = cbIndices.find(idx => !startingXI[idx]) || cbIndices[0];
+                    targetIndex = cbIndices.find(idx => !startingLineup[idx]) || cbIndices[0];
                 } else if (playerPos === 'CDM' || playerPos === 'DM') {
                     targetIndex = positions.findIndex(p => p.pos === 'CM' && p.abbr === 'CDM');
                 } else if (playerPos === 'CM' || playerPos === 'LM' || playerPos === 'RM') {
                     // Find first available CM position (not CDM)
                     const cmIndices = positions.map((p, idx) => p.pos === 'CM' && p.abbr === 'CM' ? idx : -1).filter(idx => idx !== -1);
-                    targetIndex = cmIndices.find(idx => !startingXI[idx]) || cmIndices[0];
+                    targetIndex = cmIndices.find(idx => !startingLineup[idx]) || cmIndices[0];
                 } else if (playerPos === 'LW' || playerPos === 'LM' || playerPos === 'LF') {
                     targetIndex = positions.findIndex(p => p.pos === 'LW');
                 } else if (playerPos === 'RW' || playerPos === 'RM' || playerPos === 'RF') {
@@ -467,38 +488,38 @@
                     const defIndices = positions.map((p, idx) => 
                         (p.pos === 'LB' || p.pos === 'RB' || p.pos === 'CB') ? idx : -1
                     ).filter(idx => idx !== -1);
-                    targetIndex = defIndices.find(idx => !startingXI[idx]) || defIndices[0];
+                    targetIndex = defIndices.find(idx => !startingLineup[idx]) || defIndices[0];
                 } else if (playerPos === 'MID') {
                     // Handle general MID position - find first available midfield position
                     const midIndices = positions.map((p, idx) => 
                         (p.pos === 'CM' || p.pos === 'LW' || p.pos === 'RW') ? idx : -1
                     ).filter(idx => idx !== -1);
-                    targetIndex = midIndices.find(idx => !startingXI[idx]) || midIndices[0];
+                    targetIndex = midIndices.find(idx => !startingLineup[idx]) || midIndices[0];
                 } else if (playerPos === 'FWD') {
                     // Handle general FWD position - find first available attacking position
                     const fwdIndices = positions.map((p, idx) => 
                         (p.pos === 'LW' || p.pos === 'RW' || p.pos === 'ST') ? idx : -1
                     ).filter(idx => idx !== -1);
-                    targetIndex = fwdIndices.find(idx => !startingXI[idx]) || fwdIndices[0];
+                    targetIndex = fwdIndices.find(idx => !startingLineup[idx]) || fwdIndices[0];
                 } else {
                     // Default: find first empty position
-                    targetIndex = startingXI.findIndex(p => p === null);
-                    if (targetIndex === -1) targetIndex = startingXI.length;
+                    targetIndex = startingLineup.findIndex(p => p === null);
+                    if (targetIndex === -1) targetIndex = startingLineup.length;
                 }
                 
                 console.log(`Target index for ${playerPos}: ${targetIndex}`);
                 
                 // If position is already taken, find first empty slot
-                if (targetIndex !== -1 && startingXI[targetIndex]) {
-                    targetIndex = startingXI.findIndex(p => p === null);
-                    if (targetIndex === -1) targetIndex = startingXI.length;
+                if (targetIndex !== -1 && startingLineup[targetIndex]) {
+                    targetIndex = startingLineup.findIndex(p => p === null);
+                    if (targetIndex === -1) targetIndex = startingLineup.length;
                 }
                 
                 // If still no valid index, append to end
-                if (targetIndex === -1) targetIndex = startingXI.length;
+                if (targetIndex === -1) targetIndex = startingLineup.length;
                 
-                // Insert player at correct position
-                startingXI[targetIndex] = { player_id: playerId, is_starter: true, position: player?.position || 'MID' };
+                // Insert player at the correct position
+                startingLineup[targetIndex] = { player_id: playerId, is_starter: true, position: player?.position || 'MID' };
                 
                 renderPitch();
                 renderPlayersList();
@@ -507,13 +528,13 @@
         }
         
         function removeFromLineup(playerId) {
-            const starterIndex = startingXI.findIndex(p => p && p.player_id === playerId);
+            const starterIndex = startingLineup.findIndex(p => p && p.player_id === playerId);
             if (starterIndex !== -1) {
-                startingXI[starterIndex] = null; // Set to null instead of splicing to preserve positions
+                startingLineup[starterIndex] = null; // Set to null instead of splicing to preserve positions
             }
-            const subIndex = substitutes.findIndex(p => p.player_id === playerId);
+            const subIndex = substitutesList.findIndex(p => p.player_id === playerId);
             if (subIndex !== -1) {
-                substitutes.splice(subIndex, 1);
+                substitutesList.splice(subIndex, 1);
             }
             renderPitch();
             renderBench();
@@ -525,16 +546,16 @@
             const container = document.getElementById('pitch-container');
             const positions = formationPositions[createLineupCurrentFormation] || formationPositions['4-3-3'];
             
-            if (startingXI.filter(p => p !== null).length === 0) {
-                container.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-white/50 text-sm">Drag players from sidebar to build your lineup</div>';
+            if (startingLineup.filter(p => p !== null).length === 0) {
+                container.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-white/50 text-sm">Drag players from the sidebar to build your lineup</div>';
                 return;
             }
             
             let pitchHtml = '';
             positions.forEach((pos, idx) => {
-                const player = startingXI[idx];
-                const playerData = player ? teamPlayers.find(p => p.id === player.player_id) : null;
-                const playerName = playerData?.user?.name;
+                const player = startingLineup[idx];
+                const playerData = player ? teamPlayersList.find(p => p.id === player.player_id) : null;
+                const playerName = playerData?.user?.name?.split(' ')[0] || 'Empty';
                 
                 pitchHtml += `
                     <div class="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all hover:scale-110" style="left: ${pos.x}%; top: ${pos.y}%;">
@@ -556,15 +577,15 @@
         function renderBench() {
             const container = document.getElementById('bench-container');
             const subCount = document.getElementById('sub-count');
-            subCount.innerHTML = `${substitutes.length} / 7`;
+            subCount.innerHTML = `${substitutesList.length} / 7`;
             
-            if (substitutes.length === 0) {
+            if (substitutesList.length === 0) {
                 container.innerHTML = '<div class="text-center text-outline py-4 w-full">No substitutes selected</div>';
                 return;
             }
             
-            container.innerHTML = substitutes.map(sub => {
-                const player = teamPlayers.find(p => p.id === sub.player_id);
+            container.innerHTML = substitutesList.map(sub => {
+                const player = teamPlayersList.find(p => p.id === sub.player_id);
                 return `
                     <div class="bg-surface-container-lowest p-3 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center gap-3 min-w-[180px]">
                         <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-primary font-bold">${player?.user?.name?.charAt(0) || 'P'}</div>
@@ -585,7 +606,7 @@
         }
         
         function updateStats() {
-            const starterPlayers = startingXI.map(s => teamPlayers.find(p => p.id === s.player_id)).filter(p => p);
+            const starterPlayers = startingLineup.map(s => teamPlayersList.find(p => p.id === s.player_id)).filter(p => p);
             const avgAge = starterPlayers.length ? (starterPlayers.reduce((a, p) => a + (p.age || 18), 0) / starterPlayers.length).toFixed(1) : '--';
             document.getElementById('avg-age').innerHTML = avgAge;
             
@@ -627,7 +648,7 @@
                 
                 if (lineupId) {
                     // Save all lineup players
-                    for (let player of [...startingXI, ...substitutes]) {
+                    for (let player of [...startingLineup, ...substitutesList]) {
                         await fetchAPI('/lineup-players', {
                             method: 'POST',
                             body: JSON.stringify({
@@ -638,7 +659,7 @@
                             })
                         });
                     }
-                    alert(`Lineup saved! ${startingXI.length} starters, ${substitutes.length} substitutes.`);
+                    alert(`Lineup saved! ${startingLineup.length} starters, ${substitutesList.length} substitutes.`);
                 }
             } catch(err) {
                 console.error("Failed to save lineup:", err);
