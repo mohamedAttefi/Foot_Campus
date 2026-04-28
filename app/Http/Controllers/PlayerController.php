@@ -17,13 +17,13 @@ class PlayerController extends Controller
      */
     public function index()
     {
-        $players = Player::with(['team', 'user', 'grades', 'academicRecords'])->get();
+        $players = Player::with(['team', 'user', 'grades'])->get();
         return response()->json($players);
     }
 
     public function getPlayerByUserId($userId)
     {
-        $player = Player::where('user_id', $userId)->with(['team', 'user', 'grades', 'academicRecords'])->first();
+        $player = Player::where('user_id', $userId)->with(['team', 'user', 'grades'])->first();
         return response()->json($player);
     }
 
@@ -32,14 +32,14 @@ class PlayerController extends Controller
         $validated = $request->validated();
 
         $player = Player::create($validated);
-        $player->load(['team', 'user', 'grades', 'academicRecords']);
+        $player->load(['team', 'user', 'grades']);
 
         return response()->json(['message' => 'Player created successfully!', 'player' => $player], 201);
     }
 
     public function show($id)
     {
-        $player = Player::with(['team', 'user', 'grades', 'academicRecords'])->findOrFail($id);
+        $player = Player::with(['team', 'user', 'grades'])->findOrFail($id);
         return response()->json($player);
     }
 
@@ -56,7 +56,7 @@ class PlayerController extends Controller
         $validated = $request->validated();
 
         $player->update($validated);
-        $player->load(['team', 'user', 'grades', 'academicRecords']);
+        $player->load(['team', 'user', 'grades']);
 
         return response()->json(['message' => 'Player updated successfully!', 'player' => $player]);
     }
@@ -101,7 +101,7 @@ class PlayerController extends Controller
     public function getPlayersByTeam($teamId)
     {
         $players = Player::where('team_id', $teamId)
-            ->with(['user', 'grades', 'academicRecords'])
+            ->with(['user', 'grades'])
             ->get();
         
         return response()->json($players);
@@ -119,8 +119,7 @@ class PlayerController extends Controller
             'player_id' => $playerId,
             'is_eligible' => $eligibility,
             'average_grade' => $player->calculateAverage(),
-            'academic_records' => $player->academicRecords,
-            'grades' => $player->grades
+                        'grades' => $player->grades
         ]);
     }
 
