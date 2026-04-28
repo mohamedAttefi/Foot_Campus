@@ -218,8 +218,7 @@
 
 @section('scripts')
 <script>
-    const API_BASE = 'http://127.0.0.1:8000/api';
-    let currentUser = null;
+    let currentCoach = null;
     let currentTeam = null;
     let teamPlayers = [];
     let matches = [];
@@ -230,11 +229,11 @@
     async function loadTeamData() {
         try {
             // Load current user and team
-            currentUser = await fetchAPI('/current-user');
-            console.log('User data:', currentUser);
+            currentCoach = await fetchAPI('/current-user');
+            console.log('User data:', currentCoach);
 
-            if (currentUser.team) {
-                currentTeam = currentUser.team;
+            if (currentCoach.team) {
+                currentTeam = currentCoach.team;
                 console.log('Team loaded:', currentTeam);
             } else {
                 console.log('No team found for coach');
@@ -243,8 +242,8 @@
 
             // Update header with team info
             document.querySelector('h2').innerText = currentTeam?.name || 'Team Management';
-            document.getElementById('nav-user-name').innerText = currentUser.name?.split(' ')[0] || 'Coach';
-            document.getElementById('nav-user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'Coach')}&background=0f5238&color=fff&size=32`;
+            document.getElementById('nav-user-name').innerText = currentCoach.name?.split(' ')[0] || 'Coach';
+            document.getElementById('nav-user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentCoach.name || 'Coach')}&background=0f5238&color=fff&size=32`;
 
             // Load team players
             const playersRes = await fetchAPI('/player');
