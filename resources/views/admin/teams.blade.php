@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center">
@@ -60,7 +60,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-xl bg-surface-container-highest/50 flex items-center justify-center">
@@ -80,8 +80,8 @@
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-on-surface-variant mb-2">Search Teams</label>
                 <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Search by team name, coach, or academy..." 
-                           class="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    <input type="text" id="searchInput" placeholder="Search by team name, coach, or academy..."
+                        class="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                     <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant">search</span>
                 </div>
             </div>
@@ -118,41 +118,41 @@
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            
+
             <form id="teamForm" class="space-y-4">
                 <input type="hidden" id="teamId" name="id">
-                
+
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Team Name</label>
                     <input type="text" id="teamName" name="name" required
-                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Academy/School</label>
                     <input type="text" id="teamAcademy" name="academy" required
-                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Coach</label>
                     <select id="teamCoach" name="coach_id" required
-                            class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                         <option value="">Select Coach</option>
                         <!-- Coach options will be populated by JavaScript -->
                     </select>
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Status</label>
                     <select id="teamStatus" name="status"
-                            class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>
                         <option value="suspended">Suspended</option>
                     </select>
                 </div>
-                
+
                 <div class="flex gap-3 pt-4">
                     <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition-all">
                         <span id="submitButtonText">Add Team</span>
@@ -169,7 +169,7 @@
 
 @section('scripts')
 <script>
-        let teams = [];
+    let teams = [];
     let coaches = [];
     let currentPage = 1;
     let teamsPerPage = 9;
@@ -178,14 +178,15 @@
     async function loadTeams() {
         try {
             const [teamsResponse, usersResponse] = await Promise.all([
-                fetchAPI('/teams'),
+                fetchAPI('/team'),
                 fetchAPI('/users')
             ]);
-            
-            teams = teamsResponse.data || [];
-            coaches = usersResponse.filter(user => user.role === 'coach' && user.approval_status === 'approved');
+
+            teams = Object.values(teamsResponse)[0] || [];
+            // console.log(usersResponse)
+            coaches = usersResponse.filter(user => user.role === 'coach');
             filteredTeams = [...teams];
-            
+
             populateCoachesDropdown();
             renderTeams();
             updateStats();
@@ -197,7 +198,7 @@
 
     function populateCoachesDropdown() {
         const select = document.getElementById('teamCoach');
-        select.innerHTML = '<option value="">Select Coach</option>' + 
+        select.innerHTML = '<option value="">Select Coach</option>' +
             coaches.map(coach => `<option value="${coach.id}">${coach.name}</option>`).join('');
     }
 
@@ -218,12 +219,11 @@
         }
 
         grid.innerHTML = paginatedTeams.map(team => {
-            const statusColor = team.status === 'active' ? 'text-tertiary' : 
-                              team.status === 'suspended' ? 'text-error' : 'text-on-surface-variant';
-            const statusBg = team.status === 'active' ? 'bg-tertiary-container' : 
-                           team.status === 'suspended' ? 'bg-error-container' : 'bg-surface-container-low';
-            
+            const statusColor = 'text-tertiary'
+            const statusBg = 'bg-tertiary-container'
+
             const coach = coaches.find(c => c.id === team.coach_id);
+            console.log(coach)
             const playerCount = Math.floor(Math.random() * 15) + 10; // Placeholder
 
             return `
@@ -288,14 +288,14 @@
     function renderPagination() {
         const container = document.getElementById('paginationContainer');
         const totalPages = Math.ceil(filteredTeams.length / teamsPerPage);
-        
+
         if (totalPages <= 1) {
             container.innerHTML = '';
             return;
         }
 
         let paginationHTML = '';
-        
+
         // Previous button
         if (currentPage > 1) {
             paginationHTML += `
@@ -335,10 +335,10 @@
         const statusFilter = document.getElementById('statusFilter').value;
 
         filteredTeams = teams.filter(team => {
-            const matchesSearch = team.name.toLowerCase().includes(searchTerm) || 
-                               (team.academy && team.academy.toLowerCase().includes(searchTerm));
+            const matchesSearch = team.name.toLowerCase().includes(searchTerm) ||
+                (team.academy && team.academy.toLowerCase().includes(searchTerm));
             const matchesStatus = !statusFilter || team.status === statusFilter;
-            
+
             return matchesSearch && matchesStatus;
         });
 
@@ -427,7 +427,9 @@
             })
         ].map(row => row.join(',')).join('\n');
 
-        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const blob = new Blob([csvContent], {
+            type: 'text/csv'
+        });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -444,7 +446,7 @@
         e.preventDefault();
         const formData = new FormData(e.target);
         const teamData = Object.fromEntries(formData);
-        
+
         try {
             const teamId = teamData.id;
             if (teamId) {
@@ -454,7 +456,7 @@
                 await fetchAPI('/teams', 'POST', teamData);
                 showSuccess('Team created successfully');
             }
-            
+
             closeTeamModal();
             await loadTeams();
         } catch (error) {
