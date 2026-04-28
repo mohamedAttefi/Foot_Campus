@@ -280,6 +280,7 @@
                 '/manager/matches': 'manager-matches',
                 '/manager/stats': 'manager-stats',
                 '/manager/training': 'manager-training',
+                '/manager/standings': 'manager-standings',
                 '/player': 'player-dashboard',
                 '/player/profile': 'player-profile',
                 '/player/matches': 'player-matches',
