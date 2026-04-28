@@ -107,7 +107,7 @@
     let allMatches = [];
     let filteredMatches = [];
     let currentFilter = 'all';
-    let currentUser = null;
+    let currentCoach = null;
     let currentTeam = null;
 
     async function loadMatchesData() {
@@ -118,12 +118,14 @@
             ]);
             
             allMatches = Array.isArray(matches) ? matches : (matches.data || []);
-            currentUser = userData;
+            currentCoach = userData;
             currentTeam = userData?.team;
+            console.log(currentTeam)
+
             
             // Filter matches for current team
             if (currentTeam) {
-                allMatches = allMatches.filter(match => 
+                allMatches = allMatches.filter(match =>
                     match.home_team_id === currentTeam.id || match.away_team_id === currentTeam.id
                 );
             }
