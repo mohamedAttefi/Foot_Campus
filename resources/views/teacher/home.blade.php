@@ -176,8 +176,9 @@
         document.getElementById('totalSubjects').textContent = allSubjects.length;
         
         if (allGrades.length > 0) {
-            const avgScore = allGrades.reduce((sum, grade) => sum + (grade.score || 0), 0) / allGrades.length;
+            const avgScore = allGrades.reduce((sum, grade) => sum + (parseInt(grade.score) || 0), 0) / allGrades.length;
             const gpa = (avgScore / 100) * 4;
+            console.log(avgScore)
             document.getElementById('avgGPA').textContent = gpa.toFixed(2);
         } else {
             document.getElementById('avgGPA').textContent = '0.0';
@@ -194,13 +195,13 @@
         }
         
         container.innerHTML = recentGrades.map(grade => {
-            const student = allStudents.find(s => s.id === grade.user_id);
+            const student = allStudents.find(s => s.id === grade.player_id);
             const subject = allSubjects.find(s => s.id === grade.subject_id);
             
             return `
                 <div class="flex items-center justify-between p-2 bg-surface-container-lowest rounded-lg">
                     <div>
-                        <p class="font-medium text-on-surface">${student ? student.name : 'Unknown Student'}</p>
+                        <p class="font-medium text-on-surface">${student ? student.user.name : 'Unknown Student'}</p>
                         <p class="text-xs text-on-surface-variant">${subject ? subject.name : 'Unknown Subject'}</p>
                     </div>
                     <span class="font-bold text-primary">${grade.score || 0}</span>
@@ -215,17 +216,17 @@
         // Calculate average scores per student
         const studentAverages = {};
         allGrades.forEach(grade => {
-            if (!studentAverages[grade.user_id]) {
-                studentAverages[grade.user_id] = { total: 0, count: 0 };
+            if (!studentAverages[grade.player_id]) {
+                studentAverages[grade.player_id] = { total: 0, count: 0 };
             }
-            studentAverages[grade.user_id].total += grade.score || 0;
-            studentAverages[grade.user_id].count += 1;
+            studentAverages[grade.player_id].total += grade.score || 0;
+            studentAverages[grade.player_id].count += 1;
         });
         
         const topStudents = Object.entries(studentAverages)
             .map(([studentId, data]) => ({
                 student: allStudents.find(s => s.id == studentId),
-                average: data.total / data.count
+                average: parseInt(data.total) / data.count
             }))
             .filter(item => item.student)
             .sort((a, b) => b.average - a.average)
@@ -235,12 +236,12 @@
             container.innerHTML = '<p class="text-on-surface-variant text-center">No data available</p>';
             return;
         }
-        
+        console.log(topStudents)
         container.innerHTML = topStudents.map((item, index) => `
             <div class="flex items-center justify-between p-2 bg-surface-container-lowest rounded-lg">
                 <div class="flex items-center gap-2">
                     <span class="text-lg font-bold text-primary">${index + 1}</span>
-                    <p class="font-medium text-on-surface">${item.student.name}</p>
+                    <p class="font-medium text-on-surface">${item.student.user.name}</p>
                 </div>
                 <span class="font-bold text-tertiary">${item.average.toFixed(1)}</span>
             </div>
@@ -270,10 +271,10 @@
         const studentSelect = document.getElementById('studentSelect');
         const subjectSelect = document.getElementById('subjectSelect');
         
-        studentSelect.innerHTML = '<option value="">Select Student</option>' + 
-            allStudents.map(student => `<option value="${student.id}">${student.name}</option>`).join('');
+        studentSelect.innerHTML = '<option value="">Select Student</option>' +
+            allStudents.map(student => `<option value="${student.id}">${student.user.name}</option>`).join('');
         
-        subjectSelect.innerHTML = '<option value="">Select Subject</option>' + 
+        subjectSelect.innerHTML = '<option value="">Select Subject</option>' +
             allSubjects.map(subject => `<option value="${subject.id}">${subject.name}</option>`).join('');
     }
 
