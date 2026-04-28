@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center">
@@ -60,7 +60,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="bg-surface-container-low rounded-[1.5rem] p-6 shadow-sm border border-outline-variant/10">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-xl bg-surface-container-highest/50 flex items-center justify-center">
@@ -86,7 +86,7 @@
                 Edit Rules
             </button>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="academicRules">
             <!-- Rules will be populated by JavaScript -->
         </div>
@@ -103,7 +103,7 @@
                 <span id="subjectCount">0</span> total subjects
             </div>
         </div>
-        
+
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead class="bg-surface-container-low/50">
@@ -120,7 +120,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         <!-- Pagination -->
         <div id="paginationContainer" class="p-6 bg-surface-container-low/50 border-t border-outline-variant/10 flex justify-between items-center">
             <!-- Pagination controls will be inserted here -->
@@ -139,7 +139,7 @@
                 Refresh
             </button>
         </div>
-        
+
         <div class="space-y-3" id="recentGrades">
             <!-- Recent grades will be populated by JavaScript -->
         </div>
@@ -156,36 +156,36 @@
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            
+
             <form id="subjectForm" class="space-y-4">
                 <input type="hidden" id="subjectId" name="id">
-                
+
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Subject Name</label>
                     <input type="text" id="subjectName" name="name" required
-                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Subject Code</label>
                     <input type="text" id="subjectCode" name="code" required
-                           placeholder="e.g., MATH101"
-                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        placeholder="e.g., MATH101"
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Credits</label>
                     <input type="number" id="subjectCredits" name="credits" required min="1" max="6" value="3"
-                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Description</label>
                     <textarea id="subjectDescription" name="description" rows="3"
-                              placeholder="Optional subject description"
-                              class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"></textarea>
+                        placeholder="Optional subject description"
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"></textarea>
                 </div>
-                
+
                 <div class="flex gap-3 pt-4">
                     <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition-all">
                         <span id="submitButtonText">Add Subject</span>
@@ -209,26 +209,26 @@
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            
+
             <form id="rulesForm" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Minimum Average Grade</label>
                     <input type="number" id="minAverage" name="min_average" step="0.1" min="0" max="4" required
-                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Minimum Score per Subject</label>
                     <input type="number" id="minScore" name="min_score" step="0.1" min="0" max="100" required
-                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-on-surface-variant mb-2">Maximum Failed Subjects</label>
                     <input type="number" id="maxFailures" name="max_failures" min="0" max="10" required
-                           class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        class="w-full px-4 py-2 bg-surface border border-outline-variant/20 rounded-xl text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
-                
+
                 <div class="flex gap-3 pt-4">
                     <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold py-3 rounded-xl shadow-lg hover:opacity-90 transition-all">
                         Update Rules
@@ -245,7 +245,7 @@
 
 @section('scripts')
 <script>
-        let subjects = [];
+    let subjects = [];
     let academicRules = null;
     let recentGrades = [];
     let currentPage = 1;
@@ -258,11 +258,12 @@
                 fetchAPI('/academic-rules'),
                 fetchAPI('/grade')
             ]);
-            
+
             subjects = Array.isArray(subjectsResponse) ? subjectsResponse : (subjectsResponse.data || []);
             academicRules = rulesResponse;
+            console.log(rulesResponse)
             recentGrades = Array.isArray(gradesResponse) ? gradesResponse : (gradesResponse.data || []);
-            
+
             renderSubjects();
             renderAcademicRules();
             renderRecentGrades();
@@ -293,7 +294,7 @@
 
         tbody.innerHTML = paginatedSubjects.map(subject => {
             const teacherCount = Math.floor(Math.random() * 5) + 1; // Placeholder
-            
+
             return `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="py-4 px-6">
@@ -307,8 +308,6 @@
                             </div>
                         </div>
                     </td>
-                    <td class="py-4 px-4 text-sm font-mono">${subject.code || 'N/A'}</td>
-                    <td class="py-4 px-4 text-sm">${subject.credits || 'N/A'}</td>
                     <td class="py-4 px-4 text-sm">${teacherCount} teachers</td>
                     <td class="py-4 px-6 text-right">
                         <button onclick="editSubject(${subject.id})" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
@@ -328,7 +327,7 @@
 
     function renderAcademicRules() {
         const container = document.getElementById('academicRules');
-        
+
         if (!academicRules) {
             container.innerHTML = '<p class="text-on-surface-variant">No academic rules configured</p>';
             return;
@@ -340,48 +339,44 @@
                     <span class="material-symbols-outlined text-primary">grade</span>
                     <span class="text-sm font-medium text-on-surface-variant">Minimum Average</span>
                 </div>
-                <p class="text-2xl font-bold text-primary">${academicRules.min_average || 'N/A'}</p>
+                <p class="text-2xl font-bold text-primary">${academicRules[0].min_average_threshold || 'N/A'}</p>
             </div>
-            <div class="bg-surface-container-lowest p-4 rounded-xl">
-                <div class="flex items-center gap-3 mb-2">
-                    <span class="material-symbols-outlined text-secondary">score</span>
-                    <span class="text-sm font-medium text-on-surface-variant">Min Subject Score</span>
-                </div>
-                <p class="text-2xl font-bold text-secondary">${academicRules.min_score || 'N/A'}%</p>
-            </div>
+            
             <div class="bg-surface-container-lowest p-4 rounded-xl">
                 <div class="flex items-center gap-3 mb-2">
                     <span class="material-symbols-outlined text-tertiary">warning</span>
                     <span class="text-sm font-medium text-on-surface-variant">Max Failed Subjects</span>
                 </div>
-                <p class="text-2xl font-bold text-tertiary">${academicRules.max_failures || 'N/A'}</p>
+                <p class="text-2xl font-bold text-tertiary">${academicRules[0].max_failed_subjects || 'N/A'}</p>
             </div>
         `;
     }
 
     function renderRecentGrades() {
         const container = document.getElementById('recentGrades');
-        
+
         if (recentGrades.length === 0) {
             container.innerHTML = '<p class="text-on-surface-variant text-center py-4">No recent grade activity</p>';
             return;
         }
 
         container.innerHTML = recentGrades.slice(0, 10).map(grade => {
-            const gradeColor = grade.score >= 70 ? 'text-tertiary' : 
-                              grade.score >= 60 ? 'text-secondary' : 'text-error';
-            const gradeBg = grade.score >= 70 ? 'bg-tertiary-container' : 
-                           grade.score >= 60 ? 'bg-secondary-container' : 'bg-error-container';
-            
+            const gradeColor = grade.score >= 70 ? 'text-tertiary' :
+                grade.score >= 60 ? 'text-secondary' : 'text-error';
+            const gradeBg = grade.score >= 70 ? 'bg-tertiary-container' :
+                grade.score >= 60 ? 'bg-secondary-container' : 'bg-error-container';
+
+                console.log(grade)
+
             return `
                 <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white text-xs font-bold">
-                            ${grade.student_name ? grade.student_name.charAt(0) : 'S'}
+                            ${grade.player.user.name ? grade.player.user.name.charAt(0) : 'S'}
                         </div>
                         <div>
-                            <p class="font-medium text-on-surface">${grade.student_name || 'Unknown Student'}</p>
-                            <p class="text-xs text-on-surface-variant">${grade.subject_name || 'Unknown Subject'}</p>
+                            <p class="font-medium text-on-surface">${grade.player.user.name || 'Unknown Student'}</p>
+                            <p class="text-xs text-on-surface-variant">${grade.name || 'Unknown Subject'}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
@@ -407,14 +402,14 @@
     function renderPagination() {
         const container = document.getElementById('paginationContainer');
         const totalPages = Math.ceil(subjects.length / subjectsPerPage);
-        
+
         if (totalPages <= 1) {
             container.innerHTML = '';
             return;
         }
 
         let paginationHTML = '<div class="flex items-center gap-2">';
-        
+
         // Previous button
         if (currentPage > 1) {
             paginationHTML += `
@@ -546,7 +541,9 @@
             ])
         ].map(row => row.join(',')).join('\n');
 
-        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const blob = new Blob([csvContent], {
+            type: 'text/csv'
+        });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -560,7 +557,7 @@
         e.preventDefault();
         const formData = new FormData(e.target);
         const subjectData = Object.fromEntries(formData);
-        
+
         try {
             const subjectId = subjectData.id;
             if (subjectId) {
@@ -570,7 +567,7 @@
                 await fetchAPI('/subject', 'POST', subjectData);
                 showSuccess('Subject created successfully');
             }
-            
+
             closeSubjectModal();
             await loadAcademicData();
         } catch (error) {
@@ -583,7 +580,7 @@
         e.preventDefault();
         const formData = new FormData(e.target);
         const rulesData = Object.fromEntries(formData);
-        
+
         try {
             await fetchAPI('/academic-rules', 'PUT', rulesData);
             showSuccess('Academic rules updated successfully');
