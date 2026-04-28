@@ -63,13 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('lineup-players', LineupPlayerController::class);
 
-    Route::middleware(['auth:sanctum', 'can:manage-users'])->group(function () {
-        Route::get('/users', [AuthController::class, 'manageUsers']);
-    });
+    Route::get('/users', [AuthController::class, 'manageUsers']);
 
     Route::get('/players/{playerId}/eligibility', [AcademicRulesController::class, 'checkEligibility']);
 });
-
-
-
-
