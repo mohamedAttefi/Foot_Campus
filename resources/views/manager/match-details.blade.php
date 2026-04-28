@@ -3,180 +3,28 @@
 @section('title', 'Match Details | The Scholastic Pitch')
 
 @section('content')
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-secondary-fixed-variant": "#264191",
-                        "on-primary": "#ffffff",
-                        "on-tertiary-fixed": "#2a1700",
-                        "tertiary-container": "#865400",
-                        "secondary-fixed": "#dce1ff",
-                        "surface-container-lowest": "#ffffff",
-                        "surface": "#f7f9fb",
-                        "on-secondary-container": "#1d3989",
-                        "inverse-on-surface": "#eff1f3",
-                        "surface-tint": "#2c694e",
-                        "on-surface-variant": "#404943",
-                        "tertiary-fixed": "#ffddb8",
-                        "inverse-surface": "#2d3133",
-                        "primary-container": "#2d6a4f",
-                        "on-secondary-fixed": "#00164e",
-                        "on-background": "#191c1e",
-                        "secondary-container": "#8fa7fe",
-                        "on-surface": "#191c1e",
-                        "surface-bright": "#f7f9fb",
-                        "error": "#ba1a1a",
-                        "surface-variant": "#e0e3e5",
-                        "tertiary-fixed-dim": "#ffb95f",
-                        "background": "#f7f9fb",
-                        "on-primary-container": "#a8e7c5",
-                        "outline": "#707973",
-                        "outline-variant": "#bfc9c1",
-                        "primary-fixed": "#b1f0ce",
-                        "primary": "#0f5238",
-                        "primary-fixed-dim": "#95d4b3",
-                        "on-tertiary": "#ffffff",
-                        "secondary": "#4059aa",
-                        "on-tertiary-container": "#ffd29e",
-                        "on-secondary": "#ffffff",
-                        "inverse-primary": "#95d4b3",
-                        "on-primary-fixed": "#002114",
-                        "on-error": "#ffffff",
-                        "error-container": "#ffdad6",
-                        "on-error-container": "#93000a",
-                        "secondary-fixed-dim": "#b6c4ff",
-                        "surface-dim": "#d8dadc",
-                        "tertiary": "#663f00",
-                        "surface-container-highest": "#e0e3e5",
-                        "on-primary-fixed-variant": "#0e5138",
-                        "surface-container": "#eceef0",
-                        "surface-container-low": "#f2f4f6",
-                        "surface-container-high": "#e6e8ea",
-                        "on-tertiary-fixed-variant": "#653e00"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "headline": ["Manrope"],
-                        "body": ["Inter"],
-                        "label": ["Inter"]
-                    }
-                },
-            },
-        }
-    </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-
-        .tonal-shift {
-            transition: background-color 0.3s ease;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-        }
-    </style>
-</head>
-
-<body class="bg-surface font-body text-on-surface">
-    <!-- SideNavBar -->
-    <aside class="fixed left-0 top-0 h-full w-64 rounded-r-3xl bg-slate-50/80 backdrop-blur-md z-50 flex flex-col p-6 overflow-y-auto shadow-xl shadow-emerald-900/5 tonal-shift">
-        <div class="mb-10">
-            <h1 class="text-xl font-bold tracking-tighter text-emerald-900 uppercase italic font-headline">The Scholastic Pitch</h1>
-            <p class="text-xs font-semibold tracking-wide text-slate-500 uppercase mt-1">Elite Academy League</p>
-        </div>
-        <nav class="flex-1 space-y-2">
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 hover:text-emerald-600 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span> Dashboard
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 hover:text-emerald-600 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span> League Table
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 hover:text-emerald-600 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined" data-icon="groups">groups</span> Teams
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-emerald-700 font-bold border-r-4 border-emerald-700 font-['Manrope'] tracking-wide text-sm" href="#">
-                <span class="material-symbols-outlined" data-icon="sports_soccer">sports_soccer</span> Matches
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 hover:text-emerald-600 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined" data-icon="query_stats">query_stats</span> Player Stats
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 hover:text-emerald-600 transition-all duration-300 font-['Manrope'] tracking-wide text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined" data-icon="school">school</span> Academic Hub
-            </a>
-        </nav>
-        <button class="mt-8 mb-8 bg-gradient-to-r from-primary to-primary-container text-on-primary px-4 py-3 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transform active:scale-95 transition-all">
-            <span class="material-symbols-outlined text-sm">add</span> Create Match
-        </button>
-        <div class="pt-6 border-t border-slate-200 mt-auto space-y-2">
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 transition-all font-['Manrope'] text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined" data-icon="settings">settings</span> Settings
-            </a>
-            <a class="flex items-center gap-3 p-3 rounded-xl text-slate-500 hover:bg-emerald-50/50 transition-all font-['Manrope'] text-sm font-semibold" href="#">
-                <span class="material-symbols-outlined" data-icon="help">help</span> Support
-            </a>
-        </div>
-    </aside>
-    <!-- TopNavBar -->
-    <header class="sticky top-0 ml-64 h-16 px-8 bg-white/80 backdrop-blur-xl z-40 flex justify-between items-center font-['Manrope'] font-medium text-sm text-emerald-800">
-        <div class="flex items-center gap-8">
-            <div class="relative w-64 group">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
-                <input class="w-full pl-10 pr-4 py-2 bg-surface-container-highest rounded-full border-none focus:ring-2 focus:ring-primary text-sm placeholder:text-slate-400" placeholder="Search players, tactics..." type="text" />
-            </div>
-            <nav class="hidden md:flex gap-6">
-                <a class="text-slate-600 hover:text-emerald-500 transition-colors" href="#">Standings</a>
-                <a class="text-emerald-700 font-bold border-b-2 border-emerald-700 pb-1" href="#">Schedule</a>
-                <a class="text-slate-600 hover:text-emerald-500 transition-colors" href="#">Awards</a>
-            </nav>
-        </div>
-        <div class="flex items-center gap-4">
-            <button class="p-2 text-slate-600 hover:bg-surface-container-low rounded-full transition-colors relative">
-                <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-                <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
-            </button>
-            <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
-                <span class="text-right hidden sm:block">
-                    <p class="text-on-surface font-bold text-xs">Coach Sterling</p>
-                    <p class="text-[10px] text-slate-500">First Team Manager</p>
-                </span>
-                <img alt="User Profile Avatar" class="w-10 h-10 rounded-full border-2 border-primary-fixed shadow-sm" data-alt="headshot of a middle-aged sports coach with a determined expression, wearing a team polo shirt against a blurred stadium background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDSLiOESowBNWE4vQ912Sj6FX1YCXT9PripdNuRymnMOl8XZqFUH2ZjOlwwudDtcP_vH1HGzo-YXBPZ6i5Gf0KdBw3YC9QKvavvW-OjmyeLddJsZpBSuwtYdG5ki8GQ3Er5iYQlu1ccWCOdJjsx6MZVzqg9_0L0wi9nFeS9orBOpCjsorxXQL-43AWvVPr79kbiOKfCUV6Zvg2Rn8no5QgvunblobjcEHkG3ZWttcv0tp2A6PaSb0bLpa-JG53qkmwbNFKIeTmlpM" />
-            </div>
-        </div>
-    </header>
-    <!-- Main Content Area -->
-    <main class="ml-64 p-8 min-h-screen">
+    <main class="p-8 min-h-screen">
         <!-- Match Header Hero -->
         <section class="mb-10">
-            <div class="flex items-end justify-between gap-6">
-                <div>
-                    <span class="inline-flex items-center px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-extrabold uppercase tracking-widest rounded-full mb-4">
-                        Elite Academy Cup • Quarter Final
-                    </span>
-                    <h2 class="text-4xl font-extrabold font-headline text-on-surface tracking-tight leading-none mb-2">Pre-Match Tactical View</h2>
-                    <p class="text-on-surface-variant flex items-center gap-2 font-medium">
-                        <span class="material-symbols-outlined text-primary" style="font-size: 18px;">event</span>
-                        Saturday, Oct 14 • 14:00 • The Grand Scholastic Grounds
-                    </p>
+            <div id="match-header" class="text-center">
+                <!-- Match details will be loaded here by JavaScript -->
+                <div class="text-center py-12">
+                    <div class="w-20 h-20 bg-surface-container-highest rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-4xl text-outline animate-spin">sports_soccer</span>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2 text-on-surface">Loading match details...</h2>
+                    <p class="text-on-surface-variant">Fetching your latest match data</p>
                 </div>
-                <div class="flex gap-3">
-                    <button class="bg-surface-container-highest text-on-surface px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-surface-container-high transition-colors">
-                        <span class="material-symbols-outlined text-lg">print</span> Export PDF
-                    </button>
-                    <button class="bg-primary text-on-primary px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
-                        <span class="material-symbols-outlined text-lg">play_arrow</span> Final Briefing
-                    </button>
+            </div>
+        </section>
+
+        <!-- Score Display -->
+        <section class="mb-10">
+            <div id="score-display" class="text-center">
+                <!-- Score will be loaded here by JavaScript -->
+                <div class="text-center py-8">
+                    <div class="text-4xl font-bold text-outline mb-2 animate-pulse">--</div>
+                    <p class="text-on-surface-variant">Loading score...</p>
                 </div>
             </div>
         </section>
@@ -378,131 +226,192 @@
             <span class="material-symbols-outlined text-3xl">sports_soccer</span>
         </button>
     </div>
-</body>
-    <script>
-        const API_BASE = 'http://127.0.0.1:8000/api';
-        
-        function getHeaders() {
-            const token = localStorage.getItem('token');
-            return {
-                'Authorization': token ? `Bearer ${token}` : '',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            };
-        }
+@endsection
 
-        async function fetchAPI(endpoint, options = {}) {
-            const response = await fetch(`${API_BASE}${endpoint}`, {
-                headers: getHeaders(),
-                ...options
-            });
-            if (!response.ok) throw new Error(`API Error ${response.status}`);
-            return response.json();
-        }
+<script>
+    const MATCH_DETAILS_API_BASE = 'http://127.0.0.1:8000/api';
+    
+    function getMatchDetailsHeaders() {
+        const token = localStorage.getItem('token');
+        return {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        };
+    }
 
-        let currentMatch = null;
+    async function fetchMatchDetailsAPI(endpoint, options = {}) {
+        const response = await fetch(`${MATCH_DETAILS_API_BASE}${endpoint}`, {
+            headers: getMatchDetailsHeaders(),
+            ...options
+        });
+        if (!response.ok) throw new Error(`API Error ${response.status}`);
+        return response.json();
+    }
 
-        async function loadMatchDetails() {
-            try {
-                const urlParams = new URLSearchParams(window.location.search);
-                const matchId = urlParams.get('id');
-                
-                if (!matchId) {
-                    showError('No match ID provided');
-                    return;
-                }
+    let matchDetailsCurrentMatch = null;
 
-                currentMatch = await fetchAPI(`/matches/${matchId}`);
-                
-                const [homeTeam, awayTeam] = await Promise.all([
-                    fetchAPI(`/team/${currentMatch.home_team_id}`),
-                    fetchAPI(`/team/${currentMatch.away_team_id}`)
-                ]);
-                
-                renderMatchDetails(currentMatch, homeTeam, awayTeam);
-                
-            } catch (error) {
-                console.error('Failed to load match details:', error);
-                showError('Failed to load match details. Please refresh the page.');
-            }
-        }
-
-        function renderMatchDetails(match, homeTeam, awayTeam) {
-            const matchHeader = document.getElementById('match-header');
-            if (matchHeader) {
-                matchHeader.innerHTML = `
-                    <div class="text-center">
-                        <h1 class="text-3xl font-bold mb-2">${homeTeam.name} vs ${awayTeam.name}</h1>
-                        <p class="text-on-surface-variant">Matchday ${match.matchday || '1'} - ${new Date(match.date || match.match_date).toLocaleDateString()}</p>
-                        <p class="text-sm text-on-surface-variant mt-1">${match.venue || 'Academy Stadium'}</p>
-                    </div>
-                `;
-            }
+    async function loadMatchDetails() {
+        try {
+            // Get current user first to determine their team
+            const currentUser = await fetchMatchDetailsAPI('/current-user');
             
-            const scoreDisplay = document.getElementById('score-display');
-            if (scoreDisplay) {
-                const homeScore = match.home_score || 0;
-                const awayScore = match.away_score || 0;
-                scoreDisplay.innerHTML = `
-                    <div class="text-center">
-                        <div class="text-6xl font-bold">${homeScore} - ${awayScore}</div>
-                        <p class="text-on-surface-variant">${match.status === 'finished' ? 'Full Time' : 'In Progress'}</p>
-                    </div>
-                `;
-            }
-        }
-
-        function showSuccess(message) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'fixed top-4 right-4 bg-green-50 border border-green-200 rounded-lg p-4 z-50';
-            alertDiv.innerHTML = `
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <h3 class="text-sm font-medium text-green-800">Success</h3>
-                        <div class="mt-2 text-sm text-green-700">
-                            <p>${message}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(alertDiv);
-            setTimeout(() => alertDiv.remove(), 3000);
-        }
-
-        function showError(message) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'fixed top-4 right-4 bg-red-50 border border-red-200 rounded-lg p-4 z-50';
-            alertDiv.innerHTML = `
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <h3 class="text-sm font-medium text-red-800">Error</h3>
-                        <div class="mt-2 text-sm text-red-700">
-                            <p>${message}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(alertDiv);
-            setTimeout(() => alertDiv.remove(), 3000);
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            if (!localStorage.getItem('token')) {
-                window.location.href = '/login';
+            if (!currentUser || !currentUser.team) {
+                showError('No team assigned to current user');
                 return;
             }
-            loadMatchDetails();
-        });
-    </script>
+
+            // Fetch all matches and find the last played match for this team
+            const allMatches = await fetchMatchDetailsAPI('/matches');
+            const matches = Array.isArray(allMatches) ? allMatches : (allMatches.data || []);
+            
+            // Filter matches for this team and find only past matches
+            const now = new Date();
+            const pastTeamMatches = matches
+                .filter(match => {
+                    const matchDate = new Date(match.date || match.match_date);
+                    return (match.home_team_id === currentUser.team.id || 
+                           match.away_team_id === currentUser.team.id) &&
+                           matchDate < now; // Only past matches
+                })
+                .sort((a, b) => {
+                    const dateA = new Date(a.date || a.match_date);
+                    const dateB = new Date(b.date || b.match_date);
+                    return dateB.getTime() - dateA.getTime(); // Most recent past match first
+                });
+
+            if (pastTeamMatches.length === 0) {
+                // Show a proper message instead of error
+                renderNoMatchesMessage(currentUser.team.name);
+                return;
+            }
+
+            // Get the last played match
+            matchDetailsCurrentMatch = pastTeamMatches[0];
+            
+            const [homeTeam, awayTeam] = await Promise.all([
+                fetchMatchDetailsAPI(`/team/${matchDetailsCurrentMatch.home_team_id}`),
+                fetchMatchDetailsAPI(`/team/${matchDetailsCurrentMatch.away_team_id}`)
+            ]);
+            
+            renderMatchDetails(matchDetailsCurrentMatch, homeTeam, awayTeam);
+            
+        } catch (error) {
+            console.error('Failed to load match details:', error);
+            showError('Failed to load match details. Please refresh the page.');
+        }
+    }
+
+    function renderNoMatchesMessage(teamName) {
+        const matchHeader = document.getElementById('match-header');
+        if (matchHeader) {
+            matchHeader.innerHTML = `
+                <div class="text-center py-12">
+                    <div class="w-20 h-20 bg-surface-container-highest rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-4xl text-outline">sports_soccer</span>
+                    </div>
+                    <h1 class="text-2xl font-bold mb-2 text-on-surface">${teamName}</h1>
+                    <p class="text-on-surface-variant mb-4">No past matches available</p>
+                    <p class="text-sm text-on-surface-variant">Your team hasn't played any matches yet. Once matches are completed, they'll appear here for post-match analysis.</p>
+                    <div class="mt-8 flex justify-center gap-4">
+                        <a href="/manager/create-lineup" class="bg-primary text-on-primary px-6 py-3 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity">
+                            Create Lineup
+                        </a>
+                        <a href="/manager/matches-list" class="bg-surface-container-highest text-on-surface px-6 py-3 rounded-xl font-bold text-sm hover:bg-surface-container-high transition-colors">
+                            View All Matches
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        const scoreDisplay = document.getElementById('score-display');
+        if (scoreDisplay) {
+            scoreDisplay.innerHTML = `
+                <div class="text-center py-8">
+                    <div class="text-4xl font-bold text-outline mb-2">--</div>
+                    <p class="text-on-surface-variant">No match data available</p>
+                </div>
+            `;
+        }
+    }
+
+    function renderMatchDetails(match, homeTeam, awayTeam) {
+        const matchHeader = document.getElementById('match-header');
+        if (matchHeader) {
+            matchHeader.innerHTML = `
+                <div class="text-center">
+                    <h1 class="text-3xl font-bold mb-2">${homeTeam.name} vs ${awayTeam.name}</h1>
+                    <p class="text-on-surface-variant">Matchday ${match.matchday || '1'} - ${new Date(match.date || match.match_date).toLocaleDateString()}</p>
+                    <p class="text-sm text-on-surface-variant mt-1">${match.venue || 'Academy Stadium'}</p>
+                </div>
+            `;
+        }
+        
+        const scoreDisplay = document.getElementById('score-display');
+        if (scoreDisplay) {
+            const homeScore = match.home_score || 0;
+            const awayScore = match.away_score || 0;
+            scoreDisplay.innerHTML = `
+                <div class="text-center">
+                    <div class="text-6xl font-bold">${homeScore} - ${awayScore}</div>
+                    <p class="text-on-surface-variant">${match.status === 'finished' ? 'Full Time' : 'In Progress'}</p>
+                </div>
+            `;
+        }
+    }
+
+    function showSuccess(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'fixed top-4 right-4 bg-green-50 border border-green-200 rounded-lg p-4 z-50';
+        alertDiv.innerHTML = `
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-green-800">Success</h3>
+                    <div class="mt-2 text-sm text-green-700">
+                        <p>${message}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(alertDiv);
+        setTimeout(() => alertDiv.remove(), 3000);
+    }
+
+    function showError(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'fixed top-4 right-4 bg-red-50 border border-red-200 rounded-lg p-4 z-50';
+        alertDiv.innerHTML = `
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">Error</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        <p>${message}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(alertDiv);
+        setTimeout(() => alertDiv.remove(), 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if (!localStorage.getItem('token')) {
+            window.location.href = '/login';
+            return;
+        }
+        loadMatchDetails();
+    });
+</script>
 
 </html>
