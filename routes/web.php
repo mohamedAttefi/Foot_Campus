@@ -36,9 +36,9 @@ Route::get('/player/matches', function () {
     return view('player.match-schedule');
 })->middleware('role:player')->name('player.match-schedule');
 
-Route::get('/player/match-details', [MatchEventController::class, 'showMatchDetails'])
-    ->middleware('role:player')
-    ->name('player.match-details');
+Route::get('/player/match-details', function () {
+    return view('player.match-details');
+})->middleware('role:player')->name('player.match-details');
 
 Route::get('/player/profile', function () {
     return view('player.profile');
@@ -68,14 +68,6 @@ Route::get('/manager/team-management', function () {
 Route::get('/manager/player-stats', function () {
     return view('manager.player-stats');
 })->middleware('role:coach')->name('manager.player-stats');
-
-Route::get('/manager/team', function () {
-    return view('manager.team');
-})->middleware('role:coach')->name('manager.team');
-
-Route::get('/manager/match-details', function () {
-    return view('manager.match-details');
-})->middleware('role:coach')->name('manager.match-details');
 
 Route::get('/manager/schedule', function () {
     return view('manager.schedule');
